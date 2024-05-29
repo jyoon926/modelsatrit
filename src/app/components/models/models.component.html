@@ -1,0 +1,106 @@
+<section>
+    <h1>Models</h1>
+    <input type="checkbox" id="filter-checkbox" [(ngModel)]="showFilters">
+    <label for="filter-checkbox" id="filter-button" (click)="showFilters = !showFilters">Filters<p></p></label>
+    <div id="filters" #filtersBox>
+        <p>Gender</p>
+        <div class="row">
+            <label for="men">men<input type="checkbox" id="men" (change)="changeFilters()" [(ngModel)]="men"></label>
+            <label for="women">women<input type="checkbox" id="women" (change)="changeFilters()" [(ngModel)]="women"></label>
+            <label for="non-binary">non-binary<input type="checkbox" id="non-binary" (change)="changeFilters()" [(ngModel)]="nonbinary"></label>
+            <label for="other-gender">other<input type="checkbox" id="other-gender" (change)="changeFilters()" [(ngModel)]="othergender"></label>
+        </div>
+        <p>Height</p>
+        <div class="range_container">
+            <p class="from" #heightFromDisplay>4' 0"</p>
+            <div class="sliders_control">
+                <input id="heightFrom" class="fromSlider" type="range" min="48" max="90" #heightFrom (input)="changeFrom(heightFrom, heightTo, heightFromDisplay, 0)" (change)="changeFilters()" [(ngModel)]="heightF"/>
+                <input id="heightTo" type="range" min="48" max="90" #heightTo (input)="changeTo(heightFrom, heightTo, heightToDisplay, 0)" (change)="changeFilters()" [(ngModel)]="heightT"/>
+            </div>
+            <p class="to" #heightToDisplay>7' 6"</p>
+        </div>
+        <p>Waist</p>
+        <div class="range_container">
+            <p class="from" #waistFromDisplay>20"</p>
+            <div class="sliders_control">
+                <input id="waistFrom" class="fromSlider" type="range" min="20" max="50" #waistFrom (input)="changeFrom(waistFrom, waistTo, waistFromDisplay, 1)" (change)="changeFilters()" [(ngModel)]="waistF"/>
+                <input id="waistTo" type="range" min="20" max="50" #waistTo (input)="changeTo(waistFrom, waistTo, waistToDisplay, 1)" (change)="changeFilters()" [(ngModel)]="waistT"/>
+            </div>
+            <p class="to" #waistToDisplay>50"</p>
+        </div>
+        <p>Hip</p>
+        <div class="range_container">
+            <p class="from" #hipFromDisplay>20"</p>
+            <div class="sliders_control">
+                <input id="hipFrom" class="fromSlider" type="range" min="20" max="60" #hipFrom (input)="changeFrom(hipFrom, hipTo, hipFromDisplay, 1)" (change)="changeFilters()" [(ngModel)]="hipF"/>
+                <input id="hipTo" type="range" min="20" max="60" #hipTo (input)="changeTo(hipFrom, hipTo, hipToDisplay, 1)" (change)="changeFilters()" [(ngModel)]="hipT"/>
+            </div>
+            <p class="to" #hipToDisplay>50"</p>
+        </div>
+        <p>Chest</p>
+        <div class="range_container">
+            <p class="from" #chestFromDisplay>20"</p>
+            <div class="sliders_control">
+                <input id="chestFrom" class="fromSlider" type="range" min="20" max="60" #chestFrom (input)="changeFrom(chestFrom, chestTo, chestFromDisplay, 1)" (change)="changeFilters()" [(ngModel)]="chestF"/>
+                <input id="chestTo" type="range" min="20" max="60" #chestTo (input)="changeTo(chestFrom, chestTo, chestToDisplay, 1)" (change)="changeFilters()" [(ngModel)]="chestT"/>
+            </div>
+            <p class="to" #chestToDisplay>60"</p>
+        </div>
+        <p>Shoe</p>
+        <div class="range_container">
+            <p class="from" #shoeFromDisplay>4</p>
+            <div class="sliders_control">
+                <input id="shoeFrom" class="fromSlider" type="range" min="4" max="15" #shoeFrom (input)="changeFrom(shoeFrom, shoeTo, shoeFromDisplay, 2)" (change)="changeFilters()" [(ngModel)]="shoeF"/>
+                <input id="shoeTo" type="range" min="4" max="15" #shoeTo (input)="changeTo(shoeFrom, shoeTo, shoeToDisplay, 2)" (change)="changeFilters()" [(ngModel)]="shoeT"/>
+            </div>
+            <p class="to" #shoeToDisplay>15</p>
+        </div>
+        <p>Hair</p>
+        <div class="row">
+            <label for="hair-black">black<input type="checkbox" class="hair" id="hair-black" checked (change)="changeFilters()"></label>
+            <label for="hair-brown">brown<input type="checkbox" class="hair" id="hair-brown" checked (change)="changeFilters()"></label>
+            <label for="hair-blue">blue<input type="checkbox" class="hair" id="hair-blue" checked (change)="changeFilters()"></label>
+            <label for="hair-hazel">hazel<input type="checkbox" class="hair" id="hair-hazel" checked (change)="changeFilters()"></label>
+            <label for="hair-green">green<input type="checkbox" class="hair" id="hair-green" checked (change)="changeFilters()"></label>
+            <label for="hair-gray">gray<input type="checkbox" class="hair" id="hair-gray" checked (change)="changeFilters()"></label>
+            <label for="hair-red">red<input type="checkbox" class="hair" id="hair-red" checked (change)="changeFilters()"></label>
+            <label for="hair-amber">amber<input type="checkbox" class="hair" id="hair-amber" checked (change)="changeFilters()"></label>
+            <label for="hair-other">other<input type="checkbox" class="hair" id="hair-other" checked (change)="changeFilters()"></label>
+        </div>
+        <p>Eyes</p>
+        <div class="row">
+            <label for="eyes-black">black<input type="checkbox" class="eyes" id="eyes-black" checked (change)="changeFilters()"></label>
+            <label for="eyes-brown">brown<input type="checkbox" class="eyes" id="eyes-brown" checked (change)="changeFilters()"></label>
+            <label for="eyes-blonde">blonde<input type="checkbox" class="eyes" id="eyes-blonde" checked (change)="changeFilters()"></label>
+            <label for="eyes-red">red<input type="checkbox" class="eyes" id="eyes-red" checked (change)="changeFilters()"></label>
+            <label for="eyes-gray">gray<input type="checkbox" class="eyes" id="eyes-gray" checked (change)="changeFilters()"></label>
+            <label for="eyes-white">white<input type="checkbox" class="eyes" id="eyes-white" checked (change)="changeFilters()"></label>
+            <label for="eyes-blue">blue<input type="checkbox" class="eyes" id="eyes-blue" checked (change)="changeFilters()"></label>
+            <label for="eyes-purple">purple<input type="checkbox" class="eyes" id="eyes-purple" checked (change)="changeFilters()"></label>
+            <label for="eyes-pink">pink<input type="checkbox" class="eyes" id="eyes-pink" checked (change)="changeFilters()"></label>
+            <label for="eyes-green">green<input type="checkbox" class="eyes" id="eyes-green" checked (change)="changeFilters()"></label>
+            <label for="eyes-other">other<input type="checkbox" class="eyes" id="eyes-other" checked (change)="changeFilters()"></label>
+        </div>
+    </div>
+    <div class="gallery">
+        <ul>
+            <a *ngFor="let user of displayedUsers" routerLink="/models/{{user.username}}" [ngStyle]="{'background-image': ' url(' + getImage(user.photos[0]) + ')'}" [ngClass]="{'loading': getImage(user.photos[0]) == null}">
+                <div class="col">
+                    <p class="name"><em>{{user.firstname}} {{user.lastname}}</em></p>
+                    <div class="in">
+                        <div class="inner" *ngIf="user.gender != 'N/A'"><p class="category">Gender</p><p>{{user.gender}}</p></div>
+                        <div class="inner" *ngIf="user.race != ['N/A']"><p class="category">Race</p><p>{{user.race.join(", ")}}</p></div>
+                        <div class="inner" *ngIf="user.height"><p class="category">Height</p><p>{{floor(user.height / 12)}}' {{user.height % 12}}"</p></div>
+                        <div class="inner" *ngIf="user.waist"><p class="category">Waist</p><p>{{user.waist}}"</p></div>
+                        <div class="inner" *ngIf="user.hip"><p class="category">Hip</p><p>{{user.hip}}"</p></div>
+                        <div class="inner" *ngIf="user.chest"><p class="category">Chest</p><p>{{user.chest}}"</p></div>
+                        <div class="inner" *ngIf="user.shoe"><p class="category">Shoe</p><p>{{user.shoe}}</p></div>
+                        <div class="inner" *ngIf="user.eyes != 'N/A'"><p class="category">Eyes</p><p>{{user.eyes}}</p></div>
+                        <div class="inner" *ngIf="user.hair != 'N/A'"><p class="category">Hair</p><p>{{user.hair}}</p></div>
+                    </div>
+                </div>
+            </a>
+        </ul>
+    </div>
+    <h3 *ngIf="displayedUsers.length == 0">There are no models to view! Try changing your filters.</h3>
+  </section>

@@ -1,0 +1,189 @@
+@import "../../../styles";
+
+@media screen and (min-width: 801px) {
+  section {
+    margin-top: 60px;
+    width: 100%;
+    height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+  #login {
+    padding: 0 40px;
+    max-width: 400px;
+    box-sizing: content-box;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    em {
+      font-style: normal;
+    }
+    p {
+      margin-bottom: 10px;
+      opacity: 0.6;
+    }
+    label {
+      width: fit-content;
+    }
+    input {
+      width: 100%;
+      margin-top: -14px;
+    }
+    button {
+      width: 100%;
+      text-align: center;
+    }
+    a {
+      text-decoration: underline;
+    }
+    #failed {
+      opacity: 0;
+      font-size: 0.9rem;
+      color: $light;
+      background: red;
+      padding: 4px 6px;
+      font-style: italic;
+      margin-top: -20px;
+    }
+    @keyframes fadeOut {
+      from {
+        opacity: 0.6;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+  }
+  .logocontainer {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba($dark, 1);
+    // img {
+    //     width: 50%;
+    //     filter: invert(1)
+    // }
+    .circle {
+      position: absolute;
+      width: 18vw;
+      height: 18vw;
+      background: $light;
+      border-radius: 100vw;
+      animation: bob 5s ease infinite;
+    }
+    .box {
+      position: absolute;
+      width: 30vw;
+      height: 20vw;
+      backdrop-filter: blur(2vw);
+      margin-top: 20vw;
+      background: rgba($dark, 0.4);
+      // box-shadow: 0 0 3vw -1vw rgba($dark, 1);
+    }
+    @keyframes bob {
+      0% {
+        transform: translateY(-2vw);
+      }
+      50% {
+        transform: translateY(2vw);
+      }
+      100% {
+        transform: translateY(-2vw);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  section {
+    padding-top: 120px;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
+  #login {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+    em {
+      font-style: normal;
+    }
+    p {
+      margin-bottom: 10px;
+      opacity: 0.6;
+    }
+    label {
+      width: fit-content;
+    }
+    input {
+      width: 100%;
+      margin-top: -14px;
+    }
+    button {
+      width: 100%;
+      text-align: center;
+    }
+    a {
+      text-decoration: underline;
+    }
+    #failed {
+      opacity: 0;
+      font-size: 0.9rem;
+      color: $light;
+      background: red;
+      padding: 4px 6px;
+      font-style: italic;
+      margin-top: -20px;
+    }
+  }
+  .logocontainer {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba($dark, 1);
+    .circle {
+      position: absolute;
+      width: 18vw;
+      height: 18vw;
+      background: $light;
+      border-radius: 100vw;
+      animation: bob 5s ease infinite;
+    }
+    .box {
+      position: absolute;
+      width: 30vw;
+      height: 20vw;
+      backdrop-filter: blur(2vw);
+      margin-top: 20vw;
+      background: rgba($dark, 0.4);
+    }
+    @keyframes bob {
+      0% {
+        transform: translateY(-2vw);
+      }
+      50% {
+        transform: translateY(2vw);
+      }
+      100% {
+        transform: translateY(-2vw);
+      }
+    }
+  }
+}

@@ -1,0 +1,196 @@
+<section>
+  <h1>Model Profile</h1>
+  <p *ngIf="!user" style="margin-bottom: 14px">You aren't logged in!</p>
+  <button (click)="logOut()" class="logout" *ngIf="!user">Log in</button>
+
+  <form autocomplete="off" #form="ngForm" (ngSubmit)="upload(form.value)" [noValidate]="false" *ngIf="user">
+    <div class="buttons">
+      <button routerLink="/models/{{ user.username }}">View profile</button>
+      <button (click)="logOut()" class="logout">Log out</button>
+    </div>
+
+    <button id="save" type="submit">Save changes</button>
+
+    <div class="row">
+      <div class="basic list">
+        <h3><em>Account Info</em></h3>
+
+        <label for="public" class="public">
+          <input
+            id="public"
+            type="checkbox"
+            name="public"
+            [(ngModel)]="user.ispublic"
+            style="margin-right: 6px"
+            (change)="togglePublic(user, $event, form.value)" />
+          Public profile
+        </label>
+
+        <label for="firstname">
+          First Name
+          <span>*</span>
+        </label>
+        <input id="firstname" type="text" name="firstname" required [(ngModel)]="user.firstname" />
+
+        <label for="lastname">
+          Last Name
+          <span>*</span>
+        </label>
+        <input id="lastname" type="text" name="lastname" required [(ngModel)]="user.lastname" />
+
+        <label for="email">
+          Email
+          <span>*</span>
+          <b>(must be rit.edu)</b>
+        </label>
+        <input
+          id="email"
+          type="text"
+          name="email"
+          required
+          [(ngModel)]="user.email"
+          pattern="^([a-zA-Z0-9_\-\.]+)@rit.edu$" />
+
+        <label for="password">Set a new password</label>
+        <input id="password" type="password" autocomplete="off" name="password" ngModel />
+      </div>
+
+      <div class="personal list">
+        <h3><em>Model Info</em></h3>
+
+        <p class="note">
+          The following information is optional, but it will be valuable for photographers. Please fill it out if you're
+          comfortable doing so.
+        </p>
+
+        <label for="gender">Gender</label>
+        <select name="gender" id="gender" [(ngModel)]="user.gender">
+          <option value="Man">Man</option>
+          <option value="Woman">Woman</option>
+          <option value="Non-binary/non-conforming">Non-binary/non-conforming</option>
+          <option value="Other">Other</option>
+          <option value="N/A">Prefer not to say</option>
+        </select>
+
+        <label for="race">
+          Race
+          <b>(select multiple with the ctrl or cmd key)</b>
+        </label>
+        <select name="race" id="race" [(ngModel)]="user.race" multiple>
+          <option value="Black or African American">Black or African American</option>
+          <option value="Asian">Asian</option>
+          <option value="Hispanic or Latino">Hispanic or Latino</option>
+          <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+          <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
+          <option value="White">White</option>
+          <option value="Other">Other</option>
+          <option value="N/A">Prefer not to say</option>
+        </select>
+
+        <div class="small">
+          <label for="height">
+            Height
+            <b>(in)</b>
+          </label>
+          <input id="height" type="number" name="height" [(ngModel)]="user.height" (keydown)="keydown($event)" />
+        </div>
+        <div class="small">
+          <label for="waist">
+            Waist
+            <b>(in)</b>
+          </label>
+          <input id="waist" type="number" name="waist" [(ngModel)]="user.waist" (keydown)="keydown($event)" />
+        </div>
+        <div class="small">
+          <label for="hip">
+            Hip
+            <b>(in)</b>
+          </label>
+          <input id="hip" type="number" name="hip" [(ngModel)]="user.hip" (keydown)="keydown($event)" />
+        </div>
+        <div class="small">
+          <label for="chest">
+            Chest
+            <b>(in)</b>
+          </label>
+          <input id="chest" type="number" name="chest" [(ngModel)]="user.chest" (keydown)="keydown($event)" />
+        </div>
+        <div class="small">
+          <label for="eyes">Eyes</label>
+          <select name="eyes" id="eyes" [(ngModel)]="user.eyes">
+            <option value="Brown">Brown</option>
+            <option value="Blue">Blue</option>
+            <option value="Hazel">Hazel</option>
+            <option value="Green">Green</option>
+            <option value="Gray">Gray</option>
+            <option value="Black">Black</option>
+            <option value="Red">Red</option>
+            <option value="Amber">Amber</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="small">
+          <label for="shoe">
+            Shoe
+            <b>(US)</b>
+          </label>
+          <input
+            id="shoe"
+            type="number"
+            min="0"
+            step="0.5"
+            name="shoe"
+            [(ngModel)]="user.shoe"
+            (keydown)="keydown($event)" />
+        </div>
+        <div class="small">
+          <label for="hair">Hair</label>
+          <select name="hair" id="hair" [(ngModel)]="user.hair">
+            <option value="Black">Black</option>
+            <option value="Brown">Brown</option>
+            <option value="Blonde">Blonde</option>
+            <option value="Red">Red</option>
+            <option value="Gray">Gray</option>
+            <option value="White">White</option>
+            <option value="Blue">Blue</option>
+            <option value="Purple">Purple</option>
+            <option value="Pink">Pink</option>
+            <option value="Green">Green</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="bio">
+          <label for="bio">Bio</label>
+          <textarea
+            id="bio"
+            rows="6"
+            maxlength="200"
+            type="text"
+            name="bio"
+            placeholder="Write a short bio about yourself. Is there anything you want photographers to know about?"
+            [(ngModel)]="user.bio"></textarea>
+        </div>
+        <div class="small ig">
+          <label for="instagram">Instagram</label>
+          <span class="at">@</span>
+          <input id="instagram" type="text" name="instagram" [(ngModel)]="user.instagram" style="width: 150px" />
+        </div>
+        <label>Photos<span>*</span></label>
+        <div class="photos-container">
+          <div class="photos-list">
+            <div class="photo" *ngFor="let photo of photos; let i = index" [ngStyle]="{'background-image': ' url(' + getImage(photo) + ')'}">
+              <a class="delete" (click)="deletePhoto($event, photo)"><fa-icon [icon]="faTrash"></fa-icon></a>
+              <div class="move">
+                <a class="left" (click)="movePhoto($event, i, i - 1)"><fa-icon [icon]="faArrowLeft"></fa-icon></a>
+                <a class="right" (click)="movePhoto($event, i, i + 1)"><fa-icon [icon]="faArrowRight"></fa-icon></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input id="upload" type="file" name="upload" style="width: 250px" (change)="selectUpload($event)" multiple>
+        <a class="upload" (click)="uploadPhoto(form.value)">Upload new photo(s)</a>
+        <button id="save" type="submit">Save changes</button>
+      </div>
+    </div>
+  </form>
+</section>

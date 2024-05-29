@@ -1,0 +1,98 @@
+@import "../styles";
+
+#cursor {
+  top: -200px;
+  position: fixed;
+  height: 60px;
+  width: 60px;
+  transform: translate(-30px, -30px);
+  border-radius: 100%;
+  z-index: 100;
+  pointer-events: none;
+  transition:
+    height 0.4s,
+    width 0.4s,
+    transform 0.4s,
+    background-color 0.4s,
+    border 0.4s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba($dark, 0);
+  .inner {
+    transition-duration: 0.4s;
+    position: absolute;
+    height: 60px;
+    width: 60px;
+    border-radius: 100%;
+    background-color: rgba($dark, 0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba($dark, 0.3);
+  }
+  &.hover {
+    height: 100px;
+    width: 100px;
+    transform: translate(-50px, -50px);
+    background-color: rgba($dark, 0);
+    border: 1px solid rgba($dark, 0.3);
+    .inner {
+      height: 8px;
+      width: 8px;
+      background: rgba($dark, 1);
+      border: 1px solid rgba($dark, 0);
+    }
+  }
+}
+#grain {
+  z-index: 100;
+  position: fixed;
+  width: 200vw;
+  height: 200vh;
+  left: -50%;
+  top: -50%;
+  overflow: hidden;
+  pointer-events: none;
+  background-image: url("../assets/images/grain.png");
+  animation: grain 1.5s steps(5) infinite;
+  mix-blend-mode: multiply;
+  // backdrop-filter: blur(1px);
+  opacity: 0.15;
+}
+@keyframes grain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(8%, -15%);
+  }
+  30% {
+    transform: translate(-13%, 13%);
+  }
+  50% {
+    transform: translate(14%, -6%);
+  }
+  70% {
+    transform: translate(-3%, -12%);
+  }
+  90% {
+    transform: translate(4%, 5%);
+  }
+}
+
+#page-overlay {
+  transition: top 1s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: #dbd8d0;
+  z-index: 1000;
+  &.down {
+    top: 0;
+  }
+  &.up {
+    top: -100vh;
+  }
+}

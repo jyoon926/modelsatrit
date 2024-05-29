@@ -1,0 +1,72 @@
+<section *ngIf="user != null">
+  <h1>{{ user.firstname }} {{ user.lastname }}</h1>
+  <div class="row">
+    <div
+      class="image"
+      id="image"
+      [ngStyle]="{
+        'background-image': ' url(' + getImage(user.photos[0]) + ')'
+      }"></div>
+    <div class="col">
+      <div class="track">
+        <a
+          class="thumbnail"
+          *ngFor="let photo of user.photos"
+          [ngStyle]="{
+            'background-image': ' url(' + getImage(photo) + ')'
+          }"
+          (click)="selectImage(photo)"></a>
+      </div>
+      <div class="info">
+        <!-- <p class="name"><em>{{user.firstname}}</em></p> -->
+        <div class="inner" *ngIf="user.gender != 'N/A'">
+          <p class="category">Gender</p>
+          <p>{{ user.gender }}</p>
+        </div>
+        <div class="inner" *ngIf="!user.race.includes('N/A')">
+          <p class="category">Race</p>
+          <p>{{ user.race.join(", ") }}</p>
+        </div>
+        <div class="inner" *ngIf="user.height">
+          <p class="category">Height</p>
+          <p>{{ parseInt(user.height / 12) }}' {{ user.height % 12 }}"</p>
+        </div>
+        <div class="inner" *ngIf="user.waist">
+          <p class="category">Waist</p>
+          <p>{{ user.waist }}"</p>
+        </div>
+        <div class="inner" *ngIf="user.hip">
+          <p class="category">Hip</p>
+          <p>{{ user.hip }}"</p>
+        </div>
+        <div class="inner" *ngIf="user.chest">
+          <p class="category">Chest</p>
+          <p>{{ user.chest }}"</p>
+        </div>
+        <div class="inner" *ngIf="user.shoe">
+          <p class="category">Shoe</p>
+          <p>{{ user.shoe }}</p>
+        </div>
+        <div class="inner" *ngIf="user.eyes != 'N/A'">
+          <p class="category">Eyes</p>
+          <p>{{ user.eyes }}</p>
+        </div>
+        <div class="inner" *ngIf="user.hair != 'N/A'">
+          <p class="category">Hair</p>
+          <p>{{ user.hair }}</p>
+        </div>
+      </div>
+      <p class="bio" *ngIf="user.bio.length > 0">{{ user.bio }}</p>
+      <div class="links">
+        <a href="mailto:{{ user.email }}">Email</a>
+        <a *ngIf="user.instagram" href="https://www.instagram.com/{{ user.instagram }}/" target="_blank">Instagram</a>
+        <button routerLink="/profile" *ngIf="authService.getLoggedInUser() == user.username">Edit profile</button>
+      </div>
+      <button (click)="back()" class="back">Back</button>
+    </div>
+  </div>
+</section>
+<section *ngIf="user == null">
+  <h1>This model does not exist.</h1>
+  <button routerLink="/models">View all models</button>
+</section>

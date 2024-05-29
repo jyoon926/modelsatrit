@@ -1,1 +1,148 @@
-/* You can add global styles to this file, and also import other style files */
+$dark: #000;
+$light: #f7f7f2;
+
+@font-face {
+  font-family: "Radio Grotesk";
+  src: url("./assets/fonts/PPRadioGrotesk/PPRadioGrotesk-Regular.otf");
+}
+
+@font-face {
+  font-family: "Plain";
+  src: url(assets/fonts/Plain/Plain-Bold.woff) format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Plain";
+  src: url(assets/fonts/Plain/Plain-Regular.woff) format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+* {
+  font-family: "Plain", sans-serif;
+  margin: 0;
+  padding: 0;
+  color: $dark;
+  box-sizing: border-box;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01rem;
+}
+
+::selection {
+  color: $light;
+  background-color: rgba($dark, 0.75);
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  background: $light;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+.italic,
+em {
+  font-family: "big-caslon-fb", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+h1 {
+  font-size: 8rem;
+}
+
+h2 {
+  font-size: 4rem;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+input:not([type="checkbox"]):not([type="range"]) {
+  all: unset;
+  font-size: 1rem;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  border: 2px solid rgba($dark, 0);
+  transition-duration: 0.3s;
+  background: rgba($dark, 0.1);
+
+  &:hover {
+    border: 2px solid rgba($dark, 0.3);
+  }
+
+  &:focus {
+    border: 2px solid rgba($dark, 1);
+  }
+  
+  &:required {
+    background: rgba(red, 0.075);
+  }
+
+  &:valid {
+    background: rgba($dark, 0.1);
+  }
+}
+
+select {
+  font-size: 1rem;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  border: 2px solid rgba($dark, 0);
+  background: rgba($dark, 0.1);
+  transition-duration: 0.3s;
+
+  &:required {
+    background: rgba(red, 0.075);
+  }
+
+  &:valid {
+    background: rgba($dark, 0.1);
+  }
+
+  &:hover {
+    border: 2px solid rgba($dark, 0.3);
+  }
+}
+
+textarea {
+  padding: 6px 10px;
+  background: rgba($dark, 0.1);
+  line-height: 1.5;
+  resize: none;
+  font-size: 1rem;
+  border: 2px solid rgba($dark, 0);
+  transition-duration: 0.3s;
+
+  &:hover {
+    border: 2px solid rgba($dark, 0.3);
+  }
+}
+
+button {
+  all: unset;
+  background: rgba($dark, 0.1);
+  color: $dark;
+  padding: 14px 24px;
+  box-sizing: border-box;
+  transition-duration: 0.3s;
+
+  &:hover {
+    background: rgba($dark, 1);
+    color: $light;
+    cursor: pointer;
+  }
+}

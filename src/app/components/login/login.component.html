@@ -1,0 +1,20 @@
+<section>
+  <form id="login" autocomplete="off">
+    <h2><em>Log in</em></h2>
+    <p>Log in to manage your model profile.</p>
+    <label for="email">Email</label>
+    <input id="email" type="text" #email required />
+    <label for="password">Password</label>
+    <input id="password" type="password" #password required />
+    <button type="submit" (click)="logIn(email.value, password.value)">Log in</button>
+    <p>
+      Don't have an account?
+      <a routerLink="/register">Register</a>
+    </p>
+    <p id="failed">Login failed</p>
+  </form>
+  <div class="logocontainer">
+    <div class="circle"></div>
+    <div class="box"></div>
+  </div>
+</section>

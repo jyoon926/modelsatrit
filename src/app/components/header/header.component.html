@@ -1,0 +1,23 @@
+<header>
+  <a routerLink="/" id="title" class="italic" (click)="hideMenu()">
+    <img src="../assets/images/logo-transparent-700.png" alt="" />
+    Models &#64; RIT
+  </a>
+  <input type="checkbox" id="checkbox" />
+  <label for="checkbox" id="menu-button">
+    <span class="top"></span>
+    <span class="mid"></span>
+    <span class="bot"></span>
+  </label>
+  <ul>
+    <a routerLink="/models" (click)="hideMenu()">Models</a>
+    <a routerLink="/about" (click)="hideMenu()">About</a>
+    <a routerLink="/login" *ngIf="!(authService.isLoggedIn$ | async)" (click)="hideMenu()"> Log in </a>
+    <a routerLink="/profile" class="profile" *ngIf="authService.isLoggedIn$ | async" (click)="hideMenu()">
+      Your profile
+    </a>
+    <a routerLink="/register" class="sign-up" *ngIf="!(authService.isLoggedIn$ | async)" (click)="hideMenu()">
+      Become a model
+    </a>
+  </ul>
+</header>
