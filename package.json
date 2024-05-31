@@ -22,6 +22,7 @@
     "@fortawesome/angular-fontawesome": "^0.14.1",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@ngx-env/builder": "^17.3.0",
     "bcryptjs": "^2.4.3",
     "compressorjs": "^1.2.1",
     "dotenv": "^16.4.5",

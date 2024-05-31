@@ -23,6 +23,7 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFireAnalyticsModule } from '@angular/fire/compat/analytics';
+
 import { environment } from 'src/environments/environment';
 
 @NgModule({
