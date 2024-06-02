@@ -18,7 +18,6 @@ import Compressor from 'compressorjs';
 export class ProfileComponent implements OnInit {
   uploadFiles?: FileList;
   user: User | undefined;
-  images = new Map<string, any>();
   photos: string[] = [];
   faTrash = faTrash;
   faArrowLeft = faArrowLeft;
@@ -61,14 +60,8 @@ export class ProfileComponent implements OnInit {
     this.userService.getUser(this.authService.getLoggedInUser()).subscribe(async user => {
       if (user == null) this.router.navigate(['/login']);
       this.user = user;
-      this.photos = user.photos;
-      this.images = await this.imageService.getPhotos(user);
+      this.photos = user!.photos;
     });
-  }
-
-  getImage(filename: string): string {
-    if (filename && this.images.has(filename)) return this.images.get(filename);
-    return '';
   }
 
   logOut() {
@@ -130,7 +123,6 @@ export class ProfileComponent implements OnInit {
       email: form.email.trim(),
       firstname: form.firstname.trim(),
       lastname: form.lastname.trim(),
-      username: form.email.trim().replace('@rit.edu', ''),
       ispublic: form.public,
       gender: form.gender,
       race: form.race,
@@ -145,10 +137,10 @@ export class ProfileComponent implements OnInit {
       instagram: form.instagram.trim(),
       photos: this.photos
     };
-    this.userService.updateUser(this.user!.username, user as unknown as User).subscribe({
+    this.userService.updateUser(this.user!.email, user as unknown as User).subscribe({
       next: (event: any) => {
-        localStorage.setItem('api_auth_username', user.username);
-        this.userService.setLoggedInUser(user.username);
+        localStorage.setItem('api_auth_email', user.email);
+        this.userService.setLoggedInUser(user.email);
         location.reload();
       },
       error: (err: any) => {

@@ -26,7 +26,6 @@ export class RegisterComponent {
   register(form: any): void {
     if (!/^([a-zA-Z0-9_\-\.]+)@rit.edu$/.test(form.email)) return;
     let user = {
-      username: form.email.trim().replace('@rit.edu', ''),
       email: form.email.trim(),
       password: form.password,
       firstname: form.firstname.trim(),

@@ -1,9 +1,9 @@
 <div class="images">
   <a
     *ngFor="let user of users; let i = index"
-    routerLink="/models/{{ user.username }}"
+    routerLink="/models/{{user.email}}"
     [ngStyle]="{
-      'background-image': ' url(' + getImage(user.photos[0]) + ')'
+      'background-image': ' url(' + user.photos[0] + ')'
     }"
     [attr.data-index]="i"
     class="model-image"></a>
@@ -14,9 +14,9 @@
       <a routerLink="/models" class="all">View all models</a>
       <a
         *ngFor="let user of users"
-        routerLink="/models/{{ user.username }}"
+        routerLink="/models/{{user.email}}"
         [ngStyle]="{
-          'background-image': ' url(' + getImage(user.photos[0]) + ')'
+          'background-image': ' url(' + user.photos[0] + ')'
         }"></a>
     </div>
   </div>

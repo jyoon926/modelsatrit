@@ -5,7 +5,7 @@
       class="image"
       id="image"
       [ngStyle]="{
-        'background-image': ' url(' + getImage(user.photos[0]) + ')'
+        'background-image': ' url(' + user.photos[0] + ')'
       }"></div>
     <div class="col">
       <div class="track">
@@ -13,7 +13,7 @@
           class="thumbnail"
           *ngFor="let photo of user.photos"
           [ngStyle]="{
-            'background-image': ' url(' + getImage(photo) + ')'
+            'background-image': ' url(' + photo + ')'
           }"
           (click)="selectImage(photo)"></a>
       </div>
@@ -60,13 +60,13 @@
       <div class="links">
         <a href="mailto:{{ user.email }}">Email</a>
         <a *ngIf="user.instagram" href="https://www.instagram.com/{{ user.instagram }}/" target="_blank">Instagram</a>
-        <button routerLink="/profile" *ngIf="authService.getLoggedInUser() == user.username">Edit profile</button>
+        <button routerLink="/profile" *ngIf="authService.getLoggedInUser() == user.email">Edit profile</button>
       </div>
       <button (click)="back()" class="back">Back</button>
     </div>
   </div>
 </section>
-<section *ngIf="user == null">
+<section *ngIf="error">
   <h1>This model does not exist.</h1>
   <button routerLink="/models">View all models</button>
 </section>

@@ -47,7 +47,7 @@
       font-size: 0.9rem;
       color: $light;
       background: red;
-      padding: 4px 6px;
+      padding: 6px 8px;
       font-style: italic;
       margin-top: -20px;
     }
@@ -67,10 +67,6 @@
     justify-content: center;
     align-items: center;
     background: rgba($dark, 1);
-    // img {
-    //     width: 50%;
-    //     filter: invert(1)
-    // }
     .circle {
       position: absolute;
       width: 18vw;
@@ -86,7 +82,6 @@
       backdrop-filter: blur(2vw);
       margin-top: 20vw;
       background: rgba($dark, 0.4);
-      // box-shadow: 0 0 3vw -1vw rgba($dark, 1);
     }
     @keyframes bob {
       0% {

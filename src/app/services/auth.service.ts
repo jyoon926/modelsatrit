@@ -11,25 +11,25 @@ export class AuthService {
 
   constructor(private userService: UserService) {
     const token = localStorage.getItem('api_auth');
-    const username = localStorage.getItem('api_auth_username');
+    const email = localStorage.getItem('api_auth_email');
     this._isLoggedIn$.next(!!token);
-    this.userService.setLoggedInUser(username!);
+    this.userService.setLoggedInUser(email!);
   }
 
   logIn(email: string, password: string) {
     return this.userService.logIn(email, password).pipe(
       tap((response: any) => {
         localStorage.setItem('api_auth', response.token);
-        localStorage.setItem('api_auth_username', response.username);
+        localStorage.setItem('api_auth_email', response.email);
         this._isLoggedIn$.next(true);
-        this.userService.setLoggedInUser(response.username);
+        this.userService.setLoggedInUser(response.email);
       }),
     );
   }
 
   logOut() {
     localStorage.setItem('api_auth', '');
-    localStorage.setItem('api_auth_username', '');
+    localStorage.setItem('api_auth_email', '');
     this._isLoggedIn$.next(false);
   }
 

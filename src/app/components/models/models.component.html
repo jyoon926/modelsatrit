@@ -84,7 +84,7 @@
     </div>
     <div class="gallery">
         <ul>
-            <a *ngFor="let user of displayedUsers" routerLink="/models/{{user.username}}" [ngStyle]="{'background-image': ' url(' + getImage(user.photos[0]) + ')'}" [ngClass]="{'loading': getImage(user.photos[0]) == null}">
+            <a *ngFor="let user of displayedUsers" routerLink="/models/{{user.email}}" [ngStyle]="{'background-image': ' url(' + user.photos[0] + ')'}" [ngClass]="{'loading': user.photos[0] == null}">
                 <div class="col">
                     <p class="name"><em>{{user.firstname}} {{user.lastname}}</em></p>
                     <div class="in">

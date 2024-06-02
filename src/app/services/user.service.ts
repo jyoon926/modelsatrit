@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
 import { User } from './user';
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest } from '@angular/common/http';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class UserService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private firestore: AngularFirestore) {}
 
   register(user: User) {
     user.isadmin = false;
@@ -34,16 +35,16 @@ export class UserService {
     return this.http.post(this.baseUrl + '/login', body, this.httpOptions);
   }
 
-  updateUser(username: string, user: User) {
-    return this.http.put(`${this.baseUrl}/${username}`, user, this.httpOptions).pipe(
-      tap((_) => console.log(`updated user '${username}'`)),
+  updateUser(email: string, user: User) {
+    return this.http.put(`${this.baseUrl}/${email}`, user, this.httpOptions).pipe(
+      tap((_) => console.log(`updated user '${email}'`)),
       catchError(this.handleError<any>('updateUser')),
     );
   }
 
-  deleteUser(username: string): Observable<User> {
-    return this.http.delete<User>(`${this.baseUrl}/${username}`, this.httpOptions).pipe(
-      tap((_) => console.log(`deleted user '${username}'`)),
+  deleteUser(email: string): Observable<User> {
+    return this.http.delete<User>(`${this.baseUrl}/${email}`, this.httpOptions).pipe(
+      tap((_) => console.log(`deleted user '${email}'`)),
       catchError(this.handleError<User>('deleteUser')),
     );
   }
@@ -61,18 +62,19 @@ export class UserService {
   }
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.baseUrl).pipe(catchError(this.handleError<User[]>('users', [])));
+    return this.firestore.collection<User>('users').valueChanges();
   }
 
-  getUser(username: string): Observable<User> {
-    return this.http.get<User>(`${this.baseUrl}/${username}`).pipe(
-      tap(),
-      catchError(this.handleError<User>(`getUser ${username}`)),
-    );
+  getUser(email: string): Observable<User> {
+    return this.firestore.collection<User>('users', ref => ref.where('email', '==', email))
+      .valueChanges()
+      .pipe(
+        switchMap(users => users.length > 0 ? of(users[0]) : throwError(() => new Error('User not found')))
+      );
   }
 
-  setLoggedInUser(username: string) {
-    this.loggedInUser = username;
+  setLoggedInUser(email: string) {
+    this.loggedInUser = email;
   }
 
   getLoggedInUser(): string {

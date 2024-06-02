@@ -11,7 +11,6 @@ import { ImageService } from 'src/app/services/image.service';
 })
 export class ModelsComponent implements OnInit {
   users: User[] = [];
-  images = new Map<string, any>();
   displayedUsers: User[] = [];
   @ViewChild('filtersBox', { static:false, read: ElementRef }) filtersBox: any;
   showFilters: boolean = false;
@@ -46,12 +45,7 @@ export class ModelsComponent implements OnInit {
       users.sort((a, b) => a.firstname.localeCompare(b.firstname) || a.lastname.localeCompare(b.lastname));
       this.users = users;
       this.displayedUsers = this.users.filter((value) => value.ispublic);
-      this.images = await this.imageService.getThumbnails(this.users);
     });
-  }
-
-  getImage(filename: string) {
-    if (filename && this.images.has(filename)) return this.images.get(filename);
   }
 
   array(n: number) {

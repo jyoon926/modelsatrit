@@ -12,15 +12,14 @@ import { ImageService } from 'src/app/services/image.service';
   styleUrls: ['./model.component.scss'],
 })
 export class ModelComponent implements OnInit {
-  user: User | undefined;
-  images = new Map<string, any>();
+  user?: User;
+  error: Boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
     public authService: AuthService,
-    private location: Location,
-    private imageService: ImageService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -28,24 +27,20 @@ export class ModelComponent implements OnInit {
   }
 
   getUser(): void {
-    const username = this.route.snapshot.paramMap.get('username');
-    if (username != null) {
-      this.userService.getUser(username).subscribe(async user => {
+    const email = this.route.snapshot.paramMap.get('email')!;
+    this.userService.getUser(email).subscribe({
+      next: user => {
         this.user = user;
-        this.images = await this.imageService.getPhotos(this.user);
-      });
-    }
-  }
-
-  getImage(filename: string): string {
-    if (filename && this.images.has(filename)) return this.images.get(filename);
-    return '';
+      }, error: () => {
+        this.error = true;
+      }
+    });
   }
 
   selectImage(filename: string): void {
     let dom = document.getElementById('image');
     if (dom) {
-      dom.style.backgroundImage = 'url(' + this.getImage(filename) + ')';
+      dom.style.backgroundImage = `url(${filename})`;
     }
   }
 

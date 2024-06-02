@@ -14,18 +14,17 @@ export class LoginComponent {
   ) {}
 
   logIn(email: string, password: string): void {
-    this.authService.logIn(email, password).subscribe(
-      (res) => {
+    this.authService.logIn(email, password).subscribe({
+      next: () => {
         this.router.navigate(['/profile']);
       },
-      (err) => {
+      error: () => {
         this.loginFailed();
       },
-    );
+    });
   }
 
   loginFailed() {
-    console.log('failed');
     let p = document.getElementById('failed');
     if (p != null) {
       const animation = p.animate([{ opacity: 0.6 }, { opacity: 0 }], {

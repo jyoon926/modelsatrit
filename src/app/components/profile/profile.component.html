@@ -5,7 +5,7 @@
 
   <form autocomplete="off" #form="ngForm" (ngSubmit)="upload(form.value)" [noValidate]="false" *ngIf="user">
     <div class="buttons">
-      <button routerLink="/models/{{ user.username }}">View profile</button>
+      <button routerLink="/models/{{ user.email }}">View profile</button>
       <button (click)="logOut()" class="logout">Log out</button>
     </div>
 
@@ -178,7 +178,7 @@
         <label>Photos<span>*</span></label>
         <div class="photos-container">
           <div class="photos-list">
-            <div class="photo" *ngFor="let photo of photos; let i = index" [ngStyle]="{'background-image': ' url(' + getImage(photo) + ')'}">
+            <div class="photo" *ngFor="let photo of photos; let i = index" [ngStyle]="{'background-image': ' url(' + photo + ')'}">
               <a class="delete" (click)="deletePhoto($event, photo)"><fa-icon [icon]="faTrash"></fa-icon></a>
               <div class="move">
                 <a class="left" (click)="movePhoto($event, i, i - 1)"><fa-icon [icon]="faArrowLeft"></fa-icon></a>

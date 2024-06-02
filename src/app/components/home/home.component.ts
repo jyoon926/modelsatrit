@@ -10,11 +10,9 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class HomeComponent {
   users: User[] = [];
-  images = new Map<string, any>();
 
   constructor(
-    private userService: UserService,
-    private imageService: ImageService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -22,16 +20,10 @@ export class HomeComponent {
   }
 
   getUsers(): void {
-    this.userService.getUsers().subscribe(async (users) => {
+    this.userService.getUsers().subscribe(users => {
       users.sort((a, b) => a.firstname.localeCompare(b.firstname) || a.lastname.localeCompare(b.lastname));
       this.users = users.filter(value => value.ispublic && value.photos.length);
-      this.images = await this.imageService.getThumbnails(this.users);
     });
-  }
-
-  getImage(filename: string): string {
-    if (filename && this.images.has(filename)) return this.images.get(filename);
-    return '';
   }
 }
 
