@@ -141,8 +141,7 @@ button {
   transition-duration: 0.3s;
 
   &:hover {
-    background: rgba($text, 1);
-    color: $bg;
+    background: rgba($text, 0.25);
     cursor: pointer;
   }
 }

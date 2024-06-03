@@ -184,15 +184,14 @@ form {
     margin-top: -10px;
   }
   .upload {
-    background: $text;
+    background: rgba($text, 0.1);
     padding: 10px 16px;
     text-decoration: none;
     margin-top: -12px;
     cursor: pointer;
     transition-duration: .3s;
     &:hover {
-      background: $text;
-      color: white;
+      background: rgba($text, 0.25);
     }
   }
   .save {

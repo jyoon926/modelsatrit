@@ -16,7 +16,7 @@
     <a routerLink="/profile" class="profile" *ngIf="isLoggedIn" (click)="hideMenu()">
       Your profile
     </a>
-    <a routerLink="/register" class="sign-up" *ngIf="!(isLoggedIn)" (click)="hideMenu()">
+    <a routerLink="/register" class="sign-up" *ngIf="!isLoggedIn" (click)="hideMenu()">
       Become a model
     </a>
   </ul>

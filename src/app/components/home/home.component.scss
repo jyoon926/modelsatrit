@@ -154,7 +154,7 @@
         text-align: center;
         font-size: 1rem;
         transition-duration: 0.4s;
-        background: rgba($text, 0.2);
+        background: rgba($text, 0.25);
         backdrop-filter: blur(10px);
         &:hover {
           background: $text;

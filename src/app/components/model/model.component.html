@@ -18,13 +18,13 @@
           (click)="selectImage(photo)"></a>
       </div>
       <div class="info">
-        <div class="inner" *ngIf="user.gender != 'N/A'">
+        <div class="inner" *ngIf="user.gender">
           <p class="category">Gender</p>
           <p>{{ user.gender }}</p>
         </div>
-        <div class="inner" *ngIf="!user.race.includes('N/A')">
+        <div class="inner" *ngIf="user.race">
           <p class="category">Race</p>
-          <p>{{ user.race.join(", ") }}</p>
+          <p>{{ user.race }}</p>
         </div>
         <div class="inner" *ngIf="user.height">
           <p class="category">Height</p>
@@ -46,16 +46,16 @@
           <p class="category">Shoe</p>
           <p>{{ user.shoe }}</p>
         </div>
-        <div class="inner" *ngIf="user.eyes != 'N/A'">
+        <div class="inner" *ngIf="user.eyes">
           <p class="category">Eyes</p>
           <p>{{ user.eyes }}</p>
         </div>
-        <div class="inner" *ngIf="user.hair != 'N/A'">
+        <div class="inner" *ngIf="user.hair">
           <p class="category">Hair</p>
           <p>{{ user.hair }}</p>
         </div>
       </div>
-      <p class="bio" *ngIf="user.bio.length > 0">{{ user.bio }}</p>
+      <p class="bio" *ngIf="user.bio">{{ user.bio }}</p>
       <div class="links">
         <a href="mailto:{{ user.email }}">Email</a>
         <a *ngIf="user.instagram" href="https://www.instagram.com/{{ user.instagram }}/" target="_blank">Instagram</a>

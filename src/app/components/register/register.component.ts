@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/services/user';
 import { AuthService } from 'src/app/services/auth.service';
-import { ImageService } from 'src/app/services/image.service';
 
 @Component({
   selector: 'app-register',
@@ -24,24 +23,26 @@ export class RegisterComponent {
   register(form: any): void {
     this.creating = true;
     if (!this.photos) return;
-    let user = {
+    let user: any = {
       email: form.email.trim(),
       firstname: form.firstname.trim(),
       lastname: form.lastname.trim(),
       ispublic: true,
       isadmin: false,
-      gender: form.gender ? form.gender : undefined,
-      race: form.race ? form.race : undefined,
-      height: form.height !== null ? form.height : undefined,
-      waist: form.waist !== null ? form.waist : undefined,
-      hip: form.hip !== null ? form.hip : undefined,
-      chest: form.chest !== null ? form.chest : undefined,
-      eyes: form.eyes !== null ? form.eyes : undefined,
-      shoe: form.shoe !== null ? form.shoe : undefined,
-      hair: form.hair !== null ? form.hair : undefined,
+      gender: form.gender != 'N/A' ? form.gender : undefined,
+      race: form.race != 'N/A' ? form.race : undefined,
+      height: form.height ? form.height : undefined,
+      waist: form.waist ? form.waist : undefined,
+      hip: form.hip ? form.hip : undefined,
+      chest: form.chest ? form.chest : undefined,
+      eyes: form.eyes != 'N/A' ? form.eyes : undefined,
+      shoe: form.shoe ? form.shoe : undefined,
+      hair: form.hair != 'N/A' ? form.hair : undefined,
       bio: form.bio ? form.bio.trim() : undefined,
       instagram: form.instagram ? form.instagram.trim() : undefined
     };
+    Object.keys(user).forEach(key => user[key] === undefined && delete user[key]);
+    console.log(user);
     this.userService.register(user as unknown as User, form.password, this.photos).subscribe(() => {
       this.router.navigate(['/profile']);
     });

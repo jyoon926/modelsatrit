@@ -7,12 +7,17 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  isLoggedIn: boolean = false;
   
   constructor(private authService: AuthService) {}
 
-  get isLoggedIn() {
-    return this.authService.isLoggedIn;
+  ngOnInit(): void {
+    this.authService.getUser().subscribe(user => {
+      if (user) {
+        this.isLoggedIn = true;
+      }
+    });
   }
 
   hideMenu() {

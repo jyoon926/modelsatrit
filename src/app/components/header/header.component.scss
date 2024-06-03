@@ -50,7 +50,7 @@ header {
     .sign-up,
     .profile {
       padding: 14px 28px;
-      background: rgba($text, 0.15);
+      background: rgba($text, 0.1);
       color: $text;
       transition-duration: 0.4s;
       display: flex;
@@ -59,8 +59,7 @@ header {
       align-items: center;
       line-height: 0.8;
       &:hover {
-        background: rgba($text, 1);
-        color: $bg;
+        background: rgba($text, 0.25);
       }
     }
   }
