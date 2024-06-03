@@ -45,7 +45,7 @@
     #failed {
       opacity: 0;
       font-size: 0.9rem;
-      color: $light;
+      color: $bg;
       background: red;
       padding: 6px 8px;
       font-style: italic;
@@ -66,12 +66,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba($dark, 1);
     .circle {
       position: absolute;
-      width: 18vw;
-      height: 18vw;
-      background: $light;
+      width: 20vw;
+      height: 20vw;
+      background: $text;
       border-radius: 100vw;
       animation: bob 5s ease infinite;
     }
@@ -81,7 +80,7 @@
       height: 20vw;
       backdrop-filter: blur(2vw);
       margin-top: 20vw;
-      background: rgba($dark, 0.4);
+      background: rgba($bg, 0.4);
     }
     @keyframes bob {
       0% {
@@ -139,7 +138,7 @@
     #failed {
       opacity: 0;
       font-size: 0.9rem;
-      color: $light;
+      color: $bg;
       background: red;
       padding: 4px 6px;
       font-style: italic;
@@ -152,12 +151,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba($dark, 1);
+    background: rgba($text, 1);
     .circle {
       position: absolute;
       width: 18vw;
       height: 18vw;
-      background: $light;
+      background: $bg;
       border-radius: 100vw;
       animation: bob 5s ease infinite;
     }
@@ -167,7 +166,7 @@
       height: 20vw;
       backdrop-filter: blur(2vw);
       margin-top: 20vw;
-      background: rgba($dark, 0.4);
+      background: rgba($text, 0.4);
     }
     @keyframes bob {
       0% {

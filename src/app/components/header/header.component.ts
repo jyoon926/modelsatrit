@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { from, lastValueFrom } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -8,12 +9,20 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class HeaderComponent {
   
-  constructor(public authService: AuthService) {}
+  constructor(private authService: AuthService) {}
+
+  get isLoggedIn() {
+    return this.authService.isLoggedIn;
+  }
 
   hideMenu() {
     let checkbox = document.getElementById('checkbox') as HTMLInputElement;
     if (checkbox.checked) {
       checkbox.checked = false;
     }
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

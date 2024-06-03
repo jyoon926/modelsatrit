@@ -44,6 +44,7 @@ export class ModelsComponent implements OnInit {
     this.userService.getUsers().subscribe(async users => {
       users.sort((a, b) => a.firstname.localeCompare(b.firstname) || a.lastname.localeCompare(b.lastname));
       this.users = users;
+      console.log(this.users);
       this.displayedUsers = this.users.filter((value) => value.ispublic);
     });
   }

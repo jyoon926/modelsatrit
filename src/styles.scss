@@ -1,5 +1,5 @@
-$dark: #000;
-$light: #f7f7f2;
+$text: #000;
+$bg: #f7f7f2;
 
 @font-face {
   font-family: "Radio Grotesk";
@@ -24,7 +24,7 @@ $light: #f7f7f2;
   font-family: "Plain", sans-serif;
   margin: 0;
   padding: 0;
-  color: $dark;
+  color: $text;
   box-sizing: border-box;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
@@ -33,14 +33,14 @@ $light: #f7f7f2;
 }
 
 ::selection {
-  color: $light;
-  background-color: rgba($dark, 0.75);
+  color: $bg;
+  background-color: rgba($text, 0.75);
 }
 
 html {
   font-size: 16px;
   scroll-behavior: smooth;
-  background: $light;
+  background: $bg;
   overflow-x: hidden;
 }
 
@@ -76,16 +76,16 @@ input:not([type="checkbox"]):not([type="range"]) {
   font-size: 1rem;
   padding: 6px 10px;
   box-sizing: border-box;
-  border: 2px solid rgba($dark, 0);
+  border: 2px solid rgba($text, 0);
   transition-duration: 0.3s;
-  background: rgba($dark, 0.1);
+  background: rgba($text, 0.1);
 
   &:hover {
-    border: 2px solid rgba($dark, 0.3);
+    border: 2px solid rgba($text, 0.3);
   }
 
   &:focus {
-    border: 2px solid rgba($dark, 1);
+    border: 2px solid rgba($text, 1);
   }
   
   &:required {
@@ -93,7 +93,7 @@ input:not([type="checkbox"]):not([type="range"]) {
   }
 
   &:valid {
-    background: rgba($dark, 0.1);
+    background: rgba($text, 0.1);
   }
 }
 
@@ -101,8 +101,8 @@ select {
   font-size: 1rem;
   padding: 6px 10px;
   box-sizing: border-box;
-  border: 2px solid rgba($dark, 0);
-  background: rgba($dark, 0.1);
+  border: 2px solid rgba($text, 0);
+  background: rgba($text, 0.1);
   transition-duration: 0.3s;
 
   &:required {
@@ -110,39 +110,39 @@ select {
   }
 
   &:valid {
-    background: rgba($dark, 0.1);
+    background: rgba($text, 0.1);
   }
 
   &:hover {
-    border: 2px solid rgba($dark, 0.3);
+    border: 2px solid rgba($text, 0.3);
   }
 }
 
 textarea {
   padding: 6px 10px;
-  background: rgba($dark, 0.1);
+  background: rgba($text, 0.1);
   line-height: 1.5;
   resize: none;
   font-size: 1rem;
-  border: 2px solid rgba($dark, 0);
+  border: 2px solid rgba($text, 0);
   transition-duration: 0.3s;
 
   &:hover {
-    border: 2px solid rgba($dark, 0.3);
+    border: 2px solid rgba($text, 0.3);
   }
 }
 
 button {
   all: unset;
-  background: rgba($dark, 0.1);
-  color: $dark;
+  background: rgba($text, 0.1);
+  color: $text;
   padding: 14px 24px;
   box-sizing: border-box;
   transition-duration: 0.3s;
 
   &:hover {
-    background: rgba($dark, 1);
-    color: $light;
+    background: rgba($text, 1);
+    color: $bg;
     cursor: pointer;
   }
 }

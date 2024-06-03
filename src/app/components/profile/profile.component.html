@@ -1,15 +1,15 @@
 <section>
   <h1>Model Profile</h1>
   <p *ngIf="!user" style="margin-bottom: 14px">You aren't logged in!</p>
-  <button (click)="logOut()" class="logout" *ngIf="!user">Log in</button>
+  <button (click)="logout()" class="logout" *ngIf="!user">Log in</button>
 
   <form autocomplete="off" #form="ngForm" (ngSubmit)="upload(form.value)" [noValidate]="false" *ngIf="user">
     <div class="buttons">
       <button routerLink="/models/{{ user.email }}">View profile</button>
-      <button (click)="logOut()" class="logout">Log out</button>
+      <button (click)="logout()" class="logout">Log out</button>
     </div>
 
-    <button id="save" type="submit">Save changes</button>
+    <button class="save" type="submit">Save changes</button>
 
     <div class="row">
       <div class="basic list">
@@ -189,7 +189,6 @@
         </div>
         <input id="upload" type="file" name="upload" style="width: 250px" (change)="selectUpload($event)" multiple>
         <a class="upload" (click)="uploadPhoto(form.value)">Upload new photo(s)</a>
-        <button id="save" type="submit">Save changes</button>
       </div>
     </div>
   </form>

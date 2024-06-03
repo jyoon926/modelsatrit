@@ -7,7 +7,7 @@ h1 {
   font-size: max(6rem, 12vw);
   font-family: big-caslon-fb, serif;
   margin-bottom: 40px;
-  border-bottom: 1px solid rgba($dark, 0.3);
+  border-bottom: 1px solid rgba($text, 0.3);
   font-weight: normal;
 }
 form {
@@ -29,9 +29,9 @@ form {
   label {
     width: fit-content;
   }
-  #save {
-    background: rgba($dark, 1);
-    color: $light;
+  .save {
+    background: rgba($text, 1);
+    color: $bg;
     padding: 20px 30px;
     font-size: 1.5em;
     font-family: "big-caslon-fb", serif;
@@ -78,7 +78,7 @@ form {
         }
         label {
           padding: 4px 6px;
-          border: 1px solid rgba($dark, 0.3);
+          border: 1px solid rgba($text, 0.3);
         }
       }
       input[type="number"] {
@@ -95,11 +95,12 @@ form {
         margin-bottom: -14px;
       }
       .public {
-        border: 2px solid rgba(black, 1);
+        border: 2px solid rgba(black, 0.1);
         margin-bottom: 10px;
         width: 100%;
         padding: 12px;
         max-width: 400px;
+        cursor: pointer;
       }
       .note {
         max-width: 400px;
@@ -133,7 +134,7 @@ form {
       margin: 10.5px 0 0 5px;
       z-index: 1;
       opacity: 0.6;
-      color: $dark;
+      color: $text;
     }
     input {
       padding-left: 20px;
@@ -183,18 +184,18 @@ form {
     margin-top: -10px;
   }
   .upload {
-    background: rgba($dark, 0.1);
+    background: $text;
     padding: 10px 16px;
     text-decoration: none;
     margin-top: -12px;
     cursor: pointer;
     transition-duration: .3s;
     &:hover {
-      background: $dark;
+      background: $text;
       color: white;
     }
   }
-  #save {
+  .save {
     margin-top: 20px;
     width: 100%;
     max-width: 300px;
@@ -206,7 +207,7 @@ form {
   #failed {
     opacity: 0;
     font-size: 0.9rem;
-    color: $light;
+    color: $bg;
     background: red;
     padding: 8px 12px;
     font-style: italic;

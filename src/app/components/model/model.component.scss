@@ -7,7 +7,7 @@ h1 {
   font-size: max(4rem, 6vw);
   font-family: big-caslon-fb, serif;
   margin-bottom: 40px;
-  border-bottom: 1px solid rgba($dark, 0.3);
+  border-bottom: 1px solid rgba($text, 0.3);
   font-weight: normal;
 }
 .row {
@@ -21,7 +21,7 @@ h1 {
   .image {
     height: 80vh;
     aspect-ratio: 0.75;
-    background: rgba($dark, 0.1);
+    background: rgba($text, 0.1);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,7 +51,7 @@ h1 {
         background-position: center;
         mix-blend-mode: multiply;
         transition-duration: 0.3s;
-        background-color: rgba($dark, 0.1);
+        background-color: rgba($text, 0.1);
         &:hover {
           cursor: pointer;
           opacity: 0.5;
@@ -72,7 +72,7 @@ h1 {
       justify-content: space-between;
       align-items: flex-start;
       padding: 7px 0;
-      border-bottom: 1px solid rgba($dark, 0.15);
+      border-bottom: 1px solid rgba($text, 0.15);
       .category {
         font-weight: bold;
       }
@@ -90,8 +90,8 @@ h1 {
       gap: 10px;
       flex-wrap: wrap;
       a {
-        background: $dark;
-        color: $light;
+        background: $text;
+        color: $bg;
         padding: 14px 24px;
         transition-duration: 0.3s;
         &:hover {
@@ -100,10 +100,10 @@ h1 {
       }
     }
     .back {
-      background: rgba($dark, 0.1);
-      color: $dark;
+      background: rgba($text, 0.1);
+      color: $text;
       &:hover {
-        background: rgba($dark, 0.3);
+        background: rgba($text, 0.3);
       }
     }
   }

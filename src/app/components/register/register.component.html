@@ -6,7 +6,7 @@
     id="register"
     autocomplete="off"
     #registerform="ngForm"
-    (ngSubmit)="upload(registerform.value)"
+    (ngSubmit)="register(registerform.value)"
     [noValidate]="false">
     <div class="row">
       <div class="basic list">
@@ -155,3 +155,8 @@
     </div>
   </form>
 </section>
+
+<div class="creating" *ngIf="creating">
+  <h4>Creating your model profile.<br>Please don't close or refresh the page.</h4>
+  <div class="spinner"></div>
+</div>

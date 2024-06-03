@@ -18,28 +18,28 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid rgba($dark, 0);
+  border: 1px solid rgba($text, 0);
   .inner {
     transition-duration: 0.4s;
     position: absolute;
     height: 60px;
     width: 60px;
     border-radius: 100%;
-    background-color: rgba($dark, 0.15);
+    background-color: rgba($text, 0.15);
     backdrop-filter: blur(4px);
-    border: 1px solid rgba($dark, 0.3);
+    border: 1px solid rgba($text, 0.3);
   }
   &.hover {
     height: 100px;
     width: 100px;
     transform: translate(-50px, -50px);
-    background-color: rgba($dark, 0);
-    border: 1px solid rgba($dark, 0.3);
+    background-color: rgba($text, 0);
+    border: 1px solid rgba($text, 0.3);
     .inner {
       height: 8px;
       width: 8px;
-      background: rgba($dark, 1);
-      border: 1px solid rgba($dark, 0);
+      background: rgba($text, 1);
+      border: 1px solid rgba($text, 0);
     }
   }
 }

@@ -14,8 +14,8 @@ export class LoginComponent {
   ) {}
 
   logIn(email: string, password: string): void {
-    this.authService.logIn(email, password).subscribe({
-      next: () => {
+    this.authService.login(email, password).subscribe({
+      next: res => {
         this.router.navigate(['/profile']);
       },
       error: () => {

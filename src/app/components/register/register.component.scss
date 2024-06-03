@@ -6,7 +6,7 @@
     font-size: max(6rem, 10vw);
     font-family: big-caslon-fb, serif;
     margin-bottom: 80px;
-    border-bottom: 1px solid rgba($dark, 0.3);
+    border-bottom: 1px solid rgba($text, 0.3);
     font-weight: normal;
   }
   em {
@@ -61,7 +61,7 @@
           }
           label {
             padding: 4px 6px;
-            border: 1px solid rgba($dark, 0.3);
+            border: 1px solid rgba($text, 0.3);
           }
         }
         input[type="number"] {
@@ -99,7 +99,7 @@
         margin: 10.5px 0 0 5px;
         z-index: 1;
         opacity: 0.6;
-        color: $dark;
+        color: $text;
       }
       input {
         padding-left: 20px;
@@ -114,10 +114,10 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: rgba($dark, 1);
-      color: $light;
+      background: rgba($text, 1);
+      color: $bg;
       &:hover {
-        background: rgba($dark, 0.8);
+        background: rgba($text, 0.8);
       }
     }
     a {
@@ -126,7 +126,7 @@
     #failed {
       opacity: 0;
       font-size: 0.9rem;
-      color: $light;
+      color: $bg;
       background: red;
       padding: 8px 12px;
       font-style: italic;
@@ -164,5 +164,45 @@
         }
       }
     }
+  }
+}
+
+.creating {
+  z-index: 11;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  background: rgba($bg, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  
+  h4 {
+    line-height: 1.25;
+    padding: 0 40px;
+    text-align: center;
+  }
+
+  .spinner {
+    height: 20px;
+    width: 20px;
+    border-radius: 100vw;
+    border: 2px solid $text;
+    border-top: 2px solid rgba($text, 0);
+    border-right: 2px solid rgba($text, 0);
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  } to {
+    transform: rotate(360deg);
   }
 }

@@ -1,39 +1,49 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, tap } from 'rxjs';
-import { UserService } from './user.service';
+import { Injectable, OnInit } from '@angular/core';
+import { Observable, from, of, switchMap } from 'rxjs';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private _isLoggedIn$ = new BehaviorSubject<boolean>(false);
-  isLoggedIn$ = this._isLoggedIn$.asObservable();
+  uid: string | undefined;
+  isLoggedIn: boolean = true;
 
-  constructor(private userService: UserService) {
-    const token = localStorage.getItem('api_auth');
-    const email = localStorage.getItem('api_auth_email');
-    this._isLoggedIn$.next(!!token);
-    this.userService.setLoggedInUser(email!);
+  constructor(private auth: AngularFireAuth) {}
+
+  setLoggedIn() {
+    this.getUser().subscribe(res => {
+      if (res) {
+        this.isLoggedIn = true;
+      } else {
+        this.isLoggedIn = false;
+      }
+    });
   }
 
-  logIn(email: string, password: string) {
-    return this.userService.logIn(email, password).pipe(
-      tap((response: any) => {
-        localStorage.setItem('api_auth', response.token);
-        localStorage.setItem('api_auth_email', response.email);
-        this._isLoggedIn$.next(true);
-        this.userService.setLoggedInUser(response.email);
-      }),
-    );
+  login(email: string, password: string): Observable<firebase.default.auth.UserCredential> {
+    return from(this.auth.signInWithEmailAndPassword(email, password).then(userCredential => {
+      this.uid = userCredential.user?.uid;
+      this.isLoggedIn = true;
+      return userCredential;
+    }));
   }
 
-  logOut() {
-    localStorage.setItem('api_auth', '');
-    localStorage.setItem('api_auth_email', '');
-    this._isLoggedIn$.next(false);
+  logout(): Observable<void> {
+    this.uid = undefined;
+    this.isLoggedIn = false;
+    return from(this.auth.signOut());
   }
 
-  getLoggedInUser() {
-    return this.userService.getLoggedInUser();
+  addUser(email: string, password: string): Observable<firebase.default.auth.UserCredential> {
+    return from(this.auth.createUserWithEmailAndPassword(email, password).then(userCredential => {
+      this.uid = userCredential.user?.uid;
+      this.isLoggedIn = true;
+      return userCredential;
+    }));
+  }
+
+  getUser(): Observable<firebase.default.User | null> {
+    return this.auth.authState;
   }
 }

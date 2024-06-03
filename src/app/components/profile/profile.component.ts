@@ -54,18 +54,20 @@ export class ProfileComponent implements OnInit {
   }
 
   getUser(): void {
-    if (!this.authService.getLoggedInUser()) {
-      this.router.navigate(['/login'])
-    }
-    this.userService.getUser(this.authService.getLoggedInUser()).subscribe(async user => {
-      if (user == null) this.router.navigate(['/login']);
-      this.user = user;
-      this.photos = user!.photos;
+    this.authService.getUser().subscribe(user => {
+      if (!user) {
+        this.router.navigate(['/login'])
+      } else {
+        this.userService.getUserFromUid(user.uid).subscribe(res => {
+          this.user = res;
+          this.photos = res!.photos;
+        });
+      }
     });
   }
 
-  logOut() {
-    this.authService.logOut();
+  logout() {
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 
@@ -119,7 +121,6 @@ export class ProfileComponent implements OnInit {
 
   update(form: any): void {
     let user: any = {
-      _id: this.user?._id,
       email: form.email.trim(),
       firstname: form.firstname.trim(),
       lastname: form.lastname.trim(),
@@ -139,8 +140,6 @@ export class ProfileComponent implements OnInit {
     };
     this.userService.updateUser(this.user!.email, user as unknown as User).subscribe({
       next: (event: any) => {
-        localStorage.setItem('api_auth_email', user.email);
-        this.userService.setLoggedInUser(user.email);
         location.reload();
       },
       error: (err: any) => {

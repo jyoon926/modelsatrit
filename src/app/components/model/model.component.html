@@ -18,7 +18,6 @@
           (click)="selectImage(photo)"></a>
       </div>
       <div class="info">
-        <!-- <p class="name"><em>{{user.firstname}}</em></p> -->
         <div class="inner" *ngIf="user.gender != 'N/A'">
           <p class="category">Gender</p>
           <p>{{ user.gender }}</p>
@@ -60,7 +59,7 @@
       <div class="links">
         <a href="mailto:{{ user.email }}">Email</a>
         <a *ngIf="user.instagram" href="https://www.instagram.com/{{ user.instagram }}/" target="_blank">Instagram</a>
-        <button routerLink="/profile" *ngIf="authService.getLoggedInUser() == user.email">Edit profile</button>
+        <!-- <button routerLink="/profile" *ngIf="authService.getLoggedInUser() == user.email">Edit profile</button> -->
       </div>
       <button (click)="back()" class="back">Back</button>
     </div>
