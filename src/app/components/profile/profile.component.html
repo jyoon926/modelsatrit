@@ -1,12 +1,10 @@
 <section>
   <h1>Model Profile</h1>
-  <p *ngIf="!user" style="margin-bottom: 14px">You aren't logged in!</p>
-  <button (click)="logout()" class="logout" *ngIf="!user">Log in</button>
 
   <form autocomplete="off" #form="ngForm" (ngSubmit)="upload(form.value)" [noValidate]="false" *ngIf="user">
     <div class="buttons">
-      <button routerLink="/models/{{ user.email }}">View profile</button>
-      <button (click)="logout()" class="logout">Log out</button>
+      <button routerLink="/models/{{ user.email }}" class="button-subtle">View profile</button>
+      <button (click)="logout()" class="logout button-subtle">Log out</button>
     </div>
 
     <button class="save" type="submit">Save changes</button>
@@ -26,6 +24,14 @@
           Public profile
         </label>
 
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="text"
+          name="email"
+          [(ngModel)]="user.email"
+          pattern="^([a-zA-Z0-9_\-\.]+)@rit.edu$" disabled />
+
         <label for="firstname">
           First Name
           <span>*</span>
@@ -37,19 +43,6 @@
           <span>*</span>
         </label>
         <input id="lastname" type="text" name="lastname" required [(ngModel)]="user.lastname" />
-
-        <label for="email">
-          Email
-          <span>*</span>
-          <b>(must be rit.edu)</b>
-        </label>
-        <input
-          id="email"
-          type="text"
-          name="email"
-          required
-          [(ngModel)]="user.email"
-          pattern="^([a-zA-Z0-9_\-\.]+)@rit.edu$" />
 
         <label for="password">Set a new password</label>
         <input id="password" type="password" autocomplete="off" name="password" ngModel />
@@ -187,9 +180,14 @@
             </div>
           </div>
         </div>
-        <input id="upload" type="file" name="upload" style="width: 250px" (change)="selectUpload($event)" multiple>
-        <a class="upload" (click)="uploadPhoto(form.value)">Upload new photo(s)</a>
+        <input id="upload" type="file" name="upload" style="width: 250px" (change)="selectUpload($event)" multiple #uploadTarget>
+        <button class="upload">Upload/Save</button>
       </div>
     </div>
   </form>
 </section>
+
+<div class="loading" [style.opacity]="loading ? 1 : 0" [style.pointerEvents]="loading ? 'all' : 'none'">
+  <h4>Updating your model profile.<br>Please don't close or refresh the page.</h4>
+  <div class="spinner"></div>
+</div>

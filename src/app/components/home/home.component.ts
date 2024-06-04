@@ -1,6 +1,6 @@
 import { Component, HostBinding, HostListener } from '@angular/core';
 import { ImageService } from 'src/app/services/image.service';
-import { User } from 'src/app/services/user';
+import { User } from 'src/app/misc/user';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({

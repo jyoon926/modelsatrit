@@ -1,4 +1,3 @@
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -25,6 +24,7 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFireAnalyticsModule } from '@angular/fire/compat/analytics';
 
 import { environment } from 'src/environments/environment';
+import { ImageService } from './services/image.service';
 
 @NgModule({
   declarations: [
@@ -39,18 +39,17 @@ import { environment } from 'src/environments/environment';
     HeaderComponent,
   ],
   imports: [
+    BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireAnalyticsModule,
-    BrowserModule,
     AppRoutingModule,
-    HttpClientModule, 
+    FontAwesomeModule,
     FormsModule,
-    FontAwesomeModule
   ],
-  providers: [UserService, AuthService],
+  providers: [UserService, AuthService, ImageService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

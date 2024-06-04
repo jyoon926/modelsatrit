@@ -68,8 +68,8 @@
     align-items: center;
     .circle {
       position: absolute;
-      width: 20vw;
-      height: 20vw;
+      width: 22vw;
+      height: 22vw;
       background: $text;
       border-radius: 100vw;
       animation: bob 5s ease infinite;
@@ -77,9 +77,9 @@
     .box {
       position: absolute;
       width: 30vw;
-      height: 20vw;
+      height: calc(50vh - 80px);
       backdrop-filter: blur(2vw);
-      margin-top: 20vw;
+      margin-top: calc(50vh - 80px);
       background: rgba($bg, 0.4);
     }
     @keyframes bob {

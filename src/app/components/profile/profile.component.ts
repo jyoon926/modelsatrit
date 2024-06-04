@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from 'src/app/services/user';
+import { User } from 'src/app/misc/user';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { ImageService } from 'src/app/services/image.service';
@@ -18,13 +18,15 @@ import Compressor from 'compressorjs';
 export class ProfileComponent implements OnInit {
   uploadFiles?: FileList;
   user: User | undefined;
+  uid: string | undefined;
   photos: string[] = [];
   faTrash = faTrash;
   faArrowLeft = faArrowLeft;
   faArrowRight = faArrowRight;
+  loading: boolean = false;
+  @ViewChild('uploadTarget') uploadTarget: ElementRef | undefined; 
 
   constructor(
-    private route: ActivatedRoute,
     private userService: UserService,
     public authService: AuthService,
     private imageService: ImageService,
@@ -33,6 +35,20 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUser();
+  }
+
+  getUser(): void {
+    this.authService.getUser().subscribe(user => {
+      if (!user) {
+        this.router.navigate(['/login']);
+      } else {
+        this.uid = user.uid;
+        this.userService.getUserFromUid(user.uid).subscribe(res => {
+          this.user = res;
+          this.photos = res!.photos;
+        });
+      }
+    });
   }
 
   deletePhoto(event: Event, photo: string): void {
@@ -53,19 +69,6 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  getUser(): void {
-    this.authService.getUser().subscribe(user => {
-      if (!user) {
-        this.router.navigate(['/login'])
-      } else {
-        this.userService.getUserFromUid(user.uid).subscribe(res => {
-          this.user = res;
-          this.photos = res!.photos;
-        });
-      }
-    });
-  }
-
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
@@ -82,25 +85,22 @@ export class ProfileComponent implements OnInit {
   }
 
   async upload(form: any): Promise<void> {
-    await this.uploadPhoto(form);
-  }
-
-  async uploadPhoto(form: any) {
+    this.loading = true;
     if (this.uploadFiles) {
       for (let i = 0; i < this.uploadFiles.length; ++i) {
         const file: File | null = this.uploadFiles.item(i);
         if (file) {
           try {
-            const compressedFile = new File([await this.compress(file) as Blob], file.name, { type: file.type });
-            console.log(compressedFile);
-            const event: any = await lastValueFrom(this.imageService.upload(compressedFile));
-            this.photos.push(event.filename);
+            const compressedFile = new File([await this.compress(file) as Blob], file.name);
+            const url = await lastValueFrom(this.imageService.upload(compressedFile));
+            this.photos.push(url);
           } catch (e: any) {
             alert(e.error);
           }
         }
       }
     }
+    this.uploadTarget!.nativeElement.value = '';
     this.update(form);
   }
 
@@ -121,36 +121,36 @@ export class ProfileComponent implements OnInit {
 
   update(form: any): void {
     let user: any = {
-      email: form.email.trim(),
+      email: form.email,
       firstname: form.firstname.trim(),
       lastname: form.lastname.trim(),
       ispublic: form.public,
-      gender: form.gender,
-      race: form.race,
-      height: form.height as number,
-      waist: form.waist,
-      hip: form.hip,
-      chest: form.chest,
-      eyes: form.eyes,
-      shoe: form.shoe,
-      hair: form.hair,
-      bio: form.bio.trim(),
-      instagram: form.instagram.trim(),
+      gender: form.gender != 'N/A' ? form.gender : undefined,
+      race: form.race != 'N/A' ? form.race : undefined,
+      height: form.height ? form.height : undefined,
+      waist: form.waist ? form.waist : undefined,
+      hip: form.hip ? form.hip : undefined,
+      chest: form.chest ? form.chest : undefined,
+      eyes: form.eyes != 'N/A' ? form.eyes : undefined,
+      shoe: form.shoe ? form.shoe : undefined,
+      hair: form.hair != 'N/A' ? form.hair : undefined,
+      bio: form.bio ? form.bio.trim() : undefined,
+      instagram: form.instagram ? form.instagram.trim() : undefined,
       photos: this.photos
     };
-    this.userService.updateUser(this.user!.email, user as unknown as User).subscribe({
-      next: (event: any) => {
-        location.reload();
+    Object.keys(user).forEach(key => user[key] === undefined && delete user[key]);
+    this.userService.updateUser(this.uid!, user as unknown as User).subscribe({
+      next: () => {
+        this.loading = false;
       },
-      error: (err: any) => {
+      error: () => {
         alert('There was an unexpected error.');
-      },
+      }
     });
   }
 
   togglePublic(user: User, event: Event, form: any): void {
     event.stopPropagation();
-    console.log(user.ispublic);
   }
 
   compress(file: File) {

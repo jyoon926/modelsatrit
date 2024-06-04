@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
-import { User } from 'src/app/services/user';
+import { User } from 'src/app/misc/user';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -42,7 +42,6 @@ export class RegisterComponent {
       instagram: form.instagram ? form.instagram.trim() : undefined
     };
     Object.keys(user).forEach(key => user[key] === undefined && delete user[key]);
-    console.log(user);
     this.userService.register(user as unknown as User, form.password, this.photos).subscribe(() => {
       this.router.navigate(['/profile']);
     });

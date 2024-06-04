@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  isLoggedIn: boolean = false;
+  isLoggedIn: boolean | undefined;
   
   constructor(private authService: AuthService) {}
 
@@ -16,6 +16,8 @@ export class HeaderComponent implements OnInit {
     this.authService.getUser().subscribe(user => {
       if (user) {
         this.isLoggedIn = true;
+      } else {
+        this.isLoggedIn = false;
       }
     });
   }

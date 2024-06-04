@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Observable, from, lastValueFrom, of, throwError } from 'rxjs';
 
-import { User } from './user';
+import { User } from '../misc/user';
 import { switchMap } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
