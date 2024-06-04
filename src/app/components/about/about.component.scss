@@ -1,4 +1,4 @@
-@import "../../../styles";
+@import "../../variables";
 
 section {
   padding: 200px 40px 300px 40px;
@@ -53,6 +53,7 @@ h3 {
     max-width: 400px;
     mix-blend-mode: multiply;
     filter: grayscale(1);
+    border-radius: 1vw;
   }
   p {
     font-size: 1rem;
@@ -74,16 +75,6 @@ h3 {
       flex-direction: row;
       flex-wrap: wrap;
       gap: 10px;
-    }
-    a {
-      font-size: 1rem;
-      background: rgba($text, 0.1);
-      color: $text;
-      padding: 14px 24px;
-      transition-duration: 0.3s;
-      &:hover {
-        background: rgba($text, 0.25);
-      }
     }
   }
 }

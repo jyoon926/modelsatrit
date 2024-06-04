@@ -1,4 +1,4 @@
-@import "../../../styles";
+@import "../../variables";
 
 section {
   width: 100%;
@@ -182,6 +182,7 @@ h1 {
       background-position: center;
       transition-duration: 0.4s;
       width: calc((100% - 100px) / 6);
+      border-radius: $border-radius;
       @media screen and (max-width: 1800px) {
         width: calc((100% - 80px) / 5);
       }
@@ -207,8 +208,9 @@ h1 {
         align-items: flex-start;
         opacity: 0;
         transition-duration: 0.4s;
-        background: rgba(white, 0.65);
+        background: rgba($bg, 0.75);
         backdrop-filter: blur(5px);
+        border-radius: $border-radius;
         .name {
           em {
             font-style: normal;

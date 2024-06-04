@@ -1,4 +1,4 @@
-@import "../../../styles";
+@import "../../variables";
 
 section {
   padding: 200px 40px;
@@ -53,6 +53,7 @@ form {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      justify-content: flex-start;
       gap: 20px;
       flex-grow: 1;
       label b {
@@ -95,12 +96,13 @@ form {
         margin-bottom: -14px;
       }
       .public {
-        border: 2px solid rgba($text, 0.2);
+        border: 1px solid rgba($text, 0.2);
         margin-bottom: 10px;
         width: 100%;
         padding: 12px;
         max-width: 400px;
         cursor: pointer;
+        border-radius: $border-radius;
       }
       .note {
         max-width: 400px;
@@ -127,6 +129,7 @@ form {
     flex-direction: column;
     gap: 20px;
     max-width: 640px;
+    width: 100%;
   }
   .ig {
     .at {

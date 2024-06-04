@@ -1,5 +1,4 @@
-$text: #000;
-$bg: #f7f7f2;
+@import "app/variables";
 
 @font-face {
   font-family: "Radio Grotesk";
@@ -76,20 +75,19 @@ input:not([type="checkbox"]):not([type="range"]) {
   font-size: 1rem;
   padding: 6px 8px;
   box-sizing: border-box;
-  border: 2px solid rgba($text, 0.2);
   transition-duration: 0.3s;
+  background: rgba($text, 0);
+  border: 1px solid rgba($text, 0.2);
+  border-radius: $border-radius;
 
-  &:hover {
-    border: 2px solid rgba($text, 0.4);
-  }
-
-  &:focus {
-    border: 2px solid rgba($text, 1);
+  &:hover, &:focus {
+    border-color: rgba($text, 0.5);
   }
 
   &:disabled {
-    background: rgba($text, 0.1);
-    border: 2px solid rgba($text, 0);
+    background: rgba($text, 0.075);
+    border-color: rgba($text, 0);
+    color: rgba($text, 0.5);
   }
 }
 
@@ -97,45 +95,40 @@ select {
   font-size: 1rem;
   padding: 6px 8px;
   box-sizing: border-box;
-  border: 2px solid rgba($text, 0.2);
   transition-duration: 0.3s;
-  background: $bg;
+  background: rgba($text, 0);
+  border: 1px solid rgba($text, 0.2);
+  border-radius: $border-radius;
 
-  &:hover {
-    border: 2px solid rgba($text, 0.4);
-  }
-
-  &:focus {
-    border: 2px solid rgba($text, 1);
+  &:hover, &:focus {
+    border-color: rgba($text, 0.5);
   }
 }
 
 textarea {
+  all: unset;
   padding: 6px 10px;
   line-height: 1.5;
   resize: none;
   font-size: 1rem;
-  border: 2px solid rgba($text, 0.2);
   transition-duration: 0.3s;
-  background: $bg;
+  background: rgba($text, 0);
+  border: 1px solid rgba($text, 0.2);
+  border-radius: $border-radius;
 
-  &:hover {
-    border: 2px solid rgba($text, 0.4);
-  }
-
-  &:focus {
-    border: 2px solid rgba($text, 1);
-    outline: none;
+  &:hover, &:focus {
+    border-color: rgba($text, 0.5);
   }
 }
 
-button {
+button, .button {
   all: unset;
   background: $text;
   color: $bg;
   padding: 14px 24px;
   box-sizing: border-box;
   transition-duration: 0.3s;
+  border-radius: $border-radius;
 
   &:hover {
     background: rgba($text, 0.8);
