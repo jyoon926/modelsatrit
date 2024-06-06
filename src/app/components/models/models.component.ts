@@ -14,6 +14,7 @@ export class ModelsComponent implements OnInit {
   displayedUsers: User[] = [];
   @ViewChild('filtersBox', { static:false, read: ElementRef }) filtersBox: any;
   showFilters: boolean = false;
+  loaded: boolean = false;
 
   // Filters
   men = true;
@@ -45,6 +46,7 @@ export class ModelsComponent implements OnInit {
       users.sort((a, b) => a.firstname.localeCompare(b.firstname) || a.lastname.localeCompare(b.lastname));
       this.users = users;
       this.displayedUsers = this.users.filter((value) => value.ispublic);
+      this.loaded = true;
     });
   }
 

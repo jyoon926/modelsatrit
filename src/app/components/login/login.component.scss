@@ -181,3 +181,12 @@
     }
   }
 }
+
+input:invalid {
+  border-color: rgba($text, 0.2) !important;
+  background-color: $bg !important;
+
+  &:hover, &:focus {
+    border-color: rgba($text, 0.5) !important;
+  }
+}

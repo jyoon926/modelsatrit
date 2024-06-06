@@ -37,7 +37,7 @@ header {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 30px;
+    gap: 25px;
     a {
       padding: 3px 1px;
       &:not(.sign-up):not(.profile) {
@@ -59,6 +59,7 @@ header {
       align-items: center;
       line-height: 0.8;
       border-radius: $border-radius;
+      backdrop-filter: blur(5px);
       &:hover {
         background: rgba($text, 0.25);
       }

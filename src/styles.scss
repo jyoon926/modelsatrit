@@ -37,7 +37,7 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 15px;
   scroll-behavior: smooth;
   background: $bg;
   overflow-x: hidden;
@@ -88,6 +88,11 @@ input:not([type="checkbox"]):not([type="range"]) {
     background: rgba($text, 0.075);
     border-color: rgba($text, 0);
     color: rgba($text, 0.5);
+  }
+
+  &:invalid {
+    border-color: rgba(darkred, 0.25);
+    background-color: rgba(red, 0.03);
   }
 }
 

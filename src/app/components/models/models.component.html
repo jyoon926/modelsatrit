@@ -102,5 +102,5 @@
             </a>
         </ul>
     </div>
-    <h3 *ngIf="displayedUsers.length == 0">There are no models to view! Try changing your filters.</h3>
+    <h3 *ngIf="loaded && displayedUsers.length == 0">There are no models to view! Try changing your filters.</h3>
   </section>
