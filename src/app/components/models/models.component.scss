@@ -26,7 +26,7 @@ h1 {
   justify-content: space-between;
   align-items: center;
   border: 1px solid rgba($text, 0.3);
-  // background: rgba(#eee, 0.9);
+  border-radius: $border-radius;
   cursor: pointer;
   p {
     transform: translateY(2px);

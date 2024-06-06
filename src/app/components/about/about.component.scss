@@ -50,10 +50,10 @@ h3 {
   // max-width: 1200px;
   width: fit-content;
   img {
-    max-width: 400px;
+    max-width: 300px;
     mix-blend-mode: multiply;
-    filter: grayscale(1);
     border-radius: 1vw;
+    border: 1px solid rgba($text, 0.1);
   }
   p {
     font-size: 1rem;
