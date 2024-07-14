@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Plain";
+  src: url(assets/fonts/Plain/Plain-Bold.woff) format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Plain";
+  src: url(assets/fonts/Plain/Plain-Regular.woff) format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --background: 247, 247, 242;
+  --foreground: 40, 30, 30;
+  --font-sans: "Plain";
+  --font-serif: "big-caslon-fb";
+}
+
+* {
+  letter-spacing: -0.01em;
+}
+
+html {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-size: 15px;
+  line-height: 1;
+}
+
+.font-serif, .font-serif * {
+  letter-spacing: 0;
+}
+
+.fade-in {
+  animation: 0.7s fade-in;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  } 100% {
+    opacity: 1;
+  }
+}
+
+.link {
+  transition-duration: 300ms;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.button {
+  background-color: rgba(var(--foreground), 1);
+  color: rgb(var(--background));
+  padding: 0.8rem 1.6rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: rgba(var(--foreground), 0.8);
+  }
+
+  &.small {
+    padding: 0.6rem 1rem;
+  }
+
+  &.alt {
+    background-color: rgba(var(--foreground), 0.2);
+    color: rgb(var(--foreground));
+
+    &:hover {
+      background-color: rgba(var(--foreground), 0.1);
+    }
+  }
+}
+
+input {
+  background-color: rgb(var(--background));
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(var(--foreground), 0.2);
+}
+
+.backdrop-blur {
+  backdrop-filter: blur(2rem);
+}
+
+.bob {
+  animation: bob 6s ease infinite;
+}
+
+@keyframes bob {
+  0% {
+    transform: translateY(-2vw);
+  }
+  50% {
+    transform: translateY(2vw);
+  }
+  100% {
+    transform: translateY(-2vw);
+  }
+}
+
+.header {
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--background), 1) 0%,
+    rgba(var(--background), 0.987) 5.6%,
+    rgba(var(--background), 0.951) 11.7%,
+    rgba(var(--background), 0.896) 18.2%,
+    rgba(var(--background), 0.825) 24.9%,
+    rgba(var(--background), 0.741) 31.9%,
+    rgba(var(--background), 0.648) 39.1%,
+    rgba(var(--background), 0.55) 46.4%,
+    rgba(var(--background), 0.45) 53.6%,
+    rgba(var(--background), 0.352) 60.9%,
+    rgba(var(--background), 0.259) 68.1%,
+    rgba(var(--background), 0.175) 75.1%,
+    rgba(var(--background), 0.104) 81.8%,
+    rgba(var(--background), 0.049) 88.3%,
+    rgba(var(--background), 0.013) 94.4%,
+    rgba(var(--background), 0) 100%
+  );
+}
+
+.blur {
+  backdrop-filter: blur(15px);
+  mask-image: linear-gradient(black 30%, transparent);
+}
