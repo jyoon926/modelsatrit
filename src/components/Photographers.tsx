@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../supabase"
 import { Link } from "react-router-dom"
-import { Photographer } from "../helpers/types"
+import { Photographer } from "../utils/types"
 
 export default function Photographers() {
   const [photographers, setPhotographers] = useState<Photographer[]>()
@@ -29,6 +29,7 @@ export default function Photographers() {
             {photographers.map(photographer => (
               <Link className="w-full" to={`/photographers/${photographer.user.email}`} key={photographer.photographer_id}>
                 <div className="w-full bg-cover rounded" style={{backgroundImage: `url(${photographer.photos[0]})`, aspectRatio: "0.75"}}></div>
+                <p className="font-serif mt-3 text-2xl">{photographer.user.display_name}</p>
               </Link>
             ))}
           </div>

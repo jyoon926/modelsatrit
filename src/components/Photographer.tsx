@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { supabase } from "../supabase"
 import { useEffect, useState } from "react"
-import { Photographer } from "../helpers/types"
+import { Photographer } from "../utils/types"
 
 export default function PhotographerPage() {
   const { email } = useParams()
@@ -26,11 +26,24 @@ export default function PhotographerPage() {
     <>
       {photographer &&
         <div className="fade-in">
-          <div className="w-full px-5 py-32 flex flex-col justify-start items-start">
-            <h1 className="text-[9vw] font-serif border-b w-full mb-10">{photographer.user.display_name}</h1>
+          <div className="w-full px-5 py-32 flex flex-col justify-start items-start gap-5">
+            <p className="opacity-60">Photographer</p>
+            <h1 className="text-7xl font-serif border-b w-full mb-10">{photographer.user.display_name}</h1>
             <div className="flex flex-row gap-10">
               <div className="h-[80vh] bg-cover" style={{backgroundImage: `url(${displayedPhoto})`, aspectRatio: "0.75"}} />
-              <div className="flex flex-col justify-start items-start gap-10">
+              <div className="flex flex-col justify-start items-start gap-10 leading-normal">
+                <p className="leading-normal max-w-[500px]">{photographer.user.bio}</p>
+                <div className="flex flex-col gap-[1px]">
+                  <div className="flex flex-row">
+                    <p className="w-36 opacity-50">Instagram</p>
+                    <Link className="w-40" to={"https://www.instagram.com/" + photographer.user.instagram} target="_blank">@{photographer.user.instagram}</Link>
+                  </div>
+                  <div className="flex flex-row">
+                    <p className="w-36 opacity-50">Graduation year</p>
+                    <p className="w-40">{photographer.user.graduation_year}</p>
+                  </div>
+                </div>
+                <Link className="button small" to={photographer.user.email}>Email</Link>
                 <div className="flex flex-row flex-wrap gap-3">
                   {photographer.photos.map(photo => (
                     <div

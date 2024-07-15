@@ -9,7 +9,7 @@ export default function Home() {
           A platform for connecting photography students and aspiring models within the RIT community.
         </p>
         <div className="text-xl flex flex-row gap-3">
-          <Link className="button" to="/projects">Explore projects</Link>
+          <Link className="button" to="/community">Explore the community</Link>
           <Link className="button alt" to="/models">Find a model</Link>
         </div>
       </div>

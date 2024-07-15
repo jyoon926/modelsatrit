@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../supabase"
 import { Link } from "react-router-dom"
-import { Model } from "../helpers/types"
+import { Model } from "../utils/types"
 
 export default function Models() {
   const [models, setModels] = useState<Model[]>()

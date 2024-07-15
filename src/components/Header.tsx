@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { useAuth } from "../helpers/AuthContext";
+import { useAuth } from "../utils/AuthContext";
 
 export default function Header() {
   const { session, logout } = useAuth();
@@ -15,7 +15,6 @@ export default function Header() {
           <div className="flex flex-row items-center gap-7">
             <Link className="link" to="/models">Models</Link>
             <Link className="link" to="/photographers">Photographers</Link>
-            <Link className="link" to="/projects">Projects</Link>
             <Link className="link" to="/community">Community</Link>
             <Link className="link" to="/about">About</Link>
           </div>

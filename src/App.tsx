@@ -8,12 +8,11 @@ import Login from "./components/Login"
 import Register from "./components/Register"
 import Model from "./components/Model"
 import Photographers from "./components/Photographers"
-import Projects from "./components/Projects"
 import Community from "./components/Community"
 import Header from "./components/Header"
 import Profile from "./components/Profile"
-import { AuthProvider } from "./helpers/AuthContext"
-import ProtectedRoute from "./helpers/ProtectedRoute"
+import { AuthProvider } from "./utils/AuthContext"
+import ProtectedRoute from "./utils/ProtectedRoute"
 import Photographer from "./components/Photographer"
 
 export default function App() {
@@ -32,7 +31,6 @@ export default function App() {
         <Route path="/models/:email" element={<Model />} />
         <Route path="/photographers" element={<Photographers />} />
         <Route path="/photographers/:email" element={<Photographer />} />
-        <Route path="/projects" element={<Projects />} />
         <Route path="/community" element={<Community />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />

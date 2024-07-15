@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../supabase"
-import { Link } from "react-router-dom"
-import { Post } from "../helpers/types"
+import { Post } from "../utils/types"
+import PostCard from "./PostCard"
 
 export default function Community() {
   const [posts, setPosts] = useState<Post[]>()
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase.from('posts').select('*, user:users(*)')
+      const { data, error } = await supabase.from('posts').select('*, user:users(*), likes:likes(*)').order('created_at', { ascending: false })
       if (error) {
         console.error('Error fetching data:', error)
       } else {
@@ -20,16 +20,13 @@ export default function Community() {
   }, [])
 
   return (
-    <div className="fade-in">
-      <div className="w-full px-5 py-32 flex flex-col justify-start items-start">
-        <h1 className="text-[9vw] font-serif border-b w-full mb-10">Community</h1>
+    <div className="fade-in flex flex-col items-center">
+      <div className="w-full max-w-[800px] px-5 py-32 flex flex-col justify-start items-start">
+        <h1 className="text-6xl font-serif w-full mb-10 border-b">Community Posts</h1>
         {
           posts &&
-          <div className="w-full grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
-            {posts.map(post => (
-              <Link className="w-full" to={`/posts/${post.post_id}`} key={post.post_id}>
-              </Link>
-            ))}
+          <div className="w-full flex flex-col gap-5">
+            {posts.map(post => (<PostCard post={post} key={post.post_id}></PostCard>))}
           </div>
         }
       </div>

@@ -35,7 +35,7 @@
 html {
   background-color: rgb(var(--background));
   color: rgb(var(--foreground));
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1;
 }
 
@@ -75,7 +75,7 @@ html {
   }
 
   &.small {
-    padding: 0.6rem 1rem;
+    padding: 0.7rem 1rem;
   }
 
   &.alt {
@@ -93,6 +93,10 @@ input {
   padding: 0.5rem 0.7rem;
   border-radius: 0.25rem;
   border: 1px solid rgba(var(--foreground), 0.2);
+
+  &::placeholder {
+    color: rgba(var(--foreground), 0.6);
+  }
 }
 
 .backdrop-blur {
@@ -105,13 +109,13 @@ input {
 
 @keyframes bob {
   0% {
-    transform: translateY(-2vw);
+    transform: translateY(-3vw);
   }
   50% {
-    transform: translateY(2vw);
+    transform: translateY(3vw);
   }
   100% {
-    transform: translateY(-2vw);
+    transform: translateY(-3vw);
   }
 }
 
@@ -140,4 +144,31 @@ input {
 .blur {
   backdrop-filter: blur(15px);
   mask-image: linear-gradient(black 30%, transparent);
+}
+
+.profile-picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  border-radius: 100%;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-width: 1px;
+  flex-shrink: 0;
+  padding-bottom: 1px;
+
+  &.lg {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.5rem;
+    padding-bottom: 4px;
+  }
+
+  &.sm {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.75rem;
+  }
 }
