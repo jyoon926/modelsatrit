@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../supabase"
 import { Post } from "../utils/Types"
-import PostCard from "./PostCard"
+import PostCard from "../components/PostCard"
 
 export default function Community() {
   const [posts, setPosts] = useState<Post[]>()
