@@ -74,11 +74,11 @@ html {
     background-color: rgba(var(--foreground), 0.8);
   }
 
-  &.small {
+  &.sm {
     padding: 0.7rem 1rem;
   }
 
-  &.alt {
+  &.light {
     background-color: rgba(var(--foreground), 0.2);
     color: rgb(var(--foreground));
 

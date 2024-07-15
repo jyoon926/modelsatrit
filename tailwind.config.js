@@ -12,7 +12,7 @@ export default {
         light: 'rgba(var(--foreground), 0.1)',
       },
       borderColor: {
-        DEFAULT: 'rgba(var(--foreground), 0.2)'
+        DEFAULT: 'rgba(var(--foreground), 0.15)'
       },
       fontFamily: {
         sans: ['var(--font-sans)'],

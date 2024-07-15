@@ -43,7 +43,7 @@ export default function PhotographerPage() {
                     <p className="w-40">{photographer.user.graduation_year}</p>
                   </div>
                 </div>
-                <Link className="button small" to={photographer.user.email}>Email</Link>
+                <Link className="button sm" to={photographer.user.email}>Email</Link>
                 <div className="flex flex-row flex-wrap gap-3">
                   {photographer.photos.map(photo => (
                     <div

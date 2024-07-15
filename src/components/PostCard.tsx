@@ -78,7 +78,7 @@ export default function PostCard({ post }: Props) {
   }
 
   return (
-    <div className="w-full flex flex-col justify-start items-start border rounded-xl p-5 gap-5" key={post.post_id}>
+    <div className="w-full flex flex-col justify-start items-start border rounded-xl p-5 gap-3" key={post.post_id}>
       {/* Top */}
       <div className="flex flex-row justify-center items-center gap-3">
         <ProfilePicture user={post.user} size="lg" />
@@ -93,7 +93,7 @@ export default function PostCard({ post }: Props) {
       {post.photos && <img className="w-full rounded" src={post.photos[0]} alt="" />}
 
       {/* Likes */}
-      <div className="flex flex-row items-center gap-3">
+      <div className="w-full flex flex-row items-center gap-3 pb-3 border-b">
         <button className="flex flex-row items-center gap-1 text-red-500" onClick={() => handleLike()}>
           {
             liked ?

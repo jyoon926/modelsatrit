@@ -22,12 +22,12 @@ export default function Header() {
         {session ?
           <div className="flex flex-row items-center gap-7">
             <button className="link" onClick={logout}>Log out</button>
-            <Link className="button small" to="/profile">Profile</Link>
+            <Link className="button sm" to="/profile">Profile</Link>
           </div>
         :
           <div className="flex flex-row items-center gap-7">
             <Link className="link" to="/login">Log in</Link>
-            <Link className="button small" to="/register">Register</Link>
+            <Link className="button sm" to="/register">Register</Link>
           </div>
         }
       </div>
