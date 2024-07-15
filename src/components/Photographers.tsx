@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../supabase"
 import { Link } from "react-router-dom"
-import { Photographer } from "../utils/types"
+import { Photographer } from "../utils/Types"
 
 export default function Photographers() {
   const [photographers, setPhotographers] = useState<Photographer[]>()

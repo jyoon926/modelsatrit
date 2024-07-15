@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../supabase"
-import { Post } from "../utils/types"
+import { Post } from "../utils/Types"
 import PostCard from "./PostCard"
 
 export default function Community() {

@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom"
 import { supabase } from "../supabase"
 import { useEffect, useState } from "react"
-import { Model } from "../utils/types"
+import { Model } from "../utils/Types"
 
 export default function ModelPage() {
   const { email } = useParams()

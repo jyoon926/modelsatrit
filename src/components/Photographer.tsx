@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom"
 import { supabase } from "../supabase"
 import { useEffect, useState } from "react"
-import { Photographer } from "../utils/types"
+import { Photographer } from "../utils/Types"
 
 export default function PhotographerPage() {
   const { email } = useParams()

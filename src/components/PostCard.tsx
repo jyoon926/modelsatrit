@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom"
-import { Comment, Like, Post } from "../utils/types"
-import { getRelativeTime } from "../utils/renderUtils"
+import { Comment as IComment, Like, Post } from "../utils/Types"
 import { useAuth } from "../utils/AuthContext"
 import { useEffect, useState } from "react"
 import { supabase } from "../supabase"
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "react-icons/md"
 import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io"
 import ProfilePicture from "./ProfilePicture"
+import Comment from "./Comment"
+import { getRelativeTime } from "../utils/RenderUtils"
+import Likes from "./Likes"
+import Modal from "./Modal"
 
 interface Props {
   post: Post
@@ -15,13 +18,14 @@ interface Props {
 export default function PostCard({ post }: Props) {
   const { user } = useAuth()
   const [commentText, setCommentText] = useState<string>("")
-  const [comments, setComments] = useState<Comment[]>([])
-  const [postLikes, setPostLikes] = useState<Like[]>([])
-  const [postLiked, setPostLiked] = useState<boolean>(false)
+  const [comments, setComments] = useState<IComment[]>([])
+  const [likes, setLikes] = useState<Like[]>([])
+  const [liked, setLiked] = useState<boolean>(false)
   const [showComments, setShowComments] = useState<boolean>(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchComments = async () => {
-    const { data, error } = await supabase.from('comments').select('*, user:users(*), likes:likes(*)').eq('post_id', post.post_id).order('created_at', { ascending: false })
+    const { data, error } = await supabase.from('comments').select('*, user:users(*), likes:likes(*), post:posts(*)').eq('post_id', post.post_id).order('created_at', { ascending: false })
     if (error) {
       console.error('Error fetching data:', error)
     } else {
@@ -34,8 +38,8 @@ export default function PostCard({ post }: Props) {
     if (error) {
       console.error('Error fetching data:', error)
     } else {
-      setPostLikes(data)
-      setPostLiked(data.find(like => like.user_id === user?.user_id))
+      setLikes(data)
+      setLiked(data.find(like => like.user_id === user?.user_id))
     }
   }
 
@@ -58,8 +62,9 @@ export default function PostCard({ post }: Props) {
     }
   }
 
-  const handlePostLike = async () => {
-    if (postLiked) {
+  const handleLike = async () => {
+    if (!user) return
+    if (liked) {
       const { error } = await supabase.from('likes').delete().eq('user_id', user?.user_id).eq('post_id', post.post_id)
       if (!error) {
         fetchLikes()
@@ -89,22 +94,22 @@ export default function PostCard({ post }: Props) {
 
       {/* Likes */}
       <div className="flex flex-row items-center gap-3">
-        <button className="flex flex-row items-center gap-1 text-red-500" onClick={() => handlePostLike()}>
+        <button className="flex flex-row items-center gap-1 text-red-500" onClick={() => handleLike()}>
           {
-            postLiked ?
+            liked ?
               <IoMdHeart className="text-2xl" />
             :
               <IoMdHeartEmpty className="text-2xl" />
           }
-          {postLikes.length}
+          {likes.length}
         </button>
-        <div className="flex flex-row ml-[10px]">
-          {postLikes.slice(0, 10).map(like => (
+        <button className="flex flex-row ml-[10px]" onClick={() => setIsModalOpen(true)}>
+          {likes.slice(0, 10).map(like => (
             <div className="ml-[-10px]" key={like.like_id}>
               <ProfilePicture user={like.user} key={like.like_id} size="sm" />
             </div>
           ))}
-        </div>
+        </button>
       </div>
 
       {/* Comment input */}
@@ -138,16 +143,13 @@ export default function PostCard({ post }: Props) {
             </button>
           }
           {showComments && comments.map(comment => (
-            <div className="w-full flex flex-row justify-start items-start gap-3 px-3" key={comment.comment_id}>
-              <ProfilePicture user={comment.user} />
-              <p className="w-full leading-snug break-words">
-                <Link className="font-bold mr-1" to={""}>{comment.user.display_name}</Link> {comment.content}
-                <p className="opacity-60 text-xs mt-1">{getRelativeTime(comment.created_at)}</p>
-              </p>
-            </div>
+            <Comment comment={comment} key={comment.comment_id} />
           ))}
         </div>
       }
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Likes">
+        <Likes onClose={() => setIsModalOpen(false)} likes={likes} />
+      </Modal>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { User } from "../utils/types";
-import { getInitials } from "../utils/renderUtils";
+import { User } from "../utils/Types";
+import { getInitials } from "../utils/RenderUtils";
 
 interface Props {
   user: User,

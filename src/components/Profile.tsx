@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../utils/AuthContext";
 import { supabase } from "../supabase";
-import { User } from "../utils/types";
+import { User } from "../utils/Types";
 import { Navigate } from "react-router-dom";
 
 export default function Profile() {

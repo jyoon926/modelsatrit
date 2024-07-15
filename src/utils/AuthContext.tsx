@@ -2,7 +2,7 @@ import { createContext, ReactElement, useContext, useEffect, useState } from 're
 import { supabase } from '../supabase'
 import { AuthSession, Session } from '@supabase/supabase-js'
 import { RoutesProps } from 'react-router-dom'
-import { User } from './types'
+import { User } from './Types'
 
 interface AuthContextType {
   session: Session | null
@@ -20,11 +20,13 @@ export function AuthProvider({ children }: RoutesProps) {
 
   useEffect(() => {
     const fetchUser = async (_session: AuthSession) => {
-      const { data, error } = await supabase.from('users').select('*').eq('email', _session.user.email).single()
-      if (error) {
-        console.error('Error fetching user:', error)
-      } else {
-        setUser(data)
+      if (_session) {
+        const { data, error } = await supabase.from('users').select('*').eq('email', _session.user.email).single()
+        if (error) {
+          console.error('Error fetching user:', error)
+        } else {
+          setUser(data)
+        }
       }
     }
 
