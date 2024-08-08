@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase';
+import { useAuth } from '../utils/AuthContext';
 
 export default function Login() {
+  const { update } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -14,7 +16,8 @@ export default function Login() {
     if (error) {
       setError(error.message);
     } else {
-      navigate('/');
+      await update();
+      navigate('/profile');
     }
   };
 

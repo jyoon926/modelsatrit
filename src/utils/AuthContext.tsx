@@ -19,6 +19,14 @@ export function AuthProvider({ children }: RoutesProps) {
   const [session, setSession] = useState<AuthSession | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
+  const getSession = async () => {
+    setLoading(true);
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      setSession(session);
+      await fetchUser(session!);
+    });
+  };
+
   const fetchUser = async (_session: AuthSession) => {
     if (_session) {
       const { data, error } = await supabase.from('users').select('*').eq('email', _session.user.email).single();
@@ -29,26 +37,6 @@ export function AuthProvider({ children }: RoutesProps) {
     setLoading(false);
   };
 
-  const getSession = () => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setSession(session);
-      fetchUser(session!);
-    });
-  };
-
-  useEffect(() => {
-    getSession();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      fetchUser(session!);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
   const logout = async () => {
     await supabase.auth.signOut();
     setSession(null);
@@ -56,9 +44,13 @@ export function AuthProvider({ children }: RoutesProps) {
   };
 
   const update = async () => {
-    if (session) fetchUser(session);
-    else getSession();
+    if (session) await fetchUser(session);
+    else await getSession();
   };
+
+  useEffect(() => {
+    update();
+  }, []);
 
   return <AuthContext.Provider value={{ user, session, loading, logout, update }}>{children}</AuthContext.Provider>;
 }
