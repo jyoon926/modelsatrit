@@ -19,6 +19,10 @@ export default function Slideshow({ photos, selected, isOpen, onClose }: Props) 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         handleClose();
+      } else if (event.key === 'ArrowLeft') {
+        setId((prevId) => Math.max(prevId - 1, 0));
+      } else if (event.key === 'ArrowRight') {
+        setId((prevId) => Math.min(prevId + 1, photos.length - 1));
       }
     };
 
@@ -31,7 +35,10 @@ export default function Slideshow({ photos, selected, isOpen, onClose }: Props) 
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
       document.addEventListener('click', handleClickOutside);
+      document.body.style.overflowY = 'hidden';
       setTimeout(() => setIsVisible(true), 50); // Delay to ensure transition works
+    } else {
+      document.body.style.overflowY = 'scroll';
     }
 
     return () => {
@@ -56,7 +63,7 @@ export default function Slideshow({ photos, selected, isOpen, onClose }: Props) 
       {/* Photos */}
       {photos.map((photo, index) => (
         <img
-          className={`h-[75vh] absolute ${id !== index && 'opacity-0 pointer-events-none'}`}
+          className={`max-h-[80vh] max-w-[80vw] absolute rounded ${id !== index && 'opacity-0 pointer-events-none'}`}
           src={photo}
           key={index}
           alt={`Slide ${index + 1}`}

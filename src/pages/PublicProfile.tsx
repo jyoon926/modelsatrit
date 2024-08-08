@@ -45,6 +45,7 @@ export default function Profile() {
   return user ? (
     <div className="fade-in">
       <div className="w-full px-5 py-32 flex flex-col justify-start items-start">
+        {/* Name */}
         <div className="flex flex-row items-end border-b w-full mb-10 gap-5">
           <div className="mb-2">
             <ProfilePhoto user={user} size={Sizes.xl} />
@@ -52,19 +53,28 @@ export default function Profile() {
           <h1 className="text-7xl font-serif">{user.display_name}</h1>
         </div>
         <div className="w-full flex flex-row justify-start items-start gap-10">
-          <div className="p-5 border rounded max-w-72 flex flex-col items-start gap-5 leading-snug">
-            <div>
-              <div className="opacity-60 pb-1">Bio</div>
-              <div>{user.bio}</div>
-            </div>
-            <div>
-              <div className="opacity-60 pb-1">Graduation Year</div>
-              <div>{user.graduation_year}</div>
-            </div>
-            <div>
-              <div className="opacity-60 pb-1">Instagram</div>
-              <div>{user.instagram}</div>
-            </div>
+          {/* Basic info panel */}
+          <div className="p-5 border rounded w-96 flex flex-col items-start gap-5 leading-snug">
+            {user.bio && (
+              <div>
+                <div className="opacity-60 pb-1">Bio</div>
+                <div>{user.bio}</div>
+              </div>
+            )}
+            {user.graduation_year && (
+              <div>
+                <div className="opacity-60 pb-1">Graduation Year</div>
+                <div>{user.graduation_year}</div>
+              </div>
+            )}
+            {user.instagram && (
+              <div>
+                <div className="opacity-60 pb-1">Instagram</div>
+                <Link to={'https://www.instagram.com/' + user.instagram} target="_blank">
+                  @{user.instagram}
+                </Link>
+              </div>
+            )}
             {authUser?.email === email && (
               <div className="flex flex-row gap-3">
                 <Link className="button light sm" to={'/profile'}>
@@ -76,6 +86,8 @@ export default function Profile() {
               </div>
             )}
           </div>
+
+          {/* Tabs */}
           <div className="w-full flex flex-col gap-5">
             <div className="flex flex-row gap-3 font-serif text-xl">
               {model && (
@@ -89,6 +101,8 @@ export default function Profile() {
                 </button>
               )}
             </div>
+
+            {/* Model page */}
             {model && tab === 0 && (
               <>
                 <p className="mt-5 font-bold">Model Information</p>
@@ -121,6 +135,8 @@ export default function Profile() {
                 </div>
               </>
             )}
+
+            {/* Photographer page */}
             {photographer && tab === 1 && (
               <>
                 <p className="font-bold">Photos</p>

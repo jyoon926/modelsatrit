@@ -71,14 +71,17 @@ export default function Profile() {
     user && (
       <div className="fade-in">
         <div className="w-full px-5 py-32 flex flex-col justify-start items-start">
+          {/* Name */}
           <div className="flex flex-row items-end border-b w-full mb-10 gap-5">
             <div className="mb-2">
               <ProfilePhoto user={user} isLink={false} size={Sizes.xl} />
             </div>
             <h1 className="text-7xl font-serif">{user.display_name}</h1>
           </div>
+          {/* Form */}
           <div className="w-full flex flex-col items-start gap-10">
             <div className="w-full flex flex-col gap-5">
+              {/* Set profile photo */}
               <div className="flex flex-col gap-2">
                 <label className="opacity-60" htmlFor="profile-photo">
                   {user.profile_photo ? 'Set a new profile photo' : 'Upload a profile photo'}
@@ -94,7 +97,10 @@ export default function Profile() {
                   <div className="flex flex-col items-start gap-3">
                     <div className="flex flex-row items-center gap-3">
                       <p className="opacity-60">Preview:</p>
-                      <img className="w-14 h-14 rounded-full" src={URL.createObjectURL(profilePhoto)} alt="" />
+                      <div
+                        className="profile-picture lg"
+                        style={{ backgroundImage: `url(${URL.createObjectURL(profilePhoto)})` }}
+                      />
                     </div>
                     <button
                       className="button sm light flex flex-row items-center gap-1"
@@ -105,6 +111,7 @@ export default function Profile() {
                   </div>
                 )}
               </div>
+              {/* Name */}
               <div className="w-full flex flex-col gap-2">
                 <label className="opacity-60" htmlFor="name">
                   Name
@@ -117,6 +124,7 @@ export default function Profile() {
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
+              {/* Bio */}
               <div className="flex flex-col gap-2">
                 <label className="opacity-60" htmlFor="bio">
                   Bio
@@ -128,6 +136,7 @@ export default function Profile() {
                   onChange={(e) => setBio(e.target.value)}
                 />
               </div>
+              {/* Graduation year */}
               <div className="flex flex-col gap-2">
                 <label className="opacity-60" htmlFor="grad-year">
                   Graduation Year
@@ -140,6 +149,7 @@ export default function Profile() {
                   onChange={(e) => setGradYear(e.target.value)}
                 />
               </div>
+              {/* Instagram */}
               <div className="flex flex-col gap-2">
                 <label className="opacity-60" htmlFor="instagram">
                   Instagram
@@ -153,6 +163,7 @@ export default function Profile() {
                 />
               </div>
             </div>
+            {/* Buttons */}
             <button className="button" onClick={saveChanges}>
               Save Changes
             </button>

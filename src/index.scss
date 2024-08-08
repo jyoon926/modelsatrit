@@ -39,6 +39,10 @@ html {
   line-height: 1;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 .font-serif,
 .font-serif * {
   letter-spacing: 0;

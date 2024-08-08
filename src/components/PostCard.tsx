@@ -151,31 +151,31 @@ export default function PostCard({ post, onDelete }: Props) {
       {/* Content */}
       <p className="w-full text-lg break-words whitespace-pre-line">{post.caption}</p>
       {post.photos.length > 0 && (
-        <div className="flex flex-row w-full h-[400px] rounded-lg overflow-hidden gap-[2px]">
-          <div className="w-full flex flex-col gap-[2px]">
+        <div className="flex flex-row w-full h-[400px] rounded-lg overflow-hidden">
+          <div className="w-full flex flex-col">
             <button
-              className="h-full bg-cover bg-center"
+              className="h-full bg-cover bg-center border border-background"
               style={{ backgroundImage: `url(${post.photos[0]})` }}
               onClick={() => handlePhotoClick(0)}
             />
             {post.photos.length > 2 && (
               <button
-                className="h-full bg-cover bg-center"
+                className="h-full bg-cover bg-center border border-background"
                 style={{ backgroundImage: `url(${post.photos[2]})` }}
                 onClick={() => handlePhotoClick(2)}
               />
             )}
           </div>
           {post.photos.length > 1 && (
-            <div className="w-full flex flex-col gap-[2px]">
+            <div className="w-full flex flex-col">
               <button
-                className="h-full bg-cover bg-center"
+                className="h-full bg-cover bg-center border border-background"
                 style={{ backgroundImage: `url(${post.photos[1]})` }}
                 onClick={() => handlePhotoClick(1)}
               />
               {post.photos.length > 3 && (
                 <button
-                  className="h-full bg-cover bg-center"
+                  className="h-full bg-cover bg-center border border-background"
                   style={{ backgroundImage: `url(${post.photos[3]})` }}
                   onClick={() => handlePhotoClick(3)}
                 />

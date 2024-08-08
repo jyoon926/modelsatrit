@@ -2,6 +2,8 @@ import { Link, useParams } from 'react-router-dom';
 import { supabase } from '../supabase';
 import { useEffect, useState } from 'react';
 import { Model } from '../utils/Types';
+import ProfilePhoto from '../components/ProfilePhoto';
+import { Sizes } from '../utils/Enums';
 
 export default function ModelPage() {
   const { email } = useParams();
@@ -26,7 +28,12 @@ export default function ModelPage() {
         <div className="fade-in">
           <div className="w-full px-5 py-32 flex flex-col justify-start items-start gap-5">
             <p className="opacity-60">Model</p>
-            <h1 className="text-7xl font-serif border-b w-full mb-10">{model.user.display_name}</h1>
+            <div className="flex flex-row items-end border-b w-full mb-10 gap-5">
+              <div className="mb-2">
+                <ProfilePhoto user={model.user} size={Sizes.xl} />
+              </div>
+              <h1 className="text-7xl font-serif">{model.user.display_name}</h1>
+            </div>
             <div className="flex flex-row gap-10">
               <div
                 className="h-[80vh] bg-cover bg-center rounded"
@@ -58,7 +65,7 @@ export default function ModelPage() {
                     <p className="w-40">{model.height}"</p>
                   </div>
                 </div>
-                <Link className="button sm" to={model.user.email}>
+                <Link className="button sm" to={`mailto:${model.user.email}`}>
                   Email
                 </Link>
                 <div className="flex flex-row flex-wrap gap-3">
