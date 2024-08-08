@@ -4,5 +4,5 @@ export default function Footer() {
       <p className="text-2xl font-serif">Models @ RIT</p>
       <p>©2024</p>
     </div>
-  )
+  );
 }

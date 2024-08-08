@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -12,14 +9,13 @@ export default {
         light: 'rgba(var(--foreground), 0.1)',
       },
       borderColor: {
-        DEFAULT: 'rgba(var(--foreground), 0.15)'
+        DEFAULT: 'rgba(var(--foreground), 0.15)',
       },
       fontFamily: {
         sans: ['var(--font-sans)'],
-        serif: ['var(--font-serif)']
+        serif: ['var(--font-serif)'],
       },
     },
   },
   plugins: [],
-}
-
+};

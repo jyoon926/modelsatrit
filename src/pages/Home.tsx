@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (
@@ -9,10 +9,14 @@ export default function Home() {
           A platform for connecting photography students and aspiring models within the RIT community.
         </p>
         <div className="text-xl flex flex-row gap-3">
-          <Link className="button" to="/community">Explore the community</Link>
-          <Link className="button light" to="/models">Find a model</Link>
+          <Link className="button" to="/models">
+            Find a model
+          </Link>
+          <Link className="button light" to="/community">
+            Explore the community
+          </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }
