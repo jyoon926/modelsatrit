@@ -46,7 +46,7 @@ export default function PostCreateCard({ onCreate }: Props) {
         maxWidth: 1200,
         async success(result) {
           const fileName = `${Date.now()}_${file.name.replace("'", '')}`;
-          const { data, error } = await supabase.storage.from('posts').upload(fileName, result);
+          const { error } = await supabase.storage.from('posts').upload(fileName, result);
           if (error) {
             reject(error);
           } else {

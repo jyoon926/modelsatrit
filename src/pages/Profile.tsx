@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../utils/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
 import ProfilePhoto from '../components/ProfilePhoto';
 import { MdOutlineFileUpload } from 'react-icons/md';
