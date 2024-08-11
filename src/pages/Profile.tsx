@@ -3,7 +3,7 @@ import { useAuth } from '../utils/AuthContext';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
 import ProfilePhoto from '../components/ProfilePhoto';
-import { MdClose, MdDeleteOutline, MdOutlineAddBox, MdOutlineFileUpload } from 'react-icons/md';
+import { MdClose, MdOutlineAddBox, MdOutlineFileUpload } from 'react-icons/md';
 import Compressor from 'compressorjs';
 import { Sizes } from '../utils/Enums';
 import { Model, Photographer } from '../utils/Types';
