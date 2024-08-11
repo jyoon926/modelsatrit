@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Model, Photographer, User } from '../utils/Types';
 import { supabase } from '../supabase';
 import { useAuth } from '../utils/AuthContext';
@@ -9,10 +9,12 @@ import { Sizes } from '../utils/Enums';
 export default function Profile() {
   const { user: authUser, logout } = useAuth();
   const { email } = useParams();
+  const { tab } = useParams();
   const [user, setUser] = useState<User>();
   const [model, setModel] = useState<Model>();
   const [photographer, setPhotographer] = useState<Photographer>();
-  const [tab, setTab] = useState<number>(0);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const getModel = async (user_id: number) => {
     const { data, error } = await supabase.from('models').select('*').eq('user_id', user_id).single();
@@ -28,19 +30,50 @@ export default function Profile() {
     }
   };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (email) {
-        const { data, error } = await supabase.from('users').select('*').eq('email', email).single();
-        if (!error) {
-          setUser(data);
-          getModel(data.user_id);
-          getPhotographer(data.user_id);
-        }
+  const fetchUser = async () => {
+    console.log('Fetch');
+    if (email) {
+      setLoading(true);
+      const { data, error } = await supabase.from('users').select('*').eq('email', email).single();
+      if (!error) {
+        setUser(data);
+        await getModel(data.user_id);
+        await getPhotographer(data.user_id);
       }
-    };
+      setLoading(false);
+    }
+  };
+
+  const checkTab = () => {
+    if (!tab) {
+      if (model) navigate(`/profile/${email}/model`);
+      else if (photographer) navigate(`/profile/${email}/photographer`);
+      return;
+    }
+
+    if (tab === 'model' && !model) {
+      return navigate(`/profile/${email}${photographer ? '/photographer' : ''}`);
+    }
+
+    if (tab === 'photographer' && !photographer) {
+      return navigate(`/profile/${email}${model ? '/model' : ''}`);
+    }
+
+    if (tab !== 'model' && tab !== 'photographer') {
+      if (model) return navigate(`/profile/${email}/model`);
+      if (photographer) return navigate(`/profile/${email}/photographer`);
+      return navigate(`/profile/${email}`);
+    }
+  };
+
+  useEffect(() => {
     fetchUser();
   }, [email]);
+
+  useEffect(() => {
+    if (loading) return;
+    checkTab();
+  }, [loading]);
 
   return user ? (
     <div className="fade-in">
@@ -52,29 +85,40 @@ export default function Profile() {
           </div>
           <h1 className="text-7xl font-serif">{user.display_name}</h1>
         </div>
-        <div className="w-full flex flex-row justify-start items-start gap-10">
+        <div className="w-full flex flex-row justify-start items-start gap-7">
           {/* Basic info panel */}
-          <div className="p-5 border rounded w-96 flex flex-col items-start gap-5 leading-snug">
-            {user.bio && (
-              <div>
-                <div className="opacity-60 pb-1">Bio</div>
-                <div>{user.bio}</div>
-              </div>
-            )}
-            {user.graduation_year && (
-              <div>
-                <div className="opacity-60 pb-1">Graduation Year</div>
-                <div>{user.graduation_year}</div>
-              </div>
-            )}
-            {user.instagram && (
-              <div>
-                <div className="opacity-60 pb-1">Instagram</div>
-                <Link to={'https://www.instagram.com/' + user.instagram} target="_blank">
-                  @{user.instagram}
-                </Link>
-              </div>
-            )}
+          <div className="w-[300px] flex flex-col gap-5">
+            <div className="w-full p-5 border rounded flex flex-col items-start gap-5 leading-snug">
+              <p className="font-serif text-2xl">Basic Information</p>
+              {user.email && (
+                <div>
+                  <p className="opacity-60 pb-1">Email</p>
+                  <Link className="link" to={`mailto:${user.email}`}>
+                    {user.email}
+                  </Link>
+                </div>
+              )}
+              {user.bio && (
+                <div>
+                  <p className="opacity-60 pb-1">Bio</p>
+                  <p>{user.bio}</p>
+                </div>
+              )}
+              {user.graduation_year && (
+                <div>
+                  <p className="opacity-60 pb-1">Graduation Year</p>
+                  <p>{user.graduation_year}</p>
+                </div>
+              )}
+              {user.instagram && (
+                <div>
+                  <p className="opacity-60 pb-1">Instagram</p>
+                  <Link to={'https://www.instagram.com/' + user.instagram} target="_blank">
+                    @{user.instagram}
+                  </Link>
+                </div>
+              )}
+            </div>
             {authUser?.email === email && (
               <div className="flex flex-row gap-3">
                 <Link className="button light sm" to={'/profile'}>
@@ -87,74 +131,100 @@ export default function Profile() {
             )}
           </div>
 
-          {/* Tabs */}
-          <div className="w-full flex flex-col gap-5">
-            <div className="flex flex-row gap-3 font-serif text-xl">
-              {model && (
-                <button className={'button sm border ' + (tab !== 0 && 'transparent')} onClick={() => setTab(0)}>
-                  Model Profile
-                </button>
+          {!loading && (
+            <div className="fade-in flex-grow flex flex-col items-start gap-7">
+              {/* Tabs */}
+              <div className="flex flex-row gap-3 font-serif text-xl">
+                {model && (
+                  <Link
+                    className={'button sm border ' + (tab !== 'model' && 'transparent')}
+                    to={`/profile/${email}/model`}
+                  >
+                    Model Profile
+                  </Link>
+                )}
+                {photographer && (
+                  <Link
+                    className={'button sm border ' + (tab !== 'photographer' && 'transparent')}
+                    to={`/profile/${email}/photographer`}
+                  >
+                    Photographer Profile
+                  </Link>
+                )}
+              </div>
+
+              {/* Model page */}
+              {model && tab === 'model' && (
+                <>
+                  {(model.gender || model.race || model.height) && (
+                    <div className="flex flex-col gap-3">
+                      <p className="font-bold">Model Information</p>
+                      {model.gender && (
+                        <div className="flex flex-row gap-5">
+                          <p className="w-32 opacity-60">Gender</p>
+                          <p className="">{model.gender}</p>
+                        </div>
+                      )}
+                      {model.race && (
+                        <div className="flex flex-row gap-5">
+                          <p className="w-32 opacity-60">Race</p>
+                          <p className="">{model.race?.join(', ')}</p>
+                        </div>
+                      )}
+                      {model.height && (
+                        <div className="flex flex-row gap-5">
+                          <p className="w-32 opacity-60">Height</p>
+                          <p className="w-40">{model.height}"</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {model.photos && model.photos.length > 0 && (
+                    <>
+                      <div
+                        className="w-full grid gap-5"
+                        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+                      >
+                        {model.photos.map((photo) => (
+                          <div
+                            className="w-full rounded bg-cover bg-no-repeat bg-center"
+                            style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
+                            key={photo}
+                          ></div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {!model.gender && !model.race && !model.height && !model.photos && (
+                    <p className="skew-x-[-10deg] opacity-60">No information.</p>
+                  )}
+                </>
               )}
-              {photographer && (
-                <button className={'button sm border ' + (tab !== 1 && 'transparent')} onClick={() => setTab(1)}>
-                  Photographer Profile
-                </button>
-              )}
+
+              {/* Photographer page */}
+              {photographer &&
+                tab === 'photographer' &&
+                (photographer.photos && photographer.photos.length > 0 ? (
+                  <>
+                    <p className="font-bold">Portfolio</p>
+                    <div
+                      className="w-full grid gap-5"
+                      style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+                    >
+                      {photographer.photos.map((photo) => (
+                        <div
+                          className="w-full rounded bg-cover bg-center"
+                          style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
+                          key={photo}
+                        ></div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <p className="skew-x-[-10deg] opacity-60">No information.</p>
+                ))}
             </div>
-
-            {/* Model page */}
-            {model && tab === 0 && (
-              <>
-                <p className="mt-5 font-bold">Model Information</p>
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-row gap-5">
-                    <p className="w-32 opacity-60">Gender</p>
-                    <p className="">{model?.gender}</p>
-                  </div>
-                  <div className="flex flex-row gap-5">
-                    <p className="w-32 opacity-50">Race</p>
-                    <p className="">{model.race?.join(', ')}</p>
-                  </div>
-                  <div className="flex flex-row gap-5">
-                    <p className="w-32 opacity-60">Height</p>
-                    <p className="w-40">{model.height}"</p>
-                  </div>
-                </div>
-                <p className="font-bold mt-5">Photos</p>
-                <div
-                  className="w-full grid gap-5"
-                  style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
-                >
-                  {model.photos.map((photo) => (
-                    <div
-                      className="w-full rounded bg-cover bg-center"
-                      style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
-                      key={photo}
-                    ></div>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Photographer page */}
-            {photographer && tab === 1 && (
-              <>
-                <p className="font-bold">Photos</p>
-                <div
-                  className="w-full grid gap-5"
-                  style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
-                >
-                  {photographer.photos.map((photo) => (
-                    <div
-                      className="w-full rounded bg-cover bg-center"
-                      style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
-                      key={photo}
-                    ></div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>

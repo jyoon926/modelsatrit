@@ -8,13 +8,12 @@ import Models from './pages/Models';
 import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Model from './pages/Model';
 import Photographers from './pages/Photographers';
 import Community from './pages/Community';
 import Header from './components/Header';
 import Profile from './pages/Profile';
-import Photographer from './pages/Photographer';
 import PublicProfile from './pages/PublicProfile';
+import Notification from './components/Notification';
 
 export default function App() {
   const { pathname } = useLocation();
@@ -25,13 +24,12 @@ export default function App() {
 
   return (
     <AuthProvider>
+      <Notification />
       <Header></Header>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/models" element={<Models />} />
-        <Route path="/models/:email" element={<Model />} />
         <Route path="/photographers" element={<Photographers />} />
-        <Route path="/photographers/:email" element={<Photographer />} />
         <Route path="/community" element={<Community />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
@@ -40,6 +38,7 @@ export default function App() {
           <Route path="" element={<Profile />} />
         </Route>
         <Route path="/profile/:email" element={<PublicProfile />} />
+        <Route path="/profile/:email/:tab" element={<PublicProfile />} />
       </Routes>
     </AuthProvider>
   );

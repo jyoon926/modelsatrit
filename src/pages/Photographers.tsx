@@ -23,19 +23,22 @@ export default function Photographers() {
         <h1 className="text-[8vw] font-serif border-b w-full mb-10">Photographers</h1>
         {photographers && (
           <div className="w-full grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
-            {photographers.map((photographer) => (
-              <Link
-                className="w-full"
-                to={`/photographers/${photographer.user.email}`}
-                key={photographer.photographer_id}
-              >
-                <div
-                  className="w-full bg-cover bg-center rounded"
-                  style={{ backgroundImage: `url(${photographer.photos[0]})`, aspectRatio: '0.75' }}
-                ></div>
-                <p className="font-serif mt-3 text-2xl">{photographer.user.display_name}</p>
-              </Link>
-            ))}
+            {photographers.map(
+              (photographer) =>
+                photographer.photos && (
+                  <Link
+                    className="w-full"
+                    to={`/profile/${photographer.user.email}/photographer`}
+                    key={photographer.photographer_id}
+                  >
+                    <div
+                      className="w-full bg-cover bg-center rounded"
+                      style={{ backgroundImage: `url(${photographer.photos[0]})`, aspectRatio: '0.75' }}
+                    ></div>
+                    <p className="font-serif mt-3 text-2xl">{photographer.user.display_name}</p>
+                  </Link>
+                )
+            )}
           </div>
         )}
       </div>

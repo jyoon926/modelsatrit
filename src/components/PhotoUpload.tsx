@@ -1,19 +1,15 @@
-import { useMemo, useRef, useState } from 'react';
-import { useAuth } from '../utils/AuthContext';
-import ProfilePhoto from './ProfilePhoto';
+import { MdOutlineImage, MdClose, MdOutlineFileDownload } from 'react-icons/md';
+import { useState, useRef, useMemo } from 'react';
 import { supabase } from '../supabase';
 import Compressor from 'compressorjs';
-import { MdClose, MdOutlineFileDownload, MdOutlineImage } from 'react-icons/md';
-import { Post } from '../utils/Types';
-import AutoTextArea from './AutoTextArea';
+import { useNotification } from './Notification';
 
 interface Props {
-  onCreate: (post: Post) => void;
+  onUpload: (photos: string[]) => Promise<void>;
 }
 
-export default function PostCreateCard({ onCreate }: Props) {
-  const { user } = useAuth();
-  const [caption, setCaption] = useState<string>('');
+export default function PhotoUpload({ onUpload }: Props) {
+  const { toastPromise } = useNotification();
   const [images, setImages] = useState<File[]>([]);
   const [dragging, setDragging] = useState<boolean>(false);
   const dragCounter = useRef<number>(0);
@@ -21,22 +17,22 @@ export default function PostCreateCard({ onCreate }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
-
     // Compress and upload images
-    const uploadedImageUrls: string[] = await Promise.all(images.map(compressAndUploadImage));
-
-    const { data, error } = await supabase
-      .from('posts')
-      .insert([{ user_id: user!.user_id, caption, photos: uploadedImageUrls }])
-      .select('*, user:users(*), likes:likes(*)')
-      .single();
-
-    if (!error && data) {
-      setCaption('');
-      setImages([]);
-      onCreate(data as Post);
-    }
+    const upload = new Promise<void>(async (resolve, reject) => {
+      try {
+        const uploadedImageUrls: string[] = await Promise.all(images.map(compressAndUploadImage));
+        await onUpload(uploadedImageUrls);
+        setImages([]);
+        resolve();
+      } catch (e) {
+        reject();
+      }
+    });
+    toastPromise(upload, {
+      pending: 'Uploading photos...',
+      success: 'Photos were uploaded successfully!',
+      error: 'Upload failed.',
+    });
   };
 
   const compressAndUploadImage = (file: File): Promise<string> => {
@@ -46,11 +42,11 @@ export default function PostCreateCard({ onCreate }: Props) {
         maxWidth: 1200,
         async success(result) {
           const fileName = `${Date.now()}_${file.name.replace("'", '')}`;
-          const { error } = await supabase.storage.from('posts').upload(fileName, result);
+          const { error } = await supabase.storage.from('general').upload(fileName, result);
           if (error) {
             reject(error);
           } else {
-            const publicUrl = supabase.storage.from('posts').getPublicUrl(fileName).data.publicUrl;
+            const publicUrl = supabase.storage.from('general').getPublicUrl(fileName).data.publicUrl;
             resolve(publicUrl);
           }
         },
@@ -59,10 +55,6 @@ export default function PostCreateCard({ onCreate }: Props) {
         },
       });
     });
-  };
-
-  const handleCaptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCaption(e.target.value);
   };
 
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,47 +99,21 @@ export default function PostCreateCard({ onCreate }: Props) {
     dragCounter.current = 0;
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const validFiles = Array.from(e.dataTransfer.files).filter((file) =>
-        ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type)
+        ['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)
       );
       setImages([...images, ...validFiles]);
       e.dataTransfer.clearData();
     }
   };
 
-  if (!user) return null;
-
   return (
     <div
-      className="w-full flex flex-col justify-start items-start border rounded-xl p-5 gap-5"
+      className="flex flex-col justify-start items-start gap-5"
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <form className="w-full flex flex-row justify-start items-start gap-3" onSubmit={handleSubmit}>
-        <ProfilePhoto user={user!} />
-        <AutoTextArea value={caption} placeholder="Create a new post..." onChange={handleCaptionChange} maxRows={15} />
-
-        {/* Attach images button */}
-        <label className="p-2 cursor-pointer duration-300 hover:bg-foreground/10 rounded" htmlFor="images">
-          <MdOutlineImage className="text-2xl" />
-          <input
-            className="hidden"
-            type="file"
-            name="images"
-            accept=".jpeg, .jpg, .png, .gif"
-            onChange={handleImagesChange}
-            id="images"
-            multiple
-          />
-        </label>
-
-        {/* Post button */}
-        <button className="button sm" type="submit">
-          Post
-        </button>
-      </form>
-
       {/* Images preview and drag-and-drop area */}
       {(images.length > 0 || dragging) && (
         <div
@@ -167,11 +133,30 @@ export default function PostCreateCard({ onCreate }: Props) {
           <div className="w-full flex flex-row justify-center items-center py-2 gap-2">
             <MdOutlineFileDownload className="text-2xl opacity-60" />
             <p className="opacity-60">
-              Select photos or drag them here. Only .jpg, .jpeg, .png, and .gif files are supported.
+              Select photos or drag them here. Only .jpg, .jpeg, and .png files are supported.
             </p>
           </div>
         </div>
       )}
+
+      <form className="w-full flex flex-col justify-start items-start gap-3" onSubmit={handleSubmit}>
+        <label className="button transparent border sm flex flex-row items-center gap-1" htmlFor="images">
+          <MdOutlineImage className="text-2xl" />
+          Select photos
+          <input
+            className="hidden"
+            type="file"
+            name="images"
+            accept=".jpeg, .jpg, .png"
+            onChange={handleImagesChange}
+            id="images"
+            multiple
+          />
+        </label>
+        <button className="button" type="submit">
+          Upload
+        </button>
+      </form>
     </div>
   );
 }

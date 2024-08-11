@@ -80,7 +80,7 @@ export default function Register() {
 
           <label htmlFor="password">Confirm Password</label>
           <input
-            className="w-full mb-5"
+            className="w-full mb-2"
             type="password"
             id="password"
             onChange={(e) => confirmPassword(e.target.value)}
@@ -88,9 +88,9 @@ export default function Register() {
             required
           />
 
-          <button className="button mb-5 w-full">Register</button>
+          <button className="button mt-3 w-full">Register</button>
 
-          <p className="opacity-75">
+          <p className="opacity-75 mt-3">
             Already have an account?{' '}
             <Link className="underline" to="/login">
               Log in

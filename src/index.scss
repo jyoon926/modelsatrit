@@ -80,6 +80,7 @@ button:disabled {
   border-radius: 0.25rem;
   transition: background-color 0.3s;
   text-align: center;
+  cursor: pointer;
 
   &:hover {
     background-color: rgba(var(--foreground), 0.8);
@@ -209,5 +210,13 @@ textarea {
     width: 1.25rem;
     height: 1.25rem;
     font-size: 0.5rem;
+  }
+}
+
+.toast {
+  min-height: 50px;
+
+  .Toastify__toast {
+    background: rgb(var(--background));
   }
 }

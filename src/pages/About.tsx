@@ -5,7 +5,7 @@ export default function About() {
     <div className="fade-in">
       <div className="w-full px-5 py-32 flex flex-col justify-start items-start gap-10">
         <h1 className="text-[8vw] font-serif border-b w-full">About</h1>
-        <p className="border-l px-5 w-1/2 text-4xl font-serif leading-tight">
+        <p className="border-l px-5 w-1/2 text-3xl font-serif leading-tight">
           Models @ RIT is a platform created by{' '}
           <Link className="underline link" to="https://instagram.com/ritfabrick" target="_blank">
             RIT Fabrick
@@ -13,7 +13,7 @@ export default function About() {
           that connects photographers and aspiring models at RIT. Photography students often struggle to find models for
           their assignments and projects, while many students aspire to become models but lack the connections to do so.
         </p>
-        <p className="ml-[50%] border-l px-5 w-1/2 text-4xl font-serif leading-tight">
+        <p className="ml-[50%] border-l px-5 w-1/2 text-3xl font-serif leading-tight">
           This website makes it easy for both photographers and models to connect. Anyone with an rit.edu email can
           create a profile as a model, providing an opportunity to be seen and allowing photographers to use the site as
           a resource for discovering new faces.
@@ -33,9 +33,6 @@ export default function About() {
             <div className="flex flex-row gap-3">
               <Link className="button light" to="mailto:jy9726@rit.edu">
                 Email
-              </Link>
-              <Link className="button light" to="https://instagram.com/ritfabrick" target="_blank">
-                Instagram
               </Link>
             </div>
           </div>
