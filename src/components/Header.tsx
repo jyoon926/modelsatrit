@@ -59,11 +59,11 @@ export default function Header() {
           onClick={() => setShowMenu(!showMenu)}
         >
           <div
-            className={`absolute w-8 border-t border-foreground mb-3 duration-300 ${showMenu ? 'rotate-[45deg] w-7 mb-0' : ''}`}
+            className={`absolute w-8 border-t border-foreground mb-3 duration-300 origin-center ${showMenu ? 'rotate-[45deg] w-7 mb-0' : ''}`}
           ></div>
           <div className={`absolute w-8 border-t border-foreground duration-300 ${showMenu ? 'opacity-0' : ''}`}></div>
           <div
-            className={`absolute w-8 border-t border-foreground mt-3 duration-300 ${showMenu ? 'rotate-[-45deg] w-7 mt-0' : ''}`}
+            className={`absolute w-8 border-t border-foreground mt-3 duration-300 origin-center ${showMenu ? 'rotate-[-45deg] w-7 mt-0' : ''}`}
           ></div>
         </button>
         <div
