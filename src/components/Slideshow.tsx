@@ -75,27 +75,22 @@ export default function Slideshow({ photos, selected, isOpen, onClose }: Props) 
         <MdClose />
       </button>
 
-      {/* Arrows */}
-      <button className="absolute left-0 text-4xl p-5 rounded-full" onClick={() => setId(id - 1)} disabled={id === 0}>
-        <MdChevronLeft />
-      </button>
-      <button
-        className="absolute right-0 text-4xl p-5 rounded-full"
-        onClick={() => setId(id + 1)}
-        disabled={id === photos.length - 1}
-      >
-        <MdChevronRight />
-      </button>
-
-      {/* Dots */}
-      <div className="absolute bottom-5 flex flex-row gap-2 bg-background/10 p-2 rounded-full">
-        {photos.map((_, index) => (
-          <button
-            className={'h-2 w-2 rounded-full' + (id === index ? ' bg-background' : ' bg-background/25')}
-            onClick={() => setId(index)}
-            key={index}
-          />
-        ))}
+      <div className="absolute bottom-0 flex flex-row items-center justify-center">
+        <button className="text-4xl p-5 rounded-full" onClick={() => setId(id - 1)} disabled={id === 0}>
+          <MdChevronLeft />
+        </button>
+        <div className="flex flex-row gap-2 bg-background/10 p-2 rounded-full">
+          {photos.map((_, index) => (
+            <button
+              className={'h-2 w-2 rounded-full' + (id === index ? ' bg-background' : ' bg-background/25')}
+              onClick={() => setId(index)}
+              key={index}
+            />
+          ))}
+        </div>
+        <button className="text-4xl p-5 rounded-full" onClick={() => setId(id + 1)} disabled={id === photos.length - 1}>
+          <MdChevronRight />
+        </button>
       </div>
     </div>
   );
