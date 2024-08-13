@@ -58,16 +58,12 @@ export default function Header() {
           className="fixed top-0 right-0 p-5 w-8 h-5 box-content flex flex-col justify-center items-center z-40"
           onClick={() => setShowMenu(!showMenu)}
         >
-          <div
-            className={`absolute w-8 border-t border-foreground mb-3 duration-300 origin-center ${showMenu ? 'rotate-[45deg] w-7 mb-0' : ''}`}
-          ></div>
-          <div className={`absolute w-8 border-t border-foreground duration-300 ${showMenu ? 'opacity-0' : ''}`}></div>
-          <div
-            className={`absolute w-8 border-t border-foreground mt-3 duration-300 origin-center ${showMenu ? 'rotate-[-45deg] w-7 mt-0' : ''}`}
-          ></div>
+          <div className="absolute w-8 border-t border-foreground mb-3"></div>
+          <div className="absolute w-8 border-t border-foreground"></div>
+          <div className="absolute w-8 border-t border-foreground mt-3"></div>
         </button>
         <div
-          className={`fixed w-full h-full top-0 left-0 bg-background p-5 pt-28 flex flex-col items-start gap-4 z-30 text-2xl duration-300 ${!showMenu ? 'opacity-0 pointer-events-none' : ''}`}
+          className={`fixed w-full h-full top-0 left-0 bg-background p-5 pt-28 flex flex-col items-start gap-5 z-30 text-3xl duration-300 ${!showMenu ? 'opacity-0 pointer-events-none' : ''}`}
         >
           <Link className="font-serif" to="/models" onClick={() => setShowMenu(false)}>
             Models
@@ -82,7 +78,7 @@ export default function Header() {
             About
           </Link>
           {session && user ? (
-            <div className="flex flex-row items-center gap-3 border-t pt-4 w-full">
+            <div className="flex flex-row items-center gap-3 border-t pt-5 w-full">
               <Link className="font-serif" to={'/profile/' + user.email} onClick={() => setShowMenu(false)}>
                 {user.display_name}
               </Link>
@@ -91,7 +87,7 @@ export default function Header() {
               </span>
             </div>
           ) : (
-            <div className="flex flex-col gap-4 items-start border-t pt-4 w-full">
+            <div className="flex flex-col gap-5 items-start border-t pt-5 w-full">
               <Link className="font-serif" to="/login" onClick={() => setShowMenu(false)}>
                 Log in
               </Link>
