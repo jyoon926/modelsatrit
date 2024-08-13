@@ -12,7 +12,7 @@ export default function Header() {
       <div className={'fixed w-full flex flex-row justify-between items-center px-5 h-16 z-40 header'}>
         <div className="flex flex-row items-center gap-10">
           {/* Logo */}
-          <Link to="/" className="flex flex-row items-center">
+          <Link to="/" className="flex flex-row items-center" onClick={() => setShowMenu(false)}>
             <img className="w-12 mr-3" src="/images/logo-transparent-700.png" alt="Logo" />
             <p className="text-2xl font-serif">Models @ RIT</p>
           </Link>
