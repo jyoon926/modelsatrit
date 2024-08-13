@@ -69,10 +69,28 @@ export default function Comment({ comment, onDelete }: Props) {
 
   return (
     <div
-      className="w-full flex flex-row justify-start items-start gap-3 pl-3"
+      className="w-full flex flex-row justify-start items-start gap-3"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      <div
+        className={
+          'mt-1 mr-[-0.7rem] ml-[-0.35rem] duration-300 ' +
+          (user?.user_id === comment?.user_id
+            ? isHovered || isOptionsOpen
+              ? 'sm:opacity-100 sm:pointer-events-auto'
+              : 'sm:opacity-0 sm:pointer-events-none'
+            : 'opacity-0 pointer-events-none')
+        }
+      >
+        <OptionsMenu onClose={() => setIsOptionsOpen(false)} onOpen={() => setIsOptionsOpen(true)}>
+          {comment.user_id === user?.user_id && (
+            <button className="button transparent sm flex flex-row items-center gap-1" onClick={handleDelete}>
+              <MdDeleteOutline className="text-xl" /> Delete comment
+            </button>
+          )}
+        </OptionsMenu>
+      </div>
       <ProfilePhoto user={comment.user} />
       <div className="w-full">
         <p className="w-full leading-snug break-words whitespace-pre-line">
@@ -88,22 +106,6 @@ export default function Comment({ comment, onDelete }: Props) {
         <button onClick={handleLike}>
           {liked ? <IoMdHeart className="text-xl" /> : <IoMdHeartEmpty className="text-xl" />}
         </button>
-      </div>
-      <div
-        className={
-          'mt-1 ml-[-0.3rem] duration-300 ' +
-          ((isHovered || isOptionsOpen) && user?.user_id == comment?.user_id
-            ? 'opacity-100 pointer-events-all'
-            : 'opacity-0 pointer-events-none')
-        }
-      >
-        <OptionsMenu onClose={() => setIsOptionsOpen(false)} onOpen={() => setIsOptionsOpen(true)}>
-          {comment.user_id === user?.user_id && (
-            <button className="button transparent sm flex flex-row items-center gap-1" onClick={handleDelete}>
-              <MdDeleteOutline className="text-xl" /> Delete comment
-            </button>
-          )}
-        </OptionsMenu>
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Likes">
         <Likes likes={likes} />

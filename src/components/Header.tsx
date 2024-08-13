@@ -17,7 +17,7 @@ export default function Header() {
             <p className="text-2xl font-serif">Models @ RIT</p>
           </Link>
           {/* Main links */}
-          <div className="hidden sm:flex flex-row items-center gap-7">
+          <div className="hidden md:flex flex-row items-center gap-7">
             <Link className="link" to="/models">
               Models
             </Link>
@@ -33,7 +33,7 @@ export default function Header() {
           </div>
         </div>
         {/* Right links */}
-        <div className="hidden sm:flex">
+        <div className="hidden md:flex">
           {session && user ? (
             <div className="flex flex-row items-center gap-3">
               <Link to={'/profile/' + user.email}>{user.display_name}</Link>
@@ -53,7 +53,7 @@ export default function Header() {
       </div>
       <div className="blur fixed top-0 left-0 w-full h-24 z-30 pointer-events-none"></div>
       {/* Mobile menu */}
-      <div className="sm:hidden">
+      <div className="md:hidden">
         <button
           className="fixed top-0 right-0 p-5 w-8 h-5 box-content flex flex-col justify-center items-center z-40"
           onClick={() => setShowMenu(!showMenu)}
@@ -69,31 +69,33 @@ export default function Header() {
         <div
           className={`fixed w-full h-full top-0 left-0 bg-background p-5 pt-28 flex flex-col items-start gap-4 z-30 text-2xl duration-300 ${!showMenu ? 'opacity-0 pointer-events-none' : ''}`}
         >
-          <Link className="font-serif" to="/models">
+          <Link className="font-serif" to="/models" onClick={() => setShowMenu(false)}>
             Models
           </Link>
-          <Link className="font-serif" to="/photographers">
+          <Link className="font-serif" to="/photographers" onClick={() => setShowMenu(false)}>
             Photographers
           </Link>
-          <Link className="font-serif" to="/community">
+          <Link className="font-serif" to="/community" onClick={() => setShowMenu(false)}>
             Community
           </Link>
-          <Link className="font-serif" to="/about">
+          <Link className="font-serif" to="/about" onClick={() => setShowMenu(false)}>
             About
           </Link>
           {session && user ? (
             <div className="flex flex-row items-center gap-3 border-t pt-4 w-full">
-              <Link className="font-serif" to={'/profile/' + user.email}>
+              <Link className="font-serif" to={'/profile/' + user.email} onClick={() => setShowMenu(false)}>
                 {user.display_name}
               </Link>
-              <ProfilePhoto user={user} />
+              <span onClick={() => setShowMenu(false)}>
+                <ProfilePhoto user={user} />
+              </span>
             </div>
           ) : (
             <div className="flex flex-col gap-4 items-start border-t pt-4 w-full">
-              <Link className="font-serif" to="/login">
+              <Link className="font-serif" to="/login" onClick={() => setShowMenu(false)}>
                 Log in
               </Link>
-              <Link className="font-serif button" to="/register">
+              <Link className="font-serif button" to="/register" onClick={() => setShowMenu(false)}>
                 Register
               </Link>
             </div>

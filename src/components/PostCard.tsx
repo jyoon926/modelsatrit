@@ -116,7 +116,7 @@ export default function PostCard({ post, onDelete }: Props) {
 
   return (
     <div
-      className="w-full flex flex-col justify-start items-start border rounded-xl p-5 gap-3"
+      className="w-full flex flex-col justify-start items-start border rounded-xl p-3 sm:p-5 gap-3"
       key={post.post_id}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -133,12 +133,18 @@ export default function PostCard({ post, onDelete }: Props) {
         <div
           className={
             'duration-300 ' +
-            ((isHovered || isOptionsOpen) && user?.user_id == post?.user_id
-              ? 'opacity-100 pointer-events-all'
+            (user?.user_id === post?.user_id
+              ? isHovered || isOptionsOpen
+                ? 'sm:opacity-100 sm:pointer-events-auto'
+                : 'sm:opacity-0 sm:pointer-events-none'
               : 'opacity-0 pointer-events-none')
           }
         >
-          <OptionsMenu onClose={() => setIsOptionsOpen(false)} onOpen={() => setIsOptionsOpen(true)}>
+          <OptionsMenu
+            onClose={() => setIsOptionsOpen(false)}
+            onOpen={() => setIsOptionsOpen(true)}
+            justifyRight={true}
+          >
             {post.user_id === user?.user_id && (
               <button className="button transparent sm flex flex-row items-center gap-2" onClick={handleDeletePost}>
                 <MdDeleteOutline className="text-xl" /> Delete post

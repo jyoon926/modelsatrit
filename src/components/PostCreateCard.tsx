@@ -118,7 +118,7 @@ export default function PostCreateCard({ onCreate }: Props) {
 
   return (
     <div
-      className="w-full flex flex-col justify-start items-start border rounded-xl p-5 gap-5"
+      className="w-full flex flex-col justify-start items-start border rounded-xl p-3 sm:p-5 gap-5"
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}

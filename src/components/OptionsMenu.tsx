@@ -5,9 +5,10 @@ interface Props {
   children: React.ReactNode;
   onClose?: () => void;
   onOpen?: () => void;
+  justifyRight?: boolean;
 }
 
-export default function OptionsMenu({ children, onClose, onOpen }: Props) {
+export default function OptionsMenu({ children, onClose, onOpen, justifyRight = false }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -44,12 +45,12 @@ export default function OptionsMenu({ children, onClose, onOpen }: Props) {
   }, [isOpen]);
 
   return (
-    <div className="flex flex-col items-end justify-start" ref={ref}>
-      <button onClick={handleToggle} className="p-1 duration-300 hover:bg-foreground/10 rounded">
+    <div className={`flex flex-col ${justifyRight ? 'items-end' : 'items-start'} justify-start`} ref={ref}>
+      <button onClick={handleToggle}>
         <MdMoreVert className="text-2xl opacity-50" />
       </button>
       {isOpen && (
-        <div className="absolute mt-10 rounded border bg-background flex flex-col shadow-md" onClick={handleClose}>
+        <div className="z-10 absolute mt-10 rounded border bg-background flex flex-col shadow-md" onClick={handleClose}>
           {children}
         </div>
       )}
