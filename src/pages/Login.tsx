@@ -24,7 +24,7 @@ export default function Login() {
   useEffect(() => setError(''), [email, password]);
 
   return (
-    <div className="w-full h-screen h-[100dvh] px-5 pt-16 flex flex-row justify-start items-start overflow-hidden">
+    <div className="fixed inset-0 px-5 pt-16 flex flex-row justify-start items-start overflow-hidden">
       <div className="fade-in w-full sm:w-1/2 h-full flex justify-center items-center">
         <form className="w-full max-w-64 flex flex-col justify-start items-start gap-2" onSubmit={handleLogin}>
           <p className="font-serif text-6xl mb-5">Log in</p>
