@@ -63,7 +63,7 @@ export default function Header() {
           <div className="absolute w-8 border-t border-foreground mt-3"></div>
         </button>
         <div
-          className={`fixed w-full h-full top-0 left-0 bg-background p-5 pt-28 flex flex-col items-start gap-5 z-30 text-3xl duration-300 ${!showMenu ? 'opacity-0 pointer-events-none' : ''}`}
+          className={`fixed inset-0 bg-background p-5 pt-28 flex flex-col items-start gap-5 z-30 text-3xl duration-300 ${!showMenu ? 'opacity-0 pointer-events-none' : ''}`}
         >
           <Link className="font-serif" to="/models" onClick={() => setShowMenu(false)}>
             Models
