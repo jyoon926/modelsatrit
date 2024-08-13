@@ -43,7 +43,7 @@ export default function Register() {
   useEffect(() => setError(''), [email, password]);
 
   return (
-    <div className="w-full h-screen px-5 pt-16 flex flex-row justify-start items-start">
+    <div className="w-full h-screen h-[100dvh] px-5 pt-16 flex flex-row justify-start items-start">
       <div className="fade-in w-full sm:w-1/2 h-full flex justify-center items-center">
         <form className="w-full max-w-64 flex flex-col justify-start items-start gap-2" onSubmit={handleRegister}>
           <p className="font-serif text-6xl mb-5">Register</p>
