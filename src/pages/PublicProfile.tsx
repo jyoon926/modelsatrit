@@ -93,11 +93,11 @@ export default function Profile() {
           <div className="mb-2">
             <ProfilePhoto user={user} size={Sizes.xl} />
           </div>
-          <h1 className="text-5xl sm:text-7xl font-serif">{user.display_name}</h1>
+          <h1 className="text-7xl font-serif">{user.display_name}</h1>
         </div>
         <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-7">
           {/* Basic info panel */}
-          <div className="w-[250px] flex flex-col gap-5">
+          <div className="w-[300px] flex flex-col gap-5">
             {authUser?.email === email && (
               <div className="flex flex-row gap-3">
                 <Link className="button light sm" to={'/profile'}>
@@ -108,7 +108,7 @@ export default function Profile() {
                 </button>
               </div>
             )}
-            <div className="w-full py-5 px-3 sm:px-5 border rounded flex flex-col items-start gap-5 leading-snug">
+            <div className="w-full p-5 border rounded flex flex-col items-start gap-5 leading-snug">
               <p className="font-serif text-2xl">Basic Information</p>
               {user.email && (
                 <div>
@@ -170,33 +170,35 @@ export default function Profile() {
               </div>
 
               <div
-                className={`flex flex-col items-start justify-start gap-5 py-5 px-3 sm:px-5 border rounded ${currentTab === 'model' && 'rounded-tl-none'}`}
+                className={`flex flex-col items-start justify-start gap-5 p-5 border rounded ${currentTab === 'model' && 'rounded-tl-none'}`}
               >
                 {/* Model page */}
                 {model && currentTab === 'model' && (
                   <>
                     {(model.gender || model.race || model.height) && (
-                      <div className="flex flex-col gap-3">
+                      <>
                         <p className="font-bold">Model Information</p>
-                        {model.gender && (
-                          <div className="flex flex-row gap-5">
-                            <p className="w-32 opacity-60">Gender</p>
-                            <p className="">{model.gender}</p>
-                          </div>
-                        )}
-                        {model.race && (
-                          <div className="flex flex-row gap-5">
-                            <p className="w-32 opacity-60">Race</p>
-                            <p className="">{model.race?.join(', ')}</p>
-                          </div>
-                        )}
-                        {model.height && (
-                          <div className="flex flex-row gap-5">
-                            <p className="w-32 opacity-60">Height</p>
-                            <p className="w-40">{model.height}"</p>
-                          </div>
-                        )}
-                      </div>
+                        <div className="flex flex-col gap-3">
+                          {model.gender && (
+                            <div className="flex flex-row gap-5">
+                              <p className="w-32 opacity-60">Gender</p>
+                              <p className="">{model.gender}</p>
+                            </div>
+                          )}
+                          {model.race && (
+                            <div className="flex flex-row gap-5">
+                              <p className="w-32 opacity-60">Race</p>
+                              <p className="">{model.race?.join(', ')}</p>
+                            </div>
+                          )}
+                          {model.height && (
+                            <div className="flex flex-row gap-5">
+                              <p className="w-32 opacity-60">Height</p>
+                              <p className="w-40">{model.height}"</p>
+                            </div>
+                          )}
+                        </div>
+                      </>
                     )}
                     {model.photos && model.photos.length > 0 && (
                       <>

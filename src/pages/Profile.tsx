@@ -275,16 +275,28 @@ export default function Profile() {
       <div className="fade-in">
         <div className="w-full px-5 py-32 flex flex-col justify-start items-start">
           {/* Name */}
-          <div className="flex flex-row items-end border-b w-full mb-10 gap-5">
+          <div className="flex flex-col sm:flex-row sm:items-end border-b w-full mb-10 gap-5">
             <div className="mb-2">
               <ProfilePhoto user={user} isLink={false} size={Sizes.xl} />
             </div>
             <h1 className="text-7xl font-serif">{user.display_name}</h1>
           </div>
           {/* Row */}
-          <div className="w-full flex flex-row justify-start items-start gap-7">
+          <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-7">
             {/* Basic Information */}
-            <div className="w-[300px] flex flex-col items-start gap-5">
+            <div className="w-[300px] flex flex-col gap-5 items-start">
+              {/* Buttons */}
+              <div className="flex flex-row gap-3">
+                <Link className="button light" to={'/profile/' + user.email}>
+                  View Public Profile
+                </Link>
+                <button className="button light" onClick={logout}>
+                  Log out
+                </button>
+              </div>
+              <button className="button" onClick={saveChanges}>
+                Save Changes
+              </button>
               <div className="w-full flex flex-col gap-5 border p-5 rounded">
                 <p className="font-serif text-2xl">Basic Information</p>
                 {/* Email */}
@@ -371,140 +383,147 @@ export default function Profile() {
                   />
                 </div>
               </div>
-              {/* Buttons */}
-              <button className="button" onClick={saveChanges}>
-                Save Changes
-              </button>
-              <div className="flex flex-row gap-3">
-                <Link className="button light" to={'/profile/' + user.email}>
-                  View Public Profile
-                </Link>
-                <button className="button light" onClick={logout}>
-                  Log out
-                </button>
-              </div>
             </div>
 
-            <div className="flex-grow flex flex-col gap-5 items-start">
+            <div className="w-full sm:w-auto grow flex flex-col">
               {/* Tabs */}
-              <div className="flex flex-row gap-3 font-serif text-xl">
-                <button className={'button sm border ' + (tab !== 0 && 'transparent')} onClick={() => setTab(0)}>
+              <div className="flex flex-row font-serif text-xl mb-[-1px]">
+                <button
+                  className={
+                    'sm border border-b-0 rounded rounded-b-none px-3 sm:px-5 py-2.5 bg-background z-10 ' +
+                    (tab !== 0 && 'opacity-50 border-transparent bg-transparent')
+                  }
+                  onClick={() => setTab(0)}
+                >
                   Model Profile
                 </button>
-                <button className={'button sm border ' + (tab !== 1 && 'transparent')} onClick={() => setTab(1)}>
+                <button
+                  className={
+                    'sm border border-b-0 rounded rounded-b-none px-3 py-3 bg-background z-10 ' +
+                    (tab !== 1 && 'opacity-50 border-transparent bg-transparent')
+                  }
+                  onClick={() => setTab(1)}
+                >
                   Photographer Profile
                 </button>
               </div>
 
-              {/* Model page */}
-              {tab === 0 &&
-                (model ? (
-                  <>
-                    <p className="font-bold">Model Information</p>
-                    <div className="flex flex-col gap-2">
-                      <div className="flex flex-row items-center gap-5">
-                        <label htmlFor="gender" className="w-32 opacity-60">
-                          Gender
-                        </label>
-                        <input
-                          id="gender"
-                          type="text"
-                          onChange={(e) => setGender(e.target.value)}
-                          value={gender || ''}
-                        />
+              <div
+                className={`flex flex-col items-start justify-start gap-5 p-5 border rounded ${tab === 0 && 'rounded-tl-none'}`}
+              >
+                {/* Model page */}
+                {tab === 0 &&
+                  (model ? (
+                    <>
+                      <p className="font-bold">Model Information</p>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex flex-row items-center gap-5">
+                          <label htmlFor="gender" className="w-20 opacity-60">
+                            Gender
+                          </label>
+                          <input
+                            id="gender"
+                            type="text"
+                            onChange={(e) => setGender(e.target.value)}
+                            value={gender || ''}
+                          />
+                        </div>
+                        <div className="flex flex-row items-center gap-5">
+                          <label htmlFor="race" className="w-20 opacity-60">
+                            Race
+                          </label>
+                          <input id="race" type="text" onChange={(e) => setRace(e.target.value)} value={race || ''} />
+                        </div>
+                        <div className="flex flex-row items-center gap-5">
+                          <label htmlFor="height" className="w-20 opacity-60">
+                            Height
+                          </label>
+                          <input
+                            id="height"
+                            type="number"
+                            onChange={(e) => setHeight(e.target.value)}
+                            value={height || ''}
+                          />
+                        </div>
                       </div>
-                      <div className="flex flex-row items-center gap-5">
-                        <label htmlFor="race" className="w-32 opacity-60">
-                          Race
-                        </label>
-                        <input id="race" type="text" onChange={(e) => setRace(e.target.value)} value={race || ''} />
-                      </div>
-                      <div className="flex flex-row items-center gap-5">
-                        <label htmlFor="height" className="w-32 opacity-60">
-                          Height
-                        </label>
-                        <input
-                          id="height"
-                          type="number"
-                          onChange={(e) => setHeight(e.target.value)}
-                          value={height || ''}
-                        />
-                      </div>
-                    </div>
-                    <p className="font-bold">Digitals</p>
-                    {model.photos && (
-                      <div
-                        className="w-full grid gap-5"
-                        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}
-                      >
-                        {model.photos.map((photo, index) => (
-                          <div
-                            className="w-full rounded bg-cover bg-center relative"
-                            style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
-                            key={photo}
-                          >
-                            <button
-                              className="absolute top-0 right-0 m-2 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
-                              onClick={() => deleteModelPhoto(index)}
+                      <p className="font-bold">Digitals</p>
+                      {model.photos && (
+                        <div
+                          className="w-full grid gap-5"
+                          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}
+                        >
+                          {model.photos.map((photo, index) => (
+                            <div
+                              className="w-full rounded bg-cover bg-center relative"
+                              style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
+                              key={photo}
                             >
-                              <MdClose />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <PhotoUpload onUpload={uploadModelPhotos} />
-                    <button className="button light flex flex-row items-center gap-1" onClick={deleteModelProfile}>
-                      Delete model profile
+                              <button
+                                className="absolute top-0 right-0 m-2 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
+                                onClick={() => deleteModelPhoto(index)}
+                              >
+                                <MdClose />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <PhotoUpload onUpload={uploadModelPhotos} />
+                      <button className="button light flex flex-row items-center gap-1" onClick={deleteModelProfile}>
+                        Delete model profile
+                      </button>
+                    </>
+                  ) : (
+                    <button className="button light flex flex-row items-center gap-1" onClick={createModelProfile}>
+                      <MdOutlineAddBox className="text-xl" />
+                      Create model profile
                     </button>
-                  </>
-                ) : (
-                  <button className="button light flex flex-row items-center gap-1" onClick={createModelProfile}>
-                    <MdOutlineAddBox className="text-xl" />
-                    Create model profile
-                  </button>
-                ))}
+                  ))}
 
-              {/* Photographer page */}
-              {tab === 1 &&
-                (photographer ? (
-                  <>
-                    <p className="font-bold mt-5">Photos</p>
-                    {photographer.photos && (
-                      <div
-                        className="w-full grid gap-5"
-                        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}
-                      >
-                        {photographer.photos.map((photo, index) => (
-                          <div
-                            className="w-full rounded bg-cover bg-center relative"
-                            style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
-                            key={photo}
-                          >
-                            <button
-                              className="absolute top-0 right-0 m-2 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
-                              onClick={() => deletePhotographerPhoto(index)}
+                {/* Photographer page */}
+                {tab === 1 &&
+                  (photographer ? (
+                    <>
+                      <p className="font-bold">Photos</p>
+                      {photographer.photos && (
+                        <div
+                          className="w-full grid gap-5"
+                          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}
+                        >
+                          {photographer.photos.map((photo, index) => (
+                            <div
+                              className="w-full rounded bg-cover bg-center relative"
+                              style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
+                              key={photo}
                             >
-                              <MdClose />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <PhotoUpload onUpload={uploadPhotographerPhotos} />
+                              <button
+                                className="absolute top-0 right-0 m-2 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
+                                onClick={() => deletePhotographerPhoto(index)}
+                              >
+                                <MdClose />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <PhotoUpload onUpload={uploadPhotographerPhotos} />
+                      <button
+                        className="button light flex flex-row items-center gap-1"
+                        onClick={deletePhotographerProfile}
+                      >
+                        Delete photographer profile
+                      </button>
+                    </>
+                  ) : (
                     <button
                       className="button light flex flex-row items-center gap-1"
-                      onClick={deletePhotographerProfile}
+                      onClick={createPhotographerProfile}
                     >
-                      Delete photographer profile
+                      <MdOutlineAddBox className="text-xl" />
+                      Create photographer profile
                     </button>
-                  </>
-                ) : (
-                  <button className="button light flex flex-row items-center gap-1" onClick={createPhotographerProfile}>
-                    <MdOutlineAddBox className="text-xl" />
-                    Create photographer profile
-                  </button>
-                ))}
+                  ))}
+              </div>
             </div>
           </div>
         </div>
