@@ -32,7 +32,6 @@ export default function Profile() {
   };
 
   const fetchUser = async () => {
-    console.log('Fetch');
     if (email) {
       setLoading(true);
       const { data, error } = await supabase.from('users').select('*').eq('email', email).single();
@@ -81,6 +80,10 @@ export default function Profile() {
     if (loading) return;
     checkTab();
   }, [loading]);
+
+  useEffect(() => {
+    setCurrentTab(tab);
+  }, [tab]);
 
   return user ? (
     <div className="fade-in">
@@ -141,7 +144,7 @@ export default function Profile() {
           {!loading && (
             <div className="w-full sm:w-auto fade-in grow flex flex-col">
               {/* Tabs */}
-              <div className="flex flex-row font-serif text-[1.1rem] sm:text-xl mb-[-1px]">
+              <div className="flex flex-row font-serif text-xl mb-[-1px]">
                 {model && (
                   <button
                     className={
