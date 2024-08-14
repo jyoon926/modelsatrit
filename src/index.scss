@@ -110,7 +110,8 @@ button:disabled {
 }
 
 input,
-textarea {
+textarea,
+select {
   background-color: rgb(var(--background));
   padding: 0.5rem 0.7rem;
   border-radius: 0.25rem;

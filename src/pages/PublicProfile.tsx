@@ -188,7 +188,7 @@ export default function Profile() {
                           {model.race && (
                             <div className="flex flex-row gap-5">
                               <p className="w-32 opacity-60">Race</p>
-                              <p className="">{model.race?.join(', ')}</p>
+                              <p className="">{model.race.join(', ')}</p>
                             </div>
                           )}
                           {model.height && (

@@ -21,7 +21,7 @@ export default function Profile() {
   const [gradYear, setGradYear] = useState('');
   const [instagram, setInstagram] = useState('');
   const [gender, setGender] = useState('');
-  const [race, setRace] = useState('');
+  const [race, setRace] = useState(['']);
   const [height, setHeight] = useState('');
   const [tab, setTab] = useState<number>(0);
 
@@ -133,10 +133,7 @@ export default function Profile() {
         .eq('user_id', user!.user_id);
       let modelError = null;
       if (model) {
-        const { error } = await supabase
-          .from('models')
-          .update({ gender, race: [race], height })
-          .eq('user_id', user!.user_id);
+        const { error } = await supabase.from('models').update({ gender, race, height }).eq('user_id', user!.user_id);
         modelError = error;
       }
       if (!userError && !modelError) {
@@ -270,6 +267,11 @@ export default function Profile() {
     });
   };
 
+  const handleSetRace = (e: HTMLSelectElement) => {
+    let values = Array.from(e.selectedOptions, (option) => option.value);
+    setRace(values);
+  };
+
   return (
     user && (
       <div className="fade-in">
@@ -350,7 +352,7 @@ export default function Profile() {
                     Bio
                   </label>
                   <textarea
-                    className="w-full h-24 overflow-y-auto"
+                    className="w-full h-32 overflow-y-auto"
                     id="bio"
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
@@ -416,25 +418,49 @@ export default function Profile() {
                   (model ? (
                     <>
                       <p className="font-bold">Model Information</p>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-row items-center gap-5">
+                      <div className="flex flex-col gap-5 sm:gap-2">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
                           <label htmlFor="gender" className="w-20 opacity-60">
                             Gender
                           </label>
-                          <input
+                          {/* <input
                             id="gender"
                             type="text"
                             onChange={(e) => setGender(e.target.value)}
                             value={gender || ''}
-                          />
+                          /> */}
+                          <select
+                            name="gender"
+                            id="gender"
+                            onChange={(e) => setGender(e.target.value)}
+                            value={gender || ''}
+                          >
+                            <option value="Man">Man</option>
+                            <option value="Woman">Woman</option>
+                            <option value="Non-binary/non-conforming">Non-binary/non-conforming</option>
+                            <option value="Other">Other</option>
+                            <option value="N/A">Prefer not to say</option>
+                          </select>
                         </div>
-                        <div className="flex flex-row items-center gap-5">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
                           <label htmlFor="race" className="w-20 opacity-60">
                             Race
                           </label>
-                          <input id="race" type="text" onChange={(e) => setRace(e.target.value)} value={race || ''} />
+                          {/* <input id="race" type="text" onChange={(e) => setRace(e.target.value)} value={race || ''} /> */}
+                          <select name="race" id="race" multiple value={race} onChange={(e) => handleSetRace(e.target)}>
+                            <option value="Black or African American">Black or African American</option>
+                            <option value="Asian">Asian</option>
+                            <option value="Hispanic or Latino">Hispanic or Latino</option>
+                            <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+                            <option value="Native Hawaiian or Other Pacific Islander">
+                              Native Hawaiian or Other Pacific Islander
+                            </option>
+                            <option value="White">White</option>
+                            <option value="Other">Other</option>
+                            <option value="N/A">Prefer not to say</option>
+                          </select>
                         </div>
-                        <div className="flex flex-row items-center gap-5">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
                           <label htmlFor="height" className="w-20 opacity-60">
                             Height
                           </label>
