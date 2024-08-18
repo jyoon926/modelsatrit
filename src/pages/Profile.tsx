@@ -33,6 +33,7 @@ export default function Profile() {
       setName(user.display_name);
       user.bio && setBio(user.bio);
       user.graduation_year && setGradYear(user.graduation_year);
+      user.major && setMajor(user.major);
       user.instagram && setInstagram(user.instagram);
     }
   }, [user]);
@@ -399,7 +400,7 @@ export default function Profile() {
             <h1 className="text-7xl font-serif">{user.display_name}</h1>
           </div>
           {/* Row */}
-          <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-7">
+          <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-5">
             {/* Basic Information */}
             <div className="w-[300px] flex flex-col gap-5 items-start">
               {/* Buttons */}

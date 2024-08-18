@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Model, Photographer, User } from '../utils/Types';
 import { supabase } from '../supabase';
 import { useAuth } from '../utils/AuthContext';
@@ -106,7 +106,7 @@ export default function Profile() {
           </div>
           <h1 className="text-7xl font-serif">{user.display_name}</h1>
         </div>
-        <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-7">
+        <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-5">
           {/* Basic info panel */}
           <div className="w-[300px] flex flex-col gap-5">
             {authUser?.email === email && (
