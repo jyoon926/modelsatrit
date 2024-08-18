@@ -5,7 +5,7 @@ export default function About() {
     <div className="fade-in">
       <div className="w-full px-5 py-32 flex flex-col justify-start items-start gap-10">
         <h1 className="text-5xl sm:text-[8vw] font-serif border-b w-full">About</h1>
-        <p className="border-l px-5 sm:w-1/2 text-2xl sm:text-3xl font-serif leading-tight">
+        <p className="sm:w-1/2 text-2xl sm:text-3xl font-serif leading-tight">
           Models @ RIT is a platform created by{' '}
           <Link className="underline link" to="https://instagram.com/ritfabrick" target="_blank">
             RIT Fabrick
@@ -13,7 +13,7 @@ export default function About() {
           that connects photographers and aspiring models at RIT. Photography students often struggle to find models for
           their assignments and projects, while many students aspire to become models but lack the connections to do so.
         </p>
-        <p className="border-l px-5 sm:w-1/2 sm:ml-[50%] text-2xl sm:text-3xl font-serif leading-tight">
+        <p className="sm:w-1/2 sm:ml-[50%] text-2xl sm:text-3xl font-serif leading-tight">
           This website makes it easy for both photographers and models to connect. Anyone with an rit.edu email can
           create a profile as a model, providing an opportunity to be seen and allowing photographers to use the site as
           a resource for discovering new faces.
@@ -27,8 +27,8 @@ export default function About() {
               create <i>RIT Fabrick</i>, a fashion club that brings together students from different majors and
               backgrounds to share their love for fashion. Through his experiences leading the club, he saw a need for a
               platform to connect photographers and aspiring models, as there was no easy way for students to
-              collaborate on these kinds of projects. By combining his skills in software engineering and design, he
-              designed and developed <i>Models @ RIT</i>.
+              collaborate on these kinds of projects. By combining his skills in programming and design, he created{' '}
+              <i>Models @ RIT</i>.
             </p>
             <div className="flex flex-row gap-3">
               <Link className="button light" to="mailto:jy9726@rit.edu">

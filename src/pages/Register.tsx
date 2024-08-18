@@ -54,7 +54,7 @@ export default function Register() {
             </p>
           )}
 
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name">Full Name</label>
           <input className="w-full mb-2" type="text" id="name" onChange={(e) => setName(e.target.value)} required />
 
           <label htmlFor="email">

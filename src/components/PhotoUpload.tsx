@@ -1,4 +1,4 @@
-import { MdOutlineImage, MdClose, MdOutlineFileDownload } from 'react-icons/md';
+import { MdOutlineImage, MdClose, MdOutlineFileDownload, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { useState, useRef, useMemo } from 'react';
 import { supabase } from '../supabase';
 import Compressor from 'compressorjs';
@@ -106,6 +106,22 @@ export default function PhotoUpload({ onUpload }: Props) {
     }
   };
 
+  const movePhotoRight = (index: number) => {
+    let updatedImages = [...images];
+    const img = images[index];
+    updatedImages[index] = images[index + 1];
+    updatedImages[index + 1] = img;
+    setImages(updatedImages);
+  };
+
+  const movePhotoLeft = (index: number) => {
+    let updatedImages = [...images];
+    const img = images[index];
+    updatedImages[index] = images[index - 1];
+    updatedImages[index - 1] = img;
+    setImages(updatedImages);
+  };
+
   return (
     <div
       className="flex flex-col justify-start items-start gap-5"
@@ -128,6 +144,22 @@ export default function PhotoUpload({ onUpload }: Props) {
               >
                 <MdClose />
               </button>
+              {index !== 0 && imageUrls.length > 1 && (
+                <button
+                  className="absolute bottom-0 left-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
+                  onClick={() => movePhotoLeft(index)}
+                >
+                  <MdChevronLeft />
+                </button>
+              )}
+              {index !== imageUrls.length - 1 && (
+                <button
+                  className="absolute bottom-0 right-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
+                  onClick={() => movePhotoRight(index)}
+                >
+                  <MdChevronRight />
+                </button>
+              )}
             </div>
           ))}
           <div className="w-full flex flex-row justify-center items-center py-2 gap-2">

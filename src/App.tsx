@@ -14,6 +14,7 @@ import Header from './components/Header';
 import Profile from './pages/Profile';
 import PublicProfile from './pages/PublicProfile';
 import Notification from './components/Notification';
+import PageNotFound from './pages/PageNotFound';
 
 export default function App() {
   const { pathname } = useLocation();
@@ -39,6 +40,8 @@ export default function App() {
         </Route>
         <Route path="/profile/:email" element={<PublicProfile />} />
         <Route path="/profile/:email/:tab" element={<PublicProfile />} />
+        <Route path="/404" element={<PageNotFound />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </AuthProvider>
   );

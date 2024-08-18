@@ -3,7 +3,7 @@ import { useAuth } from '../utils/AuthContext';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
 import ProfilePhoto from '../components/ProfilePhoto';
-import { MdClose, MdOutlineAddBox, MdOutlineFileUpload } from 'react-icons/md';
+import { MdChevronLeft, MdChevronRight, MdClose, MdOutlineAddBox, MdOutlineFileUpload } from 'react-icons/md';
 import Compressor from 'compressorjs';
 import { Sizes } from '../utils/Enums';
 import { Model, Photographer } from '../utils/Types';
@@ -18,6 +18,7 @@ export default function Profile() {
   const [profilePhoto, setProfilePhoto] = useState<File>();
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
+  const [major, setMajor] = useState('');
   const [gradYear, setGradYear] = useState('');
   const [instagram, setInstagram] = useState('');
   const [gender, setGender] = useState('');
@@ -127,13 +128,19 @@ export default function Profile() {
 
   const saveChanges = async () => {
     const promise = new Promise<void>(async (resolve, reject) => {
-      const { error: userError } = await supabase
-        .from('users')
-        .update({ bio, graduation_year: gradYear, instagram })
-        .eq('user_id', user!.user_id);
+      let userUpdate: any = {};
+      if (bio) userUpdate.bio = bio;
+      if (major) userUpdate.major = major;
+      if (gradYear) userUpdate.graduation_year = parseInt(gradYear);
+      if (instagram) userUpdate.instagram = instagram;
+      const { error: userError } = await supabase.from('users').update(userUpdate).eq('user_id', user!.user_id);
       let modelError = null;
+      let modelUpdate: any = {};
+      if (gender) modelUpdate.gender = gender;
+      if (race) modelUpdate.race = race;
+      if (height) modelUpdate.height = height;
       if (model) {
-        const { error } = await supabase.from('models').update({ gender, race, height }).eq('user_id', user!.user_id);
+        const { error } = await supabase.from('models').update(modelUpdate).eq('user_id', user!.user_id);
         modelError = error;
       }
       if (!userError && !modelError) {
@@ -272,6 +279,114 @@ export default function Profile() {
     setRace(values);
   };
 
+  const moveModelPhotoRight = async (index: number) => {
+    if (!user || !model) return;
+    const promise = new Promise<void>(async (resolve, reject) => {
+      let updatedImages = [...model.photos!];
+      const img = updatedImages[index];
+      updatedImages[index] = updatedImages[index + 1];
+      updatedImages[index + 1] = img;
+      const { data, error } = await supabase
+        .from('models')
+        .update([{ photos: updatedImages }])
+        .eq('model_id', model.model_id)
+        .select('*')
+        .single();
+      if (!error) {
+        setModel(data);
+        resolve();
+      } else {
+        reject();
+      }
+    });
+    toastPromise(promise, {
+      pending: 'Moving photo...',
+      success: 'Photo was moved successfully!',
+      error: 'Failed to move photo.',
+    });
+  };
+
+  const moveModelPhotoLeft = async (index: number) => {
+    if (!user || !model) return;
+    const promise = new Promise<void>(async (resolve, reject) => {
+      let updatedImages = [...model.photos!];
+      const img = updatedImages[index];
+      updatedImages[index] = updatedImages[index - 1];
+      updatedImages[index - 1] = img;
+      const { data, error } = await supabase
+        .from('models')
+        .update([{ photos: updatedImages }])
+        .eq('model_id', model.model_id)
+        .select('*')
+        .single();
+      if (!error) {
+        setModel(data);
+        resolve();
+      } else {
+        reject();
+      }
+    });
+    toastPromise(promise, {
+      pending: 'Moving photo...',
+      success: 'Photo was moved successfully!',
+      error: 'Failed to move photo.',
+    });
+  };
+
+  const movePhotographerPhotoRight = async (index: number) => {
+    if (!user || !photographer) return;
+    const promise = new Promise<void>(async (resolve, reject) => {
+      let updatedImages = [...photographer.photos!];
+      const img = updatedImages[index];
+      updatedImages[index] = updatedImages[index + 1];
+      updatedImages[index + 1] = img;
+      const { data, error } = await supabase
+        .from('photographers')
+        .update([{ photos: updatedImages }])
+        .eq('photographer_id', photographer.photographer_id)
+        .select('*')
+        .single();
+      if (!error) {
+        setPhotographer(data);
+        resolve();
+      } else {
+        reject();
+      }
+    });
+    toastPromise(promise, {
+      pending: 'Moving photo...',
+      success: 'Photo was moved successfully!',
+      error: 'Failed to move photo.',
+    });
+  };
+
+  const movePhotographerPhotoLeft = async (index: number) => {
+    if (!user || !photographer) return;
+    const promise = new Promise<void>(async (resolve, reject) => {
+      let updatedImages = [...photographer.photos!];
+      const img = updatedImages[index];
+      updatedImages[index] = updatedImages[index - 1];
+      updatedImages[index - 1] = img;
+      const { data, error } = await supabase
+        .from('photographers')
+        .update([{ photos: updatedImages }])
+        .eq('photographer_id', photographer.photographer_id)
+        .select('*')
+        .single();
+      if (!error) {
+        setPhotographer(data);
+        resolve();
+      } else {
+        reject();
+      }
+    });
+    toastPromise(promise, {
+      pending: 'Moving photo...',
+      success: 'Photo was moved successfully!',
+      error: 'Failed to move photo.',
+    });
+  };
+
   return (
     user && (
       <div className="fade-in">
@@ -358,6 +473,19 @@ export default function Profile() {
                     onChange={(e) => setBio(e.target.value)}
                   />
                 </div>
+                {/* Major */}
+                <div className="flex flex-col gap-2">
+                  <label className="opacity-60" htmlFor="major">
+                    Major
+                  </label>
+                  <input
+                    className="w-full"
+                    id="major"
+                    type="text"
+                    value={major}
+                    onChange={(e) => setMajor(e.target.value)}
+                  />
+                </div>
                 {/* Graduation year */}
                 <div className="flex flex-col gap-2">
                   <label className="opacity-60" htmlFor="grad-year">
@@ -435,6 +563,7 @@ export default function Profile() {
                             onChange={(e) => setGender(e.target.value)}
                             value={gender || ''}
                           >
+                            <option value="" />
                             <option value="Man">Man</option>
                             <option value="Woman">Woman</option>
                             <option value="Non-binary/non-conforming">Non-binary/non-conforming</option>
@@ -448,6 +577,7 @@ export default function Profile() {
                           </label>
                           {/* <input id="race" type="text" onChange={(e) => setRace(e.target.value)} value={race || ''} /> */}
                           <select name="race" id="race" multiple value={race} onChange={(e) => handleSetRace(e.target)}>
+                            <option value="" />
                             <option value="Black or African American">Black or African American</option>
                             <option value="Asian">Asian</option>
                             <option value="Hispanic or Latino">Hispanic or Latino</option>
@@ -475,7 +605,7 @@ export default function Profile() {
                       <p className="font-bold">Digitals</p>
                       {model.photos && (
                         <div
-                          className="w-full grid gap-5"
+                          className="w-full grid gap-3"
                           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}
                         >
                           {model.photos.map((photo, index) => (
@@ -490,6 +620,22 @@ export default function Profile() {
                               >
                                 <MdClose />
                               </button>
+                              {index !== 0 && model.photos.length > 1 && (
+                                <button
+                                  className="absolute bottom-0 left-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
+                                  onClick={() => moveModelPhotoLeft(index)}
+                                >
+                                  <MdChevronLeft />
+                                </button>
+                              )}
+                              {index !== model.photos.length - 1 && (
+                                <button
+                                  className="absolute bottom-0 right-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
+                                  onClick={() => moveModelPhotoRight(index)}
+                                >
+                                  <MdChevronRight />
+                                </button>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -513,13 +659,13 @@ export default function Profile() {
                       <p className="font-bold">Photos</p>
                       {photographer.photos && (
                         <div
-                          className="w-full grid gap-5"
+                          className="w-full grid gap-3"
                           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}
                         >
                           {photographer.photos.map((photo, index) => (
                             <div
                               className="w-full rounded bg-cover bg-center relative"
-                              style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
+                              style={{ backgroundImage: `url(${photo})`, aspectRatio: '1' }}
                               key={photo}
                             >
                               <button
@@ -528,6 +674,22 @@ export default function Profile() {
                               >
                                 <MdClose />
                               </button>
+                              {index !== 0 && photographer.photos.length > 1 && (
+                                <button
+                                  className="absolute bottom-0 left-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
+                                  onClick={() => movePhotographerPhotoLeft(index)}
+                                >
+                                  <MdChevronLeft />
+                                </button>
+                              )}
+                              {index !== photographer.photos.length - 1 && (
+                                <button
+                                  className="absolute bottom-0 right-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
+                                  onClick={() => movePhotographerPhotoRight(index)}
+                                >
+                                  <MdChevronRight />
+                                </button>
+                              )}
                             </div>
                           ))}
                         </div>

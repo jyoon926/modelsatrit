@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Model, Photographer, User } from '../utils/Types';
 import { supabase } from '../supabase';
 import { useAuth } from '../utils/AuthContext';
 import ProfilePhoto from '../components/ProfilePhoto';
 import { Sizes } from '../utils/Enums';
+import Slideshow from '../components/Slideshow';
 
 export default function Profile() {
   const { user: authUser, logout } = useAuth();
@@ -16,6 +17,9 @@ export default function Profile() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState(tab);
+  const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
+  const [slideshowPhotos, setSlideshowPhotos] = useState(['']);
+  const [slideshowId, setSlideshowId] = useState(0);
 
   const getModel = async (user_id: number) => {
     const { data, error } = await supabase.from('models').select('*').eq('user_id', user_id).single();
@@ -39,6 +43,8 @@ export default function Profile() {
         setUser(data);
         await getModel(data.user_id);
         await getPhotographer(data.user_id);
+      } else {
+        return navigate('/404');
       }
       setLoading(false);
     }
@@ -46,9 +52,8 @@ export default function Profile() {
 
   const checkTab = () => {
     if (!tab) {
-      if (model) navigate(`/profile/${email}/model`);
-      else if (photographer) navigate(`/profile/${email}/photographer`);
-      return;
+      if (model) return navigate(`/profile/${email}/model`);
+      else if (photographer) return navigate(`/profile/${email}/photographer`);
     }
 
     if (tab === 'model' && !model) {
@@ -73,6 +78,10 @@ export default function Profile() {
   };
 
   useEffect(() => {
+    setCurrentTab(tab);
+  }, [tab]);
+
+  useEffect(() => {
     fetchUser();
   }, [email]);
 
@@ -81,9 +90,11 @@ export default function Profile() {
     checkTab();
   }, [loading]);
 
-  useEffect(() => {
-    setCurrentTab(tab);
-  }, [tab]);
+  const handlePhotoClick = (id: number, photos: string[]) => {
+    setSlideshowPhotos(photos);
+    setIsSlideshowOpen(true);
+    setSlideshowId(id);
+  };
 
   return user ? (
     <div className="fade-in">
@@ -122,6 +133,12 @@ export default function Profile() {
                 <div>
                   <p className="opacity-60 pb-1">Bio</p>
                   <p>{user.bio}</p>
+                </div>
+              )}
+              {user.major && (
+                <div>
+                  <p className="opacity-60 pb-1">Major</p>
+                  <p>{user.major}</p>
                 </div>
               )}
               {user.graduation_year && (
@@ -203,17 +220,18 @@ export default function Profile() {
                     {model.photos && model.photos.length > 0 && (
                       <>
                         <div
-                          className="w-full flex flex-wrap sm:grid gap-3 sm:gap-5"
+                          className="w-full flex flex-wrap sm:grid gap-3"
                           style={{
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
                           }}
                         >
-                          {model.photos.map((photo) => (
-                            <div
+                          {model.photos.map((photo, index) => (
+                            <button
                               className="w-full rounded bg-cover bg-no-repeat bg-center"
                               style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
-                              key={photo}
-                            ></div>
+                              key={index}
+                              onClick={() => handlePhotoClick(index, model.photos)}
+                            />
                           ))}
                         </div>
                       </>
@@ -231,15 +249,18 @@ export default function Profile() {
                     <>
                       <p className="font-bold">Portfolio</p>
                       <div
-                        className="w-full flex flex-wrap sm:grid gap-3 sm:gap-5"
-                        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+                        className="w-full flex flex-wrap sm:grid gap-3"
+                        style={{
+                          gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+                        }}
                       >
-                        {photographer.photos.map((photo) => (
-                          <div
+                        {photographer.photos.map((photo, index) => (
+                          <button
                             className="w-full rounded bg-cover bg-no-repeat bg-center"
-                            style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
-                            key={photo}
-                          ></div>
+                            style={{ backgroundImage: `url(${photo})`, aspectRatio: '1' }}
+                            key={index}
+                            onClick={() => handlePhotoClick(index, photographer.photos)}
+                          />
                         ))}
                       </div>
                     </>
@@ -247,6 +268,12 @@ export default function Profile() {
                     <p className="skew-x-[-10deg] opacity-60">No information.</p>
                   ))}
               </div>
+              <Slideshow
+                selected={slideshowId}
+                photos={slideshowPhotos}
+                isOpen={isSlideshowOpen}
+                onClose={() => setIsSlideshowOpen(false)}
+              />
             </div>
           )}
         </div>

@@ -221,3 +221,28 @@ textarea {
     background: rgb(var(--background));
   }
 }
+
+.slim-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgb(var(--background));
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(var(--foreground), 0.2);
+    transition-duration: 0.3ms;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(var(--foreground), 0.4);
+    }
+  }
+}
+
+.border-none {
+  border: none !important;
+}
