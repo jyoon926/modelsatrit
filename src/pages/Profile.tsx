@@ -30,7 +30,7 @@ export default function Profile() {
     if (user) {
       getModel(user.user_id);
       getPhotographer(user.user_id);
-      setName(user.display_name);
+      setName(user.name);
       user.bio && setBio(user.bio);
       user.graduation_year && setGradYear(user.graduation_year);
       user.major && setMajor(user.major);
@@ -130,6 +130,7 @@ export default function Profile() {
   const saveChanges = async () => {
     const promise = new Promise<void>(async (resolve, reject) => {
       let userUpdate: any = {};
+      if (name) userUpdate.name = name;
       if (bio) userUpdate.bio = bio;
       if (major) userUpdate.major = major;
       if (gradYear) userUpdate.graduation_year = parseInt(gradYear);
@@ -397,7 +398,7 @@ export default function Profile() {
             <div className="mb-2">
               <ProfilePhoto user={user} isLink={false} size={Sizes.xl} />
             </div>
-            <h1 className="text-7xl font-serif">{user.display_name}</h1>
+            <h1 className="text-7xl font-serif">{user.name}</h1>
           </div>
           {/* Row */}
           <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-5">

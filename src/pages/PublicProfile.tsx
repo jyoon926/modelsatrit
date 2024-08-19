@@ -104,7 +104,7 @@ export default function Profile() {
           <div className="mb-2">
             <ProfilePhoto user={user} size={Sizes.xl} />
           </div>
-          <h1 className="text-7xl font-serif">{user.display_name}</h1>
+          <h1 className="text-7xl font-serif">{user.name}</h1>
         </div>
         <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-5">
           {/* Basic info panel */}

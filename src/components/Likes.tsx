@@ -12,7 +12,7 @@ export default function Likes({ likes }: Props) {
       {likes.map((like) => (
         <div className="flex flex-row gap-3 items-center" key={like.like_id}>
           <ProfilePhoto user={like.user} />
-          <Link to={'/profile/' + like.user.email}>{like.user.display_name}</Link>
+          <Link to={'/profile/' + like.user.email}>{like.user.name}</Link>
         </div>
       ))}
     </div>

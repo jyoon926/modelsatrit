@@ -30,8 +30,8 @@ export default function Models() {
                     <div
                       className="w-full bg-cover bg-center rounded"
                       style={{ backgroundImage: `url(${model.photos[0]})`, aspectRatio: '0.75' }}
-                    ></div>
-                    <p className="font-serif mt-3 text-2xl">{model.user.display_name}</p>
+                    />
+                    <p className="font-serif mt-3 text-2xl">{model.user.name}</p>
                   </Link>
                 )
             )}

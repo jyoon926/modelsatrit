@@ -36,7 +36,7 @@ export default function Header() {
         <div className="hidden md:flex">
           {session && user ? (
             <div className="flex flex-row items-center gap-3">
-              <Link to={'/profile/' + user.email}>{user.display_name}</Link>
+              <Link to={'/profile/' + user.email}>{user.name}</Link>
               <ProfilePhoto user={user} />
             </div>
           ) : (
@@ -80,7 +80,7 @@ export default function Header() {
           {session && user ? (
             <div className="flex flex-row items-center gap-3 border-t pt-5 w-full">
               <Link className="font-serif" to={'/profile/' + user.email} onClick={() => setShowMenu(false)}>
-                {user.display_name}
+                {user.name}
               </Link>
               <span onClick={() => setShowMenu(false)}>
                 <ProfilePhoto user={user} />

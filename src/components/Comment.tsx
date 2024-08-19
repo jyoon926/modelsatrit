@@ -95,7 +95,7 @@ export default function Comment({ comment, onDelete }: Props) {
       <div className="w-full">
         <p className="w-full leading-snug break-words whitespace-pre-line">
           <Link className="font-bold mr-1" to={'/profile/' + comment.user.email}>
-            {comment.user.display_name}
+            {comment.user.name}
           </Link>{' '}
           {comment.content}
         </p>

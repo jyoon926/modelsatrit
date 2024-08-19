@@ -21,7 +21,7 @@ export default function Register() {
     } else {
       const { error } = await supabase
         .from('users')
-        .insert([{ auth_id: data.user?.id, display_name: name, email }])
+        .insert([{ auth_id: data.user?.id, name, email }])
         .select('*');
       if (error) {
         setError(error.message);

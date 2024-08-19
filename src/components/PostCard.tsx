@@ -126,7 +126,7 @@ export default function PostCard({ post, onDelete }: Props) {
         <ProfilePhoto user={post.user} size={Sizes.lg} />
         <div className="w-full">
           <Link className="font-bold" to={'/profile/' + post.user.email}>
-            {post.user.display_name}
+            {post.user.name}
           </Link>
           <p className="text-sm opacity-60">{getRelativeTime(post.created_at)}</p>
         </div>

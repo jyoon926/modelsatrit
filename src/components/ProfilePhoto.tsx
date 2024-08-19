@@ -13,7 +13,7 @@ export default function ({ user, size, isLink = true }: Props) {
   const ProfileElement = user.profile_photo ? (
     <div className={'profile-picture ' + size} style={{ backgroundImage: `url('${user.profile_photo}')` }} />
   ) : (
-    <div className={'profile-picture bg-stone-300 ' + size}>{getInitials(user.display_name)}</div>
+    <div className={'profile-picture bg-stone-300 ' + size}>{getInitials(user.name)}</div>
   );
 
   return <>{isLink ? <Link to={'/profile/' + user.email}>{ProfileElement}</Link> : ProfileElement}</>;

@@ -24,7 +24,7 @@ export default function PhotographerCard({ photographer }: Props) {
         <div className="flex flex-row gap-3 items-center">
           <ProfilePhoto user={photographer.user} size={Sizes.lg} />
           <div>
-            <div className="font-serif text-2xl leading-none">{photographer.user.display_name}</div>
+            <div className="font-serif text-2xl leading-none">{photographer.user.name}</div>
             {photographer.user.major && (
               <div className="font-sans text-sm opacity-60 leading-none">
                 {photographer.user.major}
