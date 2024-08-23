@@ -3,7 +3,6 @@ import { supabase } from '../supabase';
 import { Post } from '../utils/Types';
 import PostCard from '../components/PostCard';
 import PostCreateCard from '../components/PostCreateCard';
-import { DiVim } from 'react-icons/di';
 import Spinner from '../components/Spinner';
 
 export default function Community() {
