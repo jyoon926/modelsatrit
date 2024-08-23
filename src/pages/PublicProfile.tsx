@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Model, Photographer, User } from '../utils/Types';
+import { Model, Photographer, Post, User } from '../utils/Types';
 import { supabase } from '../supabase';
 import { useAuth } from '../utils/AuthContext';
 import ProfilePhoto from '../components/ProfilePhoto';
 import { Sizes } from '../utils/Enums';
 import Slideshow from '../components/Slideshow';
+import PostCard from '../components/PostCard';
 
 export default function Profile() {
   const { user: authUser, logout } = useAuth();
@@ -14,6 +15,7 @@ export default function Profile() {
   const [user, setUser] = useState<User>();
   const [model, setModel] = useState<Model>();
   const [photographer, setPhotographer] = useState<Photographer>();
+  const [posts, setPosts] = useState<Post[]>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState(tab);
@@ -35,6 +37,17 @@ export default function Profile() {
     }
   };
 
+  const getPosts = async (user_id: number) => {
+    const { data, error } = await supabase
+      .from('posts')
+      .select('*, user:users(*), likes:likes(*)')
+      .eq('user_id', user_id)
+      .order('created_at', { ascending: false });
+    if (!error) {
+      setPosts(data);
+    }
+  };
+
   const fetchUser = async () => {
     if (email) {
       setLoading(true);
@@ -43,6 +56,7 @@ export default function Profile() {
         setUser(data);
         await getModel(data.user_id);
         await getPhotographer(data.user_id);
+        await getPosts(data.user_id);
       } else {
         return navigate('/404');
       }
@@ -64,7 +78,7 @@ export default function Profile() {
       return navigate(`/profile/${email}${model ? '/model' : ''}`);
     }
 
-    if (tab !== 'model' && tab !== 'photographer') {
+    if (tab && !['model', 'photographer', 'posts'].includes(tab)) {
       if (model) return navigate(`/profile/${email}/model`);
       if (photographer) return navigate(`/profile/${email}/photographer`);
       return navigate(`/profile/${email}`);
@@ -119,7 +133,7 @@ export default function Profile() {
                 </button>
               </div>
             )}
-            <div className="w-full p-5 border rounded flex flex-col items-start gap-5 leading-snug">
+            <div className="w-full p-5 border rounded-lg flex flex-col items-start gap-5 leading-snug">
               <p className="font-serif text-2xl">Basic Information</p>
               {user.email && (
                 <div>
@@ -165,8 +179,8 @@ export default function Profile() {
                 {model && (
                   <button
                     className={
-                      'sm border border-b-0 rounded rounded-b-none px-3 sm:px-5 py-2.5 bg-background z-10 ' +
-                      (currentTab !== 'model' && 'opacity-50 border-transparent bg-transparent')
+                      'sm border border-b-0 rounded-lg rounded-b-none px-3 sm:px-5 py-2.5 bg-background z-10 ' +
+                      (currentTab !== 'model' && 'opacity-60 border-transparent bg-transparent')
                     }
                     onClick={() => handleTabClick('model')}
                   >
@@ -176,18 +190,27 @@ export default function Profile() {
                 {photographer && (
                   <button
                     className={
-                      'sm border border-b-0 rounded rounded-b-none px-3 py-3 bg-background z-10 ' +
-                      (currentTab !== 'photographer' && 'opacity-50 border-transparent bg-transparent')
+                      'sm border border-b-0 rounded-lg rounded-b-none px-3 py-3 bg-background z-10 ' +
+                      (currentTab !== 'photographer' && 'opacity-60 border-transparent bg-transparent')
                     }
                     onClick={() => handleTabClick('photographer')}
                   >
                     Photographer Profile
                   </button>
                 )}
+                <button
+                  className={
+                    'sm border border-b-0 rounded-lg rounded-b-none px-3 py-3 bg-background z-10 ' +
+                    (currentTab !== 'posts' && 'opacity-60 border-transparent bg-transparent')
+                  }
+                  onClick={() => handleTabClick('posts')}
+                >
+                  Posts
+                </button>
               </div>
 
               <div
-                className={`flex flex-col items-start justify-start gap-5 p-5 border rounded ${currentTab === 'model' && 'rounded-tl-none'}`}
+                className={`flex flex-col items-start justify-start gap-5 p-5 border rounded-lg ${currentTab === 'model' && 'rounded-tl-none'}`}
               >
                 {/* Model page */}
                 {model && currentTab === 'model' && (
@@ -267,6 +290,21 @@ export default function Profile() {
                   ) : (
                     <p className="skew-x-[-10deg] opacity-60">No information.</p>
                   ))}
+
+                {/* Posts page */}
+                {currentTab === 'posts' && (
+                  <>
+                    {posts && posts.length > 0 ? (
+                      posts?.map((post, index) => (
+                        <div className="w-full max-w-[800px] flex flex-col gap-5">
+                          <PostCard post={post} onDelete={() => {}} key={index}></PostCard>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="skew-x-[-10deg] opacity-60">This user has no posts.</p>
+                    )}
+                  </>
+                )}
               </div>
               <Slideshow
                 selected={slideshowId}

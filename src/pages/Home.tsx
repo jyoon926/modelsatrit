@@ -43,7 +43,7 @@ export default function Home() {
 
   useEffect(() => {
     const handleCursorMove = (clientX: number, clientY: number) => {
-      if (distanceFromLast(clientX, clientY) > Math.max(window.innerWidth / 25, 40)) {
+      if (distanceFromLast(clientX, clientY) > Math.max(window.innerWidth / 50, 20)) {
         const lead = imagesRef.current[imageIndex % imagesRef.current.length];
         const tail =
           imagesRef.current[(imageIndex - Math.min(15, imagesRef.current.length - 1)) % imagesRef.current.length];
@@ -75,7 +75,7 @@ export default function Home() {
           A platform for connecting photography students and aspiring models within the RIT community.
         </p>
         <div className="w-full text-xl flex flex-col sm:flex-row gap-3">
-          <Link className="button" to="/models">
+          <Link className="button backdrop-blur" to="/models">
             Find a model
           </Link>
           <Link className="button light backdrop-blur" to="/community">
@@ -83,7 +83,7 @@ export default function Home() {
           </Link>
         </div>
       </div>
-      <div className="fixed top-0 left-0 w-full h-full z-[-1] opacity-60 mix-blend-multiply overflow-hidden">
+      <div className="fixed top-0 left-0 w-full h-full z-[-1] opacity-70 sepia-[0.1] brightness-[0.9] mix-blend-multiply overflow-hidden">
         {models &&
           models.length > 0 &&
           models?.map(

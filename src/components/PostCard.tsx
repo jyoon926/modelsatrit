@@ -116,7 +116,7 @@ export default function PostCard({ post, onDelete }: Props) {
 
   return (
     <div
-      className="w-full flex flex-col justify-start items-start border rounded-xl p-3 sm:p-5 gap-3"
+      className="w-full flex flex-col justify-start items-start border rounded-lg p-3 sm:p-5 gap-3"
       key={post.post_id}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
