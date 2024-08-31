@@ -5,7 +5,7 @@ import { supabase } from '../supabase';
 import ProfilePhoto from '../components/ProfilePhoto';
 import { MdChevronLeft, MdChevronRight, MdClose, MdOutlineAddBox, MdOutlineFileUpload } from 'react-icons/md';
 import Compressor from 'compressorjs';
-import { Sizes } from '../utils/Enums';
+import { Genders, Races, Sizes } from '../utils/Enums';
 import { Model, Photographer } from '../utils/Types';
 import PhotoUpload from '../components/PhotoUpload';
 import { useNotification } from '../components/Notification';
@@ -566,11 +566,9 @@ export default function Profile() {
                             value={gender || ''}
                           >
                             <option value="" />
-                            <option value="Man">Man</option>
-                            <option value="Woman">Woman</option>
-                            <option value="Non-binary/non-conforming">Non-binary/non-conforming</option>
-                            <option value="Other">Other</option>
-                            <option value="N/A">Prefer not to say</option>
+                            {Object.values(Genders).map((gender) => (
+                              <option value={gender}>{gender}</option>
+                            ))}
                           </select>
                         </div>
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
@@ -580,16 +578,9 @@ export default function Profile() {
                           {/* <input id="race" type="text" onChange={(e) => setRace(e.target.value)} value={race || ''} /> */}
                           <select name="race" id="race" multiple value={race} onChange={(e) => handleSetRace(e.target)}>
                             <option value="" />
-                            <option value="Black or African American">Black or African American</option>
-                            <option value="Asian">Asian</option>
-                            <option value="Hispanic or Latino">Hispanic or Latino</option>
-                            <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
-                            <option value="Native Hawaiian or Other Pacific Islander">
-                              Native Hawaiian or Other Pacific Islander
-                            </option>
-                            <option value="White">White</option>
-                            <option value="Other">Other</option>
-                            <option value="N/A">Prefer not to say</option>
+                            {Object.values(Races).map((race) => (
+                              <option value={race}>{race}</option>
+                            ))}
                           </select>
                         </div>
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
