@@ -41,7 +41,7 @@ export default function Models() {
                 model.photos && (
                   <Link className="w-full" to={`/profile/${model.user.email}/model`} key={model.model_id}>
                     <div
-                      className="w-full bg-cover bg-center rounded"
+                      className="w-full bg-cover bg-no-repeat bg-center rounded"
                       style={{ backgroundImage: `url(${model.photos[0]})`, aspectRatio: '0.75' }}
                     />
                     <p className="font-serif mt-3 text-2xl">{model.user.name}</p>

@@ -603,7 +603,7 @@ export default function Profile() {
                         >
                           {model.photos.map((photo, index) => (
                             <div
-                              className="w-full rounded bg-cover bg-center relative"
+                              className="w-full rounded bg-cover bg-no-repeat bg-center relative"
                               style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
                               key={photo}
                             >
@@ -657,7 +657,7 @@ export default function Profile() {
                         >
                           {photographer.photos.map((photo, index) => (
                             <div
-                              className="w-full rounded bg-cover bg-center relative"
+                              className="w-full rounded bg-cover bg-no-repeat bg-center relative"
                               style={{ backgroundImage: `url(${photo})`, aspectRatio: '1' }}
                               key={photo}
                             >

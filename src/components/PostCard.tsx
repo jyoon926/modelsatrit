@@ -160,13 +160,13 @@ export default function PostCard({ post, onDelete }: Props) {
         <div className="flex flex-row w-full h-[400px] rounded-lg overflow-hidden">
           <div className="w-full flex flex-col">
             <button
-              className="h-full bg-cover bg-center border border-background"
+              className="h-full bg-cover bg-no-repeat bg-center border border-background"
               style={{ backgroundImage: `url(${post.photos[0]})` }}
               onClick={() => handlePhotoClick(0)}
             />
             {post.photos.length > 2 && (
               <button
-                className="h-full bg-cover bg-center border border-background"
+                className="h-full bg-cover bg-no-repeat bg-center border border-background"
                 style={{ backgroundImage: `url(${post.photos[2]})` }}
                 onClick={() => handlePhotoClick(2)}
               />
@@ -175,13 +175,13 @@ export default function PostCard({ post, onDelete }: Props) {
           {post.photos.length > 1 && (
             <div className="w-full flex flex-col">
               <button
-                className="h-full bg-cover bg-center border border-background"
+                className="h-full bg-cover bg-no-repeat bg-center border border-background"
                 style={{ backgroundImage: `url(${post.photos[1]})` }}
                 onClick={() => handlePhotoClick(1)}
               />
               {post.photos.length > 3 && (
                 <button
-                  className="h-full bg-cover bg-center border border-background"
+                  className="h-full bg-cover bg-no-repeat bg-center border border-background"
                   style={{ backgroundImage: `url(${post.photos[3]})` }}
                   onClick={() => handlePhotoClick(3)}
                 />

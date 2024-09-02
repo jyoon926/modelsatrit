@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
+import { MdKeyboardArrowDown } from 'react-icons/md';
 import { Genders, Races } from '../utils/Enums';
 
 interface Props {
@@ -36,12 +36,7 @@ export default function Filters({ onFiltersUpdate }: Props) {
   return (
     <div ref={filterRef}>
       <button className="border px-4 py-3 rounded flex flex-row items-center gap-2" onClick={() => setIsOpen(!isOpen)}>
-        Filters{' '}
-        {isOpen ? (
-          <MdKeyboardArrowUp className="text-xl mr-[-5px]" />
-        ) : (
-          <MdKeyboardArrowDown className="text-xl mr-[-5px]" />
-        )}
+        Filters <MdKeyboardArrowDown className={`text-xl mr-[-5px] duration-300 ${isOpen && 'scale-y-[-1]'}`} />
       </button>
       <div
         className={`max-w-[600px] mx-5 left-0 absolute border rounded p-5 backdrop-blur bg-background/70 duration-300 mt-2 shadow-lg ${!isOpen && 'opacity-0 pointer-events-none'}`}
@@ -54,7 +49,7 @@ export default function Filters({ onFiltersUpdate }: Props) {
               className="flex flex-row items-center gap-2 border rounded p-2"
               onClick={() => setGenderFilters([])}
             >
-              <span className={`w-4 h-4 flex border rounded-full ${!genderFilters.length && 'bg-foreground/75'}`} />
+              <span className={`w-3 h-3 flex border rounded-full ${!genderFilters.length && 'bg-foreground'}`} />
               <span className={genderFilters.length ? 'opacity-60' : ''}>All</span>
             </button>
             {Object.values(Genders).map((gender) => (
@@ -63,7 +58,7 @@ export default function Filters({ onFiltersUpdate }: Props) {
                 onClick={() => toggleCheckbox(genderFilters, gender, setGenderFilters)}
               >
                 <span
-                  className={`w-4 h-4 flex border rounded-full ${genderFilters.includes(gender) && 'bg-foreground/75'}`}
+                  className={`w-3 h-3 flex border rounded-full ${genderFilters.includes(gender) && 'bg-foreground'}`}
                 />
                 <span className={genderFilters.includes(gender) ? '' : 'opacity-60'}>{gender}</span>
               </button>
@@ -73,7 +68,7 @@ export default function Filters({ onFiltersUpdate }: Props) {
           <div className="font-bold">Race</div>
           <div className="flex flex-row flex-wrap gap-2">
             <button className="flex flex-row items-center gap-2 border rounded p-2" onClick={() => setRaceFilters([])}>
-              <span className={`w-4 h-4 flex border rounded-full ${!raceFilters.length && 'bg-foreground/75'}`} />
+              <span className={`w-3 h-3 flex border rounded-full ${!raceFilters.length && 'bg-foreground'}`} />
               <span className={raceFilters.length ? 'opacity-60' : ''}>All</span>
             </button>
             {Object.values(Races).map((race) => (
@@ -81,9 +76,7 @@ export default function Filters({ onFiltersUpdate }: Props) {
                 className="flex flex-row items-center gap-2 border rounded p-2"
                 onClick={() => toggleCheckbox(raceFilters, race, setRaceFilters)}
               >
-                <span
-                  className={`w-4 h-4 flex border rounded-full ${raceFilters.includes(race) && 'bg-foreground/75'}`}
-                />
+                <span className={`w-3 h-3 flex border rounded-full ${raceFilters.includes(race) && 'bg-foreground'}`} />
                 <span className={raceFilters.includes(race) ? '' : 'opacity-60'}>{race}</span>
               </button>
             ))}

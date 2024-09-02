@@ -44,7 +44,7 @@ export default function PhotographerCard({ photographer }: Props) {
         <div className="w-full flex flex-row gap-3 overflow-x-auto slim-scrollbar">
           {photographer.photos.map((photo, index) => (
             <img
-              className="h-60 bg-cover bg-center rounded cursor-pointer"
+              className="h-60 bg-cover bg-no-repeat bg-center rounded cursor-pointer"
               src={photo}
               key={index}
               onClick={() => handlePhotoClick(index)}

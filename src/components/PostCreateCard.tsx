@@ -3,9 +3,10 @@ import { useAuth } from '../utils/AuthContext';
 import ProfilePhoto from './ProfilePhoto';
 import { supabase } from '../supabase';
 import Compressor from 'compressorjs';
-import { MdClose, MdOutlineFileDownload, MdOutlineImage } from 'react-icons/md';
-import { Post } from '../utils/Types';
+import { MdClose, MdOutlineFileDownload, MdOutlineImage, MdPerson } from 'react-icons/md';
+import { Post, Tag } from '../utils/Types';
 import AutoTextArea from './AutoTextArea';
+import TagPanel from './TagPanel';
 
 interface Props {
   onCreate: (post: Post) => void;
@@ -18,6 +19,8 @@ export default function PostCreateCard({ onCreate }: Props) {
   const [dragging, setDragging] = useState<boolean>(false);
   const dragCounter = useRef<number>(0);
   const imageUrls = useMemo(() => images.map((image) => URL.createObjectURL(image)), [images]);
+  const [tagPanelId, setTagPanelId] = useState(-1);
+  const [tags, setTags] = useState<Tag[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,14 +157,21 @@ export default function PostCreateCard({ onCreate }: Props) {
           className={`w-full flex flex-row gap-3 flex-wrap bg-foreground/10 p-3 rounded-xl border ${dragging ? 'border-dashed border-2 border-gray-400' : ''}`}
         >
           {imageUrls.map((image, index) => (
-            <div className="relative flex justify-end" key={index}>
-              <img className="h-32 w-auto rounded-lg" src={image} alt={`Image ${index + 1}`} draggable="false" />
+            <div className="relative flex" key={index}>
+              <img className="h-48 w-auto rounded-lg" src={image} alt={`Image ${index + 1}`} draggable="false" />
               <button
                 className="absolute top-0 right-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
                 onClick={() => handleDeleteImage(index)}
               >
                 <MdClose />
               </button>
+              <button
+                className="absolute bottom-0 left-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
+                onClick={() => setTagPanelId(index)}
+              >
+                <MdPerson />
+              </button>
+              {tagPanelId === index && <TagPanel index={tagPanelId} onClose={() => setTagPanelId(-1)} />}
             </div>
           ))}
           <div className="w-full flex flex-row justify-center items-center py-2 gap-2">

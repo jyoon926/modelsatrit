@@ -91,7 +91,7 @@ export default function Home() {
               model.photos &&
               model.photos.length > 0 && (
                 <div
-                  className="absolute h-[25vh] sm:h-[35vh] bg-cover bg-center rounded-lg opacity-0 scale-0 translate-x-[-50%] translate-y-[-50%]"
+                  className="absolute h-[25vh] sm:h-[35vh] bg-cover bg-no-repeat bg-center rounded-lg opacity-0 scale-0 translate-x-[-50%] translate-y-[-50%]"
                   style={{
                     backgroundImage: `url(${model.photos[0]})`,
                     aspectRatio: '0.75',
