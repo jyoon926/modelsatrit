@@ -63,7 +63,7 @@ export default function Slideshow({ photos, selected, isOpen, onClose }: Props) 
       {/* Photos */}
       {photos.map((photo, index) => (
         <img
-          className={`max-h-[80vh] max-w-[80vw] absolute rounded ${id !== index && 'opacity-0 pointer-events-none'}`}
+          className={`slideshow-image absolute rounded ${id !== index && 'opacity-0 pointer-events-none'}`}
           src={photo}
           key={index}
           alt={`Slide ${index + 1}`}
@@ -76,7 +76,7 @@ export default function Slideshow({ photos, selected, isOpen, onClose }: Props) 
       </button>
 
       <div className="absolute bottom-0 flex flex-row items-center justify-center">
-        <button className="text-4xl p-5 rounded-full" onClick={() => setId(id - 1)} disabled={id === 0}>
+        <button className="text-4xl p-3 rounded-full" onClick={() => setId(id - 1)} disabled={id === 0}>
           <MdChevronLeft />
         </button>
         <div className="flex flex-row gap-2 bg-background/10 p-2 rounded-full">
@@ -88,7 +88,7 @@ export default function Slideshow({ photos, selected, isOpen, onClose }: Props) 
             />
           ))}
         </div>
-        <button className="text-4xl p-5 rounded-full" onClick={() => setId(id + 1)} disabled={id === photos.length - 1}>
+        <button className="text-4xl p-3 rounded-full" onClick={() => setId(id + 1)} disabled={id === photos.length - 1}>
           <MdChevronRight />
         </button>
       </div>

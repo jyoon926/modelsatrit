@@ -209,9 +209,9 @@ textarea {
   }
 
   &.sm {
-    width: 1.25rem;
-    height: 1.25rem;
-    font-size: 0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -261,4 +261,9 @@ textarea {
   to {
     transform: rotate(360deg);
   }
+}
+
+.slideshow-image {
+  max-height: calc(100% - 105px);
+  max-width: calc(100% - 2.5rem);
 }

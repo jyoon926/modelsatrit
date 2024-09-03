@@ -75,7 +75,7 @@ export default function Comment({ comment, onDelete }: Props) {
     >
       <div
         className={
-          'mt-1 mr-[-0.7rem] ml-[-0.35rem] duration-300 ' +
+          'mt-[7px] mr-[-0.7rem] ml-[-0.35rem] duration-300 ' +
           (user?.user_id === comment?.user_id
             ? isHovered || isOptionsOpen
               ? 'sm:opacity-100 sm:pointer-events-auto'

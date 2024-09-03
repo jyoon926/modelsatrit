@@ -8,17 +8,27 @@ import { Sizes } from '../utils/Enums';
 import Slideshow from '../components/Slideshow';
 import PostCard from '../components/PostCard';
 
-export default function Profile() {
+export default function PublicProfile() {
+  // Auth
   const { user: authUser, logout } = useAuth();
+
+  // URL Params
   const { email } = useParams();
   const { tab } = useParams();
+
+  // Supabase Data
   const [user, setUser] = useState<User>();
   const [model, setModel] = useState<Model>();
   const [photographer, setPhotographer] = useState<Photographer>();
   const [posts, setPosts] = useState<Post[]>();
+
+  // Misc
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [currentTab, setCurrentTab] = useState(tab);
+  const [tabs, setTabs] = useState<string[]>([]);
+
+  // Slideshow
   const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
   const [slideshowPhotos, setSlideshowPhotos] = useState(['']);
   const [slideshowId, setSlideshowId] = useState(0);
@@ -27,6 +37,7 @@ export default function Profile() {
     const { data, error } = await supabase.from('models').select('*').eq('user_id', user_id).single();
     if (!error) {
       setModel(data);
+      setTabs((prev) => [...prev, 'model']);
     }
   };
 
@@ -34,6 +45,7 @@ export default function Profile() {
     const { data, error } = await supabase.from('photographers').select('*').eq('user_id', user_id).single();
     if (!error) {
       setPhotographer(data);
+      setTabs((prev) => [...prev, 'photographer']);
     }
   };
 
@@ -43,13 +55,15 @@ export default function Profile() {
       .select('*, user:users(*), likes:likes(*)')
       .eq('user_id', user_id)
       .order('created_at', { ascending: false });
-    if (!error) {
+    if (!error && data.length > 0) {
       setPosts(data);
+      setTabs([...tabs, 'posts']);
     }
   };
 
   const fetchUser = async () => {
     if (email) {
+      setTabs([]);
       setLoading(true);
       const { data, error } = await supabase.from('users').select('*').eq('email', email).single();
       if (!error) {
@@ -65,23 +79,22 @@ export default function Profile() {
   };
 
   const checkTab = () => {
+    if (tabs.length === 0) {
+      return navigate(`/profile/${email}`);
+    }
+
     if (!tab) {
-      if (model) return navigate(`/profile/${email}/model`);
-      else if (photographer) return navigate(`/profile/${email}/photographer`);
+      return navigate(`/profile/${email}/${tabs[0]}`);
     }
 
-    if (tab === 'model' && !model) {
-      return navigate(`/profile/${email}${photographer ? '/photographer' : ''}`);
-    }
-
-    if (tab === 'photographer' && !photographer) {
-      return navigate(`/profile/${email}${model ? '/model' : ''}`);
-    }
-
-    if (tab && !['model', 'photographer', 'posts'].includes(tab)) {
+    if (!['model', 'photographer', 'posts'].includes(tab)) {
       if (model) return navigate(`/profile/${email}/model`);
       if (photographer) return navigate(`/profile/${email}/photographer`);
       return navigate(`/profile/${email}`);
+    }
+
+    if ((tab === 'model' && !model) || (tab === 'photographer' && !photographer) || (tab === 'posts' && !posts)) {
+      return navigate(`/profile/${email}/${tabs[0]}`);
     }
   };
 
@@ -110,6 +123,10 @@ export default function Profile() {
     setSlideshowId(id);
   };
 
+  const handleDeletePost = (post_id: number) => {
+    setPosts((prevPosts) => prevPosts!.filter((post) => post.post_id !== post_id));
+  };
+
   return user ? (
     <div className="fade-in">
       <div className="w-full px-5 py-32 flex flex-col justify-start items-start">
@@ -122,7 +139,7 @@ export default function Profile() {
         </div>
         <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-5">
           {/* Basic info panel */}
-          <div className="w-[300px] flex flex-col gap-5">
+          <div className="w-full max-w-[300px] flex flex-col gap-5">
             {authUser?.email === email && (
               <div className="flex flex-row gap-3">
                 <Link className="button light sm" to={'/profile'}>
@@ -172,11 +189,11 @@ export default function Profile() {
             </div>
           </div>
 
-          {!loading && (
+          {!loading && tabs.length > 0 && (
             <div className="w-full sm:w-auto fade-in grow flex flex-col">
               {/* Tabs */}
               <div className="flex flex-row font-serif text-xl mb-[-1px]">
-                {model && (
+                {tabs.includes('model') && (
                   <button
                     className={
                       'sm border border-b-0 rounded-lg rounded-b-none px-3 sm:px-5 py-2.5 bg-background z-10 ' +
@@ -187,7 +204,7 @@ export default function Profile() {
                     Model Profile
                   </button>
                 )}
-                {photographer && (
+                {tabs.includes('photographer') && (
                   <button
                     className={
                       'sm border border-b-0 rounded-lg rounded-b-none px-3 py-3 bg-background z-10 ' +
@@ -198,19 +215,21 @@ export default function Profile() {
                     Photographer Profile
                   </button>
                 )}
-                <button
-                  className={
-                    'sm border border-b-0 rounded-lg rounded-b-none px-3 py-3 bg-background z-10 ' +
-                    (currentTab !== 'posts' && 'opacity-60 border-transparent bg-transparent')
-                  }
-                  onClick={() => handleTabClick('posts')}
-                >
-                  Posts
-                </button>
+                {tabs.includes('posts') && (
+                  <button
+                    className={
+                      'sm border border-b-0 rounded-lg rounded-b-none px-3 py-3 bg-background z-10 ' +
+                      (currentTab !== 'posts' && 'opacity-60 border-transparent bg-transparent')
+                    }
+                    onClick={() => handleTabClick('posts')}
+                  >
+                    Posts
+                  </button>
+                )}
               </div>
 
               <div
-                className={`flex flex-col items-start justify-start gap-5 p-5 border rounded-lg ${currentTab === 'model' && 'rounded-tl-none'}`}
+                className={`w-full flex flex-col items-start justify-start gap-5 p-5 border rounded-lg ${tabs.indexOf(currentTab!) === 0 && 'rounded-tl-none'}`}
               >
                 {/* Model page */}
                 {model && currentTab === 'model' && (
@@ -240,26 +259,21 @@ export default function Profile() {
                         </div>
                       </>
                     )}
-                    {model.photos && model.photos.length > 0 && (
+                    {model.photo_urls.length > 0 && (
                       <>
-                        <div
-                          className="w-full flex flex-wrap sm:grid gap-3"
-                          style={{
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-                          }}
-                        >
-                          {model.photos.map((photo, index) => (
-                            <button
-                              className="w-full rounded bg-cover bg-no-repeat bg-center"
-                              style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
+                        <div className="w-full flex flex-row flex-wrap gap-3">
+                          {model.photo_urls.map((photo, index) => (
+                            <img
+                              className="h-60 rounded cursor-pointer"
+                              src={photo}
                               key={index}
-                              onClick={() => handlePhotoClick(index, model.photos)}
+                              onClick={() => handlePhotoClick(index, model.photo_urls)}
                             />
                           ))}
                         </div>
                       </>
                     )}
-                    {!model.gender && !model.race && !model.height && !model.photos && (
+                    {!model.gender && !model.race && !model.height && !model.photo_urls && (
                       <p className="skew-x-[-10deg] opacity-60">No information.</p>
                     )}
                   </>
@@ -268,21 +282,16 @@ export default function Profile() {
                 {/* Photographer page */}
                 {photographer &&
                   currentTab === 'photographer' &&
-                  (photographer.photos && photographer.photos.length > 0 ? (
+                  (photographer.photo_urls.length > 0 ? (
                     <>
                       <p className="font-bold">Portfolio</p>
-                      <div
-                        className="w-full flex flex-wrap sm:grid gap-3"
-                        style={{
-                          gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-                        }}
-                      >
-                        {photographer.photos.map((photo, index) => (
-                          <button
-                            className="w-full rounded bg-cover bg-no-repeat bg-center"
-                            style={{ backgroundImage: `url(${photo})`, aspectRatio: '1' }}
+                      <div className="w-full flex flex-row flex-wrap gap-3">
+                        {photographer.photo_urls.map((photo, index) => (
+                          <img
+                            className="h-60 rounded cursor-pointer"
+                            src={photo}
                             key={index}
-                            onClick={() => handlePhotoClick(index, photographer.photos)}
+                            onClick={() => handlePhotoClick(index, photographer.photo_urls)}
                           />
                         ))}
                       </div>
@@ -292,12 +301,12 @@ export default function Profile() {
                   ))}
 
                 {/* Posts page */}
-                {currentTab === 'posts' && (
+                {posts && currentTab === 'posts' && (
                   <>
                     {posts && posts.length > 0 ? (
                       posts?.map((post, index) => (
-                        <div className="w-full max-w-[800px] flex flex-col gap-5">
-                          <PostCard post={post} onDelete={() => {}} key={index}></PostCard>
+                        <div className="w-full max-w-[800px] flex flex-col gap-5" key={index}>
+                          <PostCard post={post} onDelete={handleDeletePost}></PostCard>
                         </div>
                       ))
                     ) : (

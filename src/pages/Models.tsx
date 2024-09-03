@@ -38,11 +38,11 @@ export default function Models() {
           <div className="w-full grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
             {models.map(
               (model) =>
-                model.photos && (
+                model.photo_urls.length > 0 && (
                   <Link className="w-full" to={`/profile/${model.user.email}/model`} key={model.model_id}>
                     <div
                       className="w-full bg-cover bg-no-repeat bg-center rounded"
-                      style={{ backgroundImage: `url(${model.photos[0]})`, aspectRatio: '0.75' }}
+                      style={{ backgroundImage: `url(${model.photo_urls[0]})`, aspectRatio: '0.75' }}
                     />
                     <p className="font-serif mt-3 text-2xl">{model.user.name}</p>
                   </Link>

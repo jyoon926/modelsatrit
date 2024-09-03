@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Comment as IComment, Like, Post } from '../utils/Types';
+import { Comment as IComment, Like, Post, Tag } from '../utils/Types';
 import { useAuth } from '../utils/AuthContext';
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
@@ -14,6 +14,7 @@ import OptionsMenu from './OptionsMenu';
 import AutoTextArea from './AutoTextArea';
 import { Sizes } from '../utils/Enums';
 import Slideshow from './Slideshow';
+import { useNotification } from './Notification';
 
 interface Props {
   post: Post;
@@ -27,11 +28,13 @@ export default function PostCard({ post, onDelete }: Props) {
   const [likes, setLikes] = useState<Like[]>([]);
   const [liked, setLiked] = useState<boolean>(false);
   const [showComments, setShowComments] = useState<boolean>(false);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
   const [slideshowId, setSlideshowId] = useState(0);
+  const { toastPromise } = useNotification();
 
   const fetchComments = async () => {
     const { data, error } = await supabase
@@ -39,31 +42,31 @@ export default function PostCard({ post, onDelete }: Props) {
       .select('*, user:users(*), likes:likes(*)')
       .eq('post_id', post.post_id)
       .order('created_at', { ascending: false });
-    if (error) {
-      console.error('Error fetching data:', error);
-    } else {
+    if (!error) {
       setComments(data);
     }
   };
 
   const fetchLikes = async () => {
     const { data, error } = await supabase.from('likes').select('*, user:users(*)').eq('post_id', post.post_id);
-    if (error) {
-      console.error('Error fetching data:', error);
-    } else {
+    if (!error) {
       setLikes(data);
       setLiked(data.find((like) => like.user_id === user?.user_id));
+    }
+  };
+
+  const fetchTags = async () => {
+    const { data, error } = await supabase.from('tags').select('*, user:users(*)').eq('post_id', post.post_id);
+    if (!error) {
+      setTags(data);
     }
   };
 
   useEffect(() => {
     fetchComments();
     fetchLikes();
-  }, []);
-
-  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCommentText(e.target.value);
-  };
+    fetchTags();
+  }, [post]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,13 +102,31 @@ export default function PostCard({ post, onDelete }: Props) {
   };
 
   const handleDeletePost = async () => {
-    const { error } = await supabase.from('posts').delete().eq('post_id', post.post_id);
-    if (!error) {
-      onDelete(post.post_id);
-    }
+    const promise = new Promise<void>(async (resolve, reject) => {
+      try {
+        if (post.photos && post.photos.length > 0) {
+          const deletePromises = post.photos.map(async (photo) => {
+            const { error } = await supabase.storage.from('posts').remove([photo]);
+            if (error) throw error;
+          });
+          await Promise.all(deletePromises);
+        }
+        const { error: deleteError } = await supabase.from('posts').delete().eq('post_id', post.post_id);
+        if (deleteError) throw deleteError;
+        onDelete(post.post_id);
+        resolve();
+      } catch (error) {
+        reject();
+      }
+    });
+    toastPromise(promise, {
+      pending: 'Deleting post...',
+      success: 'Post was deleted successfully!',
+      error: 'Failed to delete post.',
+    });
   };
 
-  const handleDeleteComment = (comment_id: number) => {
+  const onDeleteComment = (comment_id: number) => {
     setComments((prevComments) => prevComments.filter((comment) => comment.comment_id !== comment_id));
   };
 
@@ -156,35 +177,67 @@ export default function PostCard({ post, onDelete }: Props) {
 
       {/* Content */}
       <p className="w-full text-lg break-words whitespace-pre-line">{post.caption}</p>
-      {post.photos.length > 0 && (
+      {post.photo_urls.length > 0 && (
         <div className="flex flex-row w-full h-[400px] rounded-lg overflow-hidden">
           <div className="w-full flex flex-col">
             <button
-              className="h-full bg-cover bg-no-repeat bg-center border border-background"
-              style={{ backgroundImage: `url(${post.photos[0]})` }}
+              className="h-full bg-cover bg-no-repeat bg-center border border-background p-3 flex flex-row items-end gap-1"
+              style={{ backgroundImage: `url(${post.photo_urls[0]})` }}
               onClick={() => handlePhotoClick(0)}
-            />
-            {post.photos.length > 2 && (
+            >
+              {tags
+                .filter((tag) => tag.photo_index === 0)
+                .map((tag, index) => (
+                  <div className="shadow-md rounded-full">
+                    <ProfilePhoto user={tag.user} size={Sizes.sm} key={index} />
+                  </div>
+                ))}
+            </button>
+            {post.photo_urls.length > 2 && (
               <button
-                className="h-full bg-cover bg-no-repeat bg-center border border-background"
-                style={{ backgroundImage: `url(${post.photos[2]})` }}
+                className="h-full bg-cover bg-no-repeat bg-center border border-background p-3 flex flex-row items-end gap-1"
+                style={{ backgroundImage: `url(${post.photo_urls[2]})` }}
                 onClick={() => handlePhotoClick(2)}
-              />
+              >
+                {tags
+                  .filter((tag) => tag.photo_index === 2)
+                  .map((tag, index) => (
+                    <div className="shadow-md rounded-full">
+                      <ProfilePhoto user={tag.user} size={Sizes.sm} key={index} />
+                    </div>
+                  ))}
+              </button>
             )}
           </div>
-          {post.photos.length > 1 && (
+          {post.photo_urls.length > 1 && (
             <div className="w-full flex flex-col">
               <button
-                className="h-full bg-cover bg-no-repeat bg-center border border-background"
-                style={{ backgroundImage: `url(${post.photos[1]})` }}
+                className="h-full bg-cover bg-no-repeat bg-center border border-background p-3 flex flex-row items-end gap-1"
+                style={{ backgroundImage: `url(${post.photo_urls[1]})` }}
                 onClick={() => handlePhotoClick(1)}
-              />
-              {post.photos.length > 3 && (
+              >
+                {tags
+                  .filter((tag) => tag.photo_index === 1)
+                  .map((tag, index) => (
+                    <div className="shadow-md rounded-full">
+                      <ProfilePhoto user={tag.user} size={Sizes.sm} key={index} />
+                    </div>
+                  ))}
+              </button>
+              {post.photo_urls.length > 3 && (
                 <button
-                  className="h-full bg-cover bg-no-repeat bg-center border border-background"
-                  style={{ backgroundImage: `url(${post.photos[3]})` }}
+                  className="h-full bg-cover bg-no-repeat bg-center border border-background p-3 flex flex-row items-end gap-1"
+                  style={{ backgroundImage: `url(${post.photo_urls[3]})` }}
                   onClick={() => handlePhotoClick(3)}
-                />
+                >
+                  {tags
+                    .filter((tag) => tag.photo_index === 3)
+                    .map((tag, index) => (
+                      <div className="shadow-md rounded-full">
+                        <ProfilePhoto user={tag.user} size={Sizes.sm} key={index} />
+                      </div>
+                    ))}
+                </button>
               )}
             </div>
           )}
@@ -213,9 +266,13 @@ export default function PostCard({ post, onDelete }: Props) {
         <form className="w-full flex flex-row justify-start items-start gap-2" onSubmit={handleCommentSubmit}>
           <ProfilePhoto user={user!} />
           <div className="w-full mt-[1px]">
-            <AutoTextArea value={commentText} placeholder="Add a comment..." onChange={handleCommentChange} />
+            <AutoTextArea
+              value={commentText}
+              placeholder="Add a comment..."
+              onChange={(e) => setCommentText(e.target.value)}
+            />
           </div>
-          <button className="link font-bold mt-[8px]">Post</button>
+          <button className="link font-bold mt-[9px]">Post</button>
         </form>
       )}
 
@@ -233,7 +290,7 @@ export default function PostCard({ post, onDelete }: Props) {
           )}
           {showComments &&
             comments.map((comment) => (
-              <Comment comment={comment} key={comment.comment_id} onDelete={handleDeleteComment} />
+              <Comment comment={comment} key={comment.comment_id} onDelete={onDeleteComment} />
             ))}
         </div>
       )}
@@ -242,7 +299,7 @@ export default function PostCard({ post, onDelete }: Props) {
       </Modal>
       <Slideshow
         selected={slideshowId}
-        photos={post.photos}
+        photos={post.photo_urls}
         isOpen={isSlideshowOpen}
         onClose={() => setIsSlideshowOpen(false)}
       />

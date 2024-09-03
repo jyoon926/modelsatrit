@@ -1,14 +1,22 @@
-import { MdOutlineImage, MdClose, MdOutlineFileDownload, MdChevronLeft, MdChevronRight } from 'react-icons/md';
+import {
+  MdOutlineImage,
+  MdClose,
+  MdOutlineFileDownload,
+  MdChevronLeft,
+  MdChevronRight,
+  MdOutlineFileUpload,
+} from 'react-icons/md';
 import { useState, useRef, useMemo } from 'react';
 import { supabase } from '../supabase';
 import Compressor from 'compressorjs';
 import { useNotification } from './Notification';
 
 interface Props {
-  onUpload: (photos: string[]) => Promise<void>;
+  bucket: string;
+  onUpload: (photos: { name: string; url: string }[]) => Promise<void>;
 }
 
-export default function PhotoUpload({ onUpload }: Props) {
+export default function PhotoUpload({ bucket, onUpload }: Props) {
   const { toastPromise } = useNotification();
   const [images, setImages] = useState<File[]>([]);
   const [dragging, setDragging] = useState<boolean>(false);
@@ -20,8 +28,8 @@ export default function PhotoUpload({ onUpload }: Props) {
     // Compress and upload images
     const upload = new Promise<void>(async (resolve, reject) => {
       try {
-        const uploadedImageUrls: string[] = await Promise.all(images.map(compressAndUploadImage));
-        await onUpload(uploadedImageUrls);
+        const uploadedImages = await Promise.all(images.map(compressAndUploadImage));
+        await onUpload(uploadedImages);
         setImages([]);
         resolve();
       } catch (e) {
@@ -35,19 +43,19 @@ export default function PhotoUpload({ onUpload }: Props) {
     });
   };
 
-  const compressAndUploadImage = (file: File): Promise<string> => {
+  const compressAndUploadImage = (file: File): Promise<{ name: string; url: string }> => {
     return new Promise((resolve, reject) => {
       new Compressor(file, {
         quality: 0.75,
         maxWidth: 1200,
         async success(result) {
           const fileName = `${Date.now()}_${file.name.replace("'", '')}`;
-          const { error } = await supabase.storage.from('general').upload(fileName, result);
+          const { error } = await supabase.storage.from(bucket).upload(fileName, result);
           if (error) {
             reject(error);
           } else {
-            const publicUrl = supabase.storage.from('general').getPublicUrl(fileName).data.publicUrl;
-            resolve(publicUrl);
+            const publicUrl = supabase.storage.from(bucket).getPublicUrl(fileName).data.publicUrl;
+            resolve({ name: fileName, url: publicUrl });
           }
         },
         error(err) {
@@ -133,11 +141,11 @@ export default function PhotoUpload({ onUpload }: Props) {
       {/* Images preview and drag-and-drop area */}
       {(images.length > 0 || dragging) && (
         <div
-          className={`w-full flex flex-row gap-3 flex-wrap bg-foreground/10 p-3 rounded-xl border ${dragging ? 'border-dashed border-2 border-gray-400' : ''}`}
+          className={`w-full flex flex-row gap-3 flex-wrap bg-foreground/10 p-3 rounded-lg border ${dragging ? 'border-dashed border-2 border-gray-400' : ''}`}
         >
           {imageUrls.map((image, index) => (
             <div className="relative flex justify-end" key={index}>
-              <img className="h-32 w-auto rounded-lg" src={image} alt={`Image ${index + 1}`} draggable="false" />
+              <img className="h-32 w-auto rounded" src={image} alt={`Image ${index + 1}`} draggable="false" />
               <button
                 className="absolute top-0 right-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
                 onClick={() => handleDeleteImage(index)}
@@ -162,19 +170,16 @@ export default function PhotoUpload({ onUpload }: Props) {
               )}
             </div>
           ))}
-          <div className="w-full flex flex-row justify-center items-center py-2 gap-2">
-            <MdOutlineFileDownload className="text-2xl opacity-60" />
-            <p className="opacity-60">
-              Select photos or drag them here. Only .jpg, .jpeg, and .png files are supported.
-            </p>
+          <div className="w-full py-2 opacity-60 text-center">
+            Select photos or drag them here. Only .jpg, .jpeg, and .png files are supported.
           </div>
         </div>
       )}
 
-      <form className="w-full flex flex-col justify-start items-start gap-3" onSubmit={handleSubmit}>
-        <label className="button transparent border sm flex flex-row items-center gap-1" htmlFor="images">
-          <MdOutlineImage className="text-2xl" />
-          Select photos
+      <form className="w-full flex flex-row justify-start items-start gap-3" onSubmit={handleSubmit}>
+        <label className="button transparent border flex flex-row items-center gap-1" htmlFor="images">
+          <MdOutlineImage className="text-xl" />
+          Add photos
           <input
             className="hidden"
             type="file"
@@ -185,9 +190,12 @@ export default function PhotoUpload({ onUpload }: Props) {
             multiple
           />
         </label>
-        <button className="button" type="submit">
-          Upload
-        </button>
+        {images.length > 0 && (
+          <button className="button flex flex-row items-center gap-1" type="submit">
+            <MdOutlineFileUpload className="text-xl" />
+            Upload
+          </button>
+        )}
       </form>
     </div>
   );

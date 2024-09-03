@@ -3,7 +3,14 @@ import { useAuth } from '../utils/AuthContext';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
 import ProfilePhoto from '../components/ProfilePhoto';
-import { MdChevronLeft, MdChevronRight, MdClose, MdOutlineAddBox, MdOutlineFileUpload } from 'react-icons/md';
+import {
+  MdChevronLeft,
+  MdChevronRight,
+  MdClose,
+  MdAddCircleOutline,
+  MdOutlineDelete,
+  MdOutlineFileUpload,
+} from 'react-icons/md';
 import Compressor from 'compressorjs';
 import { Genders, Races, Sizes } from '../utils/Enums';
 import { Model, Photographer } from '../utils/Types';
@@ -74,6 +81,9 @@ export default function Profile() {
 
   const deleteModelProfile = async () => {
     const promise = new Promise<void>(async (resolve, reject) => {
+      model!.photos.map(async (photo) => {
+        await supabase.storage.from('model-photos').remove([photo]);
+      });
       const { error } = await supabase.from('models').delete().eq('user_id', user!.user_id);
       if (!error) {
         setModel(undefined);
@@ -112,6 +122,9 @@ export default function Profile() {
 
   const deletePhotographerProfile = async () => {
     const promise = new Promise<void>(async (resolve, reject) => {
+      photographer!.photos.map(async (photo) => {
+        await supabase.storage.from('photographer-photos').remove([photo]);
+      });
       const { error } = await supabase.from('photographers').delete().eq('user_id', user!.user_id);
       if (!error) {
         setPhotographer(undefined);
@@ -159,7 +172,7 @@ export default function Profile() {
     });
   };
 
-  const compressAndUploadImage = (file: File): Promise<string> => {
+  const compressAndUploadImage = (file: File): Promise<{ name: string; url: string }> => {
     return new Promise((resolve, reject) => {
       new Compressor(file, {
         quality: 0.8,
@@ -171,7 +184,7 @@ export default function Profile() {
             reject(error);
           } else {
             const publicUrl = supabase.storage.from('profile-photos').getPublicUrl(fileName).data.publicUrl;
-            resolve(publicUrl);
+            resolve({ name: fileName, url: publicUrl });
           }
         },
         error(err) {
@@ -184,10 +197,10 @@ export default function Profile() {
   const uploadProfilePhoto = async () => {
     const promise = new Promise<void>(async (resolve, reject) => {
       if (!user || !profilePhoto) return;
-      const uploadedImageUrl: string = await compressAndUploadImage(profilePhoto);
+      const uploadedImage = await compressAndUploadImage(profilePhoto);
       const { error } = await supabase
         .from('users')
-        .update([{ profile_photo: uploadedImageUrl }])
+        .update([{ profile_photo: uploadedImage.url }])
         .eq('user_id', user!.user_id);
       if (!error) {
         setProfilePhoto(undefined);
@@ -204,11 +217,16 @@ export default function Profile() {
     });
   };
 
-  const uploadModelPhotos = async (photosUrls: string[]) => {
+  const uploadModelPhotos = async (photos: { name: string; url: string }[]) => {
     if (!user || !model) return;
     const { data, error } = await supabase
       .from('models')
-      .update([{ photos: [...(model.photos || []), ...photosUrls] }])
+      .update([
+        {
+          photos: [...model.photos, ...photos.map((photo) => photo.name)],
+          photo_urls: [...model.photo_urls, ...photos.map((photo) => photo.url)],
+        },
+      ])
       .eq('model_id', model.model_id)
       .select('*')
       .single();
@@ -220,13 +238,19 @@ export default function Profile() {
   const deleteModelPhoto = async (index: number) => {
     if (!user || !model) return;
     const promise = new Promise<void>(async (resolve, reject) => {
+      const { error: storageError } = await supabase.storage.from('model-photos').remove([model.photos[index]]);
       const { data, error } = await supabase
         .from('models')
-        .update([{ photos: model.photos.filter((_, i) => i != index) }])
+        .update([
+          {
+            photos: model.photos.filter((_, i) => i != index),
+            photo_urls: model.photo_urls.filter((_, i) => i != index),
+          },
+        ])
         .eq('model_id', model.model_id)
         .select('*')
         .single();
-      if (!error) {
+      if (!storageError && !error) {
         setModel(data);
         resolve();
       } else {
@@ -240,11 +264,16 @@ export default function Profile() {
     });
   };
 
-  const uploadPhotographerPhotos = async (photosUrls: string[]) => {
+  const uploadPhotographerPhotos = async (photos: { name: string; url: string }[]) => {
     if (!user || !photographer) return;
     const { data, error } = await supabase
       .from('photographers')
-      .update([{ photos: [...(photographer.photos || []), ...photosUrls] }])
+      .update([
+        {
+          photos: [...photographer.photos, ...photos.map((photo) => photo.name)],
+          photo_urls: [...photographer.photo_urls, ...photos.map((photo) => photo.url)],
+        },
+      ])
       .eq('photographer_id', photographer.photographer_id)
       .select('*')
       .single();
@@ -256,13 +285,21 @@ export default function Profile() {
   const deletePhotographerPhoto = async (index: number) => {
     if (!user || !photographer) return;
     const promise = new Promise<void>(async (resolve, reject) => {
+      const { error: storageError } = await supabase.storage
+        .from('photographer-photos')
+        .remove([photographer.photos[index]]);
       const { data, error } = await supabase
         .from('photographers')
-        .update([{ photos: photographer.photos.filter((_, i) => i != index) }])
+        .update([
+          {
+            photos: photographer.photos.filter((_, i) => i != index),
+            photo_urls: photographer.photo_urls.filter((_, i) => i != index),
+          },
+        ])
         .eq('photographer_id', photographer.photographer_id)
         .select('*')
         .single();
-      if (!error) {
+      if (!storageError && !error) {
         setPhotographer(data);
         resolve();
       } else {
@@ -281,43 +318,16 @@ export default function Profile() {
     setRace(values);
   };
 
-  const moveModelPhotoRight = async (index: number) => {
-    if (!user || !model) return;
-    const promise = new Promise<void>(async (resolve, reject) => {
-      let updatedImages = [...model.photos!];
-      const img = updatedImages[index];
-      updatedImages[index] = updatedImages[index + 1];
-      updatedImages[index + 1] = img;
-      const { data, error } = await supabase
-        .from('models')
-        .update([{ photos: updatedImages }])
-        .eq('model_id', model.model_id)
-        .select('*')
-        .single();
-      if (!error) {
-        setModel(data);
-        resolve();
-      } else {
-        reject();
-      }
-    });
-    toastPromise(promise, {
-      pending: 'Moving photo...',
-      success: 'Photo was moved successfully!',
-      error: 'Failed to move photo.',
-    });
-  };
-
   const moveModelPhotoLeft = async (index: number) => {
     if (!user || !model) return;
     const promise = new Promise<void>(async (resolve, reject) => {
-      let updatedImages = [...model.photos!];
-      const img = updatedImages[index];
-      updatedImages[index] = updatedImages[index - 1];
-      updatedImages[index - 1] = img;
+      let updatedPhotos = [...model.photos];
+      let updatedPhotoUrls = [...model.photo_urls];
+      [updatedPhotos[index - 1], updatedPhotos[index]] = [updatedPhotos[index], updatedPhotos[index - 1]];
+      [updatedPhotoUrls[index - 1], updatedPhotoUrls[index]] = [updatedPhotoUrls[index], updatedPhotoUrls[index - 1]];
       const { data, error } = await supabase
         .from('models')
-        .update([{ photos: updatedImages }])
+        .update([{ photos: updatedPhotos, photo_urls: updatedPhotoUrls }])
         .eq('model_id', model.model_id)
         .select('*')
         .single();
@@ -335,16 +345,43 @@ export default function Profile() {
     });
   };
 
-  const movePhotographerPhotoRight = async (index: number) => {
+  const moveModelPhotoRight = async (index: number) => {
+    if (!user || !model) return;
+    const promise = new Promise<void>(async (resolve, reject) => {
+      let updatedPhotos = [...model.photos];
+      let updatedPhotoUrls = [...model.photo_urls];
+      [updatedPhotos[index + 1], updatedPhotos[index]] = [updatedPhotos[index], updatedPhotos[index + 1]];
+      [updatedPhotoUrls[index + 1], updatedPhotoUrls[index]] = [updatedPhotoUrls[index], updatedPhotoUrls[index + 1]];
+      const { data, error } = await supabase
+        .from('models')
+        .update([{ photos: updatedPhotos, photo_urls: updatedPhotoUrls }])
+        .eq('model_id', model.model_id)
+        .select('*')
+        .single();
+      if (!error) {
+        setModel(data);
+        resolve();
+      } else {
+        reject();
+      }
+    });
+    toastPromise(promise, {
+      pending: 'Moving photo...',
+      success: 'Photo was moved successfully!',
+      error: 'Failed to move photo.',
+    });
+  };
+
+  const movePhotographerPhotoLeft = async (index: number) => {
     if (!user || !photographer) return;
     const promise = new Promise<void>(async (resolve, reject) => {
-      let updatedImages = [...photographer.photos!];
-      const img = updatedImages[index];
-      updatedImages[index] = updatedImages[index + 1];
-      updatedImages[index + 1] = img;
+      let updatedPhotos = [...photographer.photos];
+      let updatedPhotoUrls = [...photographer.photo_urls];
+      [updatedPhotos[index - 1], updatedPhotos[index]] = [updatedPhotos[index], updatedPhotos[index - 1]];
+      [updatedPhotoUrls[index - 1], updatedPhotoUrls[index]] = [updatedPhotoUrls[index], updatedPhotoUrls[index - 1]];
       const { data, error } = await supabase
         .from('photographers')
-        .update([{ photos: updatedImages }])
+        .update([{ photos: updatedPhotos, photo_urls: updatedPhotoUrls }])
         .eq('photographer_id', photographer.photographer_id)
         .select('*')
         .single();
@@ -362,16 +399,16 @@ export default function Profile() {
     });
   };
 
-  const movePhotographerPhotoLeft = async (index: number) => {
+  const movePhotographerPhotoRight = async (index: number) => {
     if (!user || !photographer) return;
     const promise = new Promise<void>(async (resolve, reject) => {
-      let updatedImages = [...photographer.photos!];
-      const img = updatedImages[index];
-      updatedImages[index] = updatedImages[index - 1];
-      updatedImages[index - 1] = img;
+      let updatedPhotos = [...photographer.photos];
+      let updatedPhotoUrls = [...photographer.photo_urls];
+      [updatedPhotos[index + 1], updatedPhotos[index]] = [updatedPhotos[index], updatedPhotos[index + 1]];
+      [updatedPhotoUrls[index + 1], updatedPhotoUrls[index]] = [updatedPhotoUrls[index], updatedPhotoUrls[index + 1]];
       const { data, error } = await supabase
         .from('photographers')
-        .update([{ photos: updatedImages }])
+        .update([{ photos: updatedPhotos, photo_urls: updatedPhotoUrls }])
         .eq('photographer_id', photographer.photographer_id)
         .select('*')
         .single();
@@ -566,8 +603,10 @@ export default function Profile() {
                             value={gender || ''}
                           >
                             <option value="" />
-                            {Object.values(Genders).map((gender) => (
-                              <option value={gender}>{gender}</option>
+                            {Object.values(Genders).map((gender, index) => (
+                              <option value={gender} key={index}>
+                                {gender}
+                              </option>
                             ))}
                           </select>
                         </div>
@@ -578,8 +617,10 @@ export default function Profile() {
                           {/* <input id="race" type="text" onChange={(e) => setRace(e.target.value)} value={race || ''} /> */}
                           <select name="race" id="race" multiple value={race} onChange={(e) => handleSetRace(e.target)}>
                             <option value="" />
-                            {Object.values(Races).map((race) => (
-                              <option value={race}>{race}</option>
+                            {Object.values(Races).map((race, index) => (
+                              <option value={race} key={index}>
+                                {race}
+                              </option>
                             ))}
                           </select>
                         </div>
@@ -596,24 +637,18 @@ export default function Profile() {
                         </div>
                       </div>
                       <p className="font-bold">Digitals</p>
-                      {model.photos && (
-                        <div
-                          className="w-full grid gap-3"
-                          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}
-                        >
-                          {model.photos.map((photo, index) => (
-                            <div
-                              className="w-full rounded bg-cover bg-no-repeat bg-center relative"
-                              style={{ backgroundImage: `url(${photo})`, aspectRatio: '0.75' }}
-                              key={photo}
-                            >
+                      {model.photo_urls.length > 0 && (
+                        <div className="w-full flex flex-row flex-wrap gap-3">
+                          {model.photo_urls.map((photo, index) => (
+                            <div className="relative" key={index}>
+                              <img className="h-48 rounded cursor-pointer" src={photo} />
                               <button
                                 className="absolute top-0 right-0 m-2 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
                                 onClick={() => deleteModelPhoto(index)}
                               >
                                 <MdClose />
                               </button>
-                              {index !== 0 && model.photos.length > 1 && (
+                              {index !== 0 && model.photo_urls.length > 1 && (
                                 <button
                                   className="absolute bottom-0 left-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
                                   onClick={() => moveModelPhotoLeft(index)}
@@ -621,7 +656,7 @@ export default function Profile() {
                                   <MdChevronLeft />
                                 </button>
                               )}
-                              {index !== model.photos.length - 1 && (
+                              {index !== model.photo_urls.length - 1 && (
                                 <button
                                   className="absolute bottom-0 right-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
                                   onClick={() => moveModelPhotoRight(index)}
@@ -633,14 +668,14 @@ export default function Profile() {
                           ))}
                         </div>
                       )}
-                      <PhotoUpload onUpload={uploadModelPhotos} />
+                      <PhotoUpload bucket="model-photos" onUpload={uploadModelPhotos} />
                       <button className="button light flex flex-row items-center gap-1" onClick={deleteModelProfile}>
-                        Delete model profile
+                        <MdOutlineDelete className="text-xl" /> Delete model profile
                       </button>
                     </>
                   ) : (
                     <button className="button light flex flex-row items-center gap-1" onClick={createModelProfile}>
-                      <MdOutlineAddBox className="text-xl" />
+                      <MdAddCircleOutline className="text-xl" />
                       Create model profile
                     </button>
                   ))}
@@ -650,24 +685,18 @@ export default function Profile() {
                   (photographer ? (
                     <>
                       <p className="font-bold">Photos</p>
-                      {photographer.photos && (
-                        <div
-                          className="w-full grid gap-3"
-                          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}
-                        >
-                          {photographer.photos.map((photo, index) => (
-                            <div
-                              className="w-full rounded bg-cover bg-no-repeat bg-center relative"
-                              style={{ backgroundImage: `url(${photo})`, aspectRatio: '1' }}
-                              key={photo}
-                            >
+                      {photographer.photo_urls.length > 0 && (
+                        <div className="w-full flex flex-row flex-wrap gap-3">
+                          {photographer.photo_urls.map((photo, index) => (
+                            <div className="relative" key={index}>
+                              <img className="h-48 rounded cursor-pointer" src={photo} />
                               <button
                                 className="absolute top-0 right-0 m-2 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
                                 onClick={() => deletePhotographerPhoto(index)}
                               >
                                 <MdClose />
                               </button>
-                              {index !== 0 && photographer.photos.length > 1 && (
+                              {index !== 0 && photographer.photo_urls.length > 1 && (
                                 <button
                                   className="absolute bottom-0 left-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
                                   onClick={() => movePhotographerPhotoLeft(index)}
@@ -675,7 +704,7 @@ export default function Profile() {
                                   <MdChevronLeft />
                                 </button>
                               )}
-                              {index !== photographer.photos.length - 1 && (
+                              {index !== photographer.photo_urls.length - 1 && (
                                 <button
                                   className="absolute bottom-0 right-0 m-1.5 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
                                   onClick={() => movePhotographerPhotoRight(index)}
@@ -687,12 +716,12 @@ export default function Profile() {
                           ))}
                         </div>
                       )}
-                      <PhotoUpload onUpload={uploadPhotographerPhotos} />
+                      <PhotoUpload bucket="photographer-photos" onUpload={uploadPhotographerPhotos} />
                       <button
                         className="button light flex flex-row items-center gap-1"
                         onClick={deletePhotographerProfile}
                       >
-                        Delete photographer profile
+                        <MdOutlineDelete className="text-xl" /> Delete photographer profile
                       </button>
                     </>
                   ) : (
@@ -700,7 +729,7 @@ export default function Profile() {
                       className="button light flex flex-row items-center gap-1"
                       onClick={createPhotographerProfile}
                     >
-                      <MdOutlineAddBox className="text-xl" />
+                      <MdAddCircleOutline className="text-xl" />
                       Create photographer profile
                     </button>
                   ))}

@@ -39,7 +39,7 @@ export default function Filters({ onFiltersUpdate }: Props) {
         Filters <MdKeyboardArrowDown className={`text-xl mr-[-5px] duration-300 ${isOpen && 'scale-y-[-1]'}`} />
       </button>
       <div
-        className={`max-w-[600px] mx-5 left-0 absolute border rounded p-5 backdrop-blur bg-background/70 duration-300 mt-2 shadow-lg ${!isOpen && 'opacity-0 pointer-events-none'}`}
+        className={`max-w-[600px] mx-5 left-0 absolute border rounded p-5 backdrop-blur bg-background/70 duration-300 mt-2 shadow-md ${!isOpen && 'opacity-0 pointer-events-none'}`}
       >
         <div className="flex flex-col gap-3 text-nowrap">
           {/* Gender */}
@@ -52,10 +52,11 @@ export default function Filters({ onFiltersUpdate }: Props) {
               <span className={`w-3 h-3 flex border rounded-full ${!genderFilters.length && 'bg-foreground'}`} />
               <span className={genderFilters.length ? 'opacity-60' : ''}>All</span>
             </button>
-            {Object.values(Genders).map((gender) => (
+            {Object.values(Genders).map((gender, index) => (
               <button
                 className="flex flex-row items-center gap-2 border rounded p-2"
                 onClick={() => toggleCheckbox(genderFilters, gender, setGenderFilters)}
+                key={index}
               >
                 <span
                   className={`w-3 h-3 flex border rounded-full ${genderFilters.includes(gender) && 'bg-foreground'}`}
@@ -71,10 +72,11 @@ export default function Filters({ onFiltersUpdate }: Props) {
               <span className={`w-3 h-3 flex border rounded-full ${!raceFilters.length && 'bg-foreground'}`} />
               <span className={raceFilters.length ? 'opacity-60' : ''}>All</span>
             </button>
-            {Object.values(Races).map((race) => (
+            {Object.values(Races).map((race, index) => (
               <button
                 className="flex flex-row items-center gap-2 border rounded p-2"
                 onClick={() => toggleCheckbox(raceFilters, race, setRaceFilters)}
+                key={index}
               >
                 <span className={`w-3 h-3 flex border rounded-full ${raceFilters.includes(race) && 'bg-foreground'}`} />
                 <span className={raceFilters.includes(race) ? '' : 'opacity-60'}>{race}</span>
