@@ -1,11 +1,4 @@
-import {
-  MdOutlineImage,
-  MdClose,
-  MdOutlineFileDownload,
-  MdChevronLeft,
-  MdChevronRight,
-  MdOutlineFileUpload,
-} from 'react-icons/md';
+import { MdOutlineImage, MdClose, MdChevronLeft, MdChevronRight, MdOutlineFileUpload } from 'react-icons/md';
 import { useState, useRef, useMemo } from 'react';
 import { supabase } from '../supabase';
 import Compressor from 'compressorjs';
