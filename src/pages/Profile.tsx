@@ -620,7 +620,7 @@ export default function Profile() {
                           ))}
                         </div>
                       )}
-                      <PhotoUpload bucket="model-photos" onUpload={uploadModelPhotos} />
+                      <PhotoUpload onUpload={uploadModelPhotos} />
                       <button className="button light flex flex-row items-center gap-1" onClick={deleteModelProfile}>
                         <MdOutlineDelete className="text-xl" /> Delete model profile
                       </button>
@@ -668,7 +668,7 @@ export default function Profile() {
                           ))}
                         </div>
                       )}
-                      <PhotoUpload bucket="photographer-photos" onUpload={uploadPhotographerPhotos} />
+                      <PhotoUpload onUpload={uploadPhotographerPhotos} />
                       <button
                         className="button light flex flex-row items-center gap-1"
                         onClick={deletePhotographerProfile}

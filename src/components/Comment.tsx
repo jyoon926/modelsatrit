@@ -25,10 +25,10 @@ export default function Comment({ comment, onDelete }: Props) {
   const [isHovered, setIsHovered] = useState(false);
 
   const fetchLikes = async () => {
-    const { data, error } = await supabase.from('like').select('*, user:user(*)').eq('comment_id', comment.comment_id);
+    const { data, error } = await supabase.from('like').select('*, user:user(*)').eq('comment_id', comment.id);
     if (!error) {
       setLikes(data);
-      setLiked(data.find((like) => like.user_id === user?.user_id));
+      setLiked(data.find((like) => like.user_id === user?.id));
     }
   };
 
@@ -39,18 +39,12 @@ export default function Comment({ comment, onDelete }: Props) {
   const handleLike = async () => {
     if (!user) return;
     if (liked) {
-      const { error } = await supabase
-        .from('like')
-        .delete()
-        .eq('user_id', user?.user_id)
-        .eq('comment_id', comment.comment_id);
+      const { error } = await supabase.from('like').delete().eq('user_id', user?.id).eq('comment_id', comment.id);
       if (!error) {
         fetchLikes();
       }
     } else {
-      const { error } = await supabase
-        .from('like')
-        .insert([{ comment_id: comment.comment_id, user_id: user?.user_id }]);
+      const { error } = await supabase.from('like').insert([{ comment_id: comment.id, user_id: user?.id }]);
       if (!error) {
         fetchLikes();
       }
@@ -58,9 +52,9 @@ export default function Comment({ comment, onDelete }: Props) {
   };
 
   const handleDelete = async () => {
-    const { error } = await supabase.from('comment').delete().eq('comment_id', comment.comment_id);
+    const { error } = await supabase.from('comment').delete().eq('comment_id', comment.id);
     if (!error) {
-      onDelete(comment.comment_id);
+      onDelete(comment.id);
     }
   };
 
@@ -73,7 +67,7 @@ export default function Comment({ comment, onDelete }: Props) {
       <div
         className={
           'mt-[7px] mr-[-0.7rem] ml-[-0.35rem] duration-300 ' +
-          (user?.user_id === comment?.user_id
+          (user?.id === comment?.user_id
             ? isHovered || isOptionsOpen
               ? 'sm:opacity-100 sm:pointer-events-auto'
               : 'sm:opacity-0 sm:pointer-events-none'
@@ -81,7 +75,7 @@ export default function Comment({ comment, onDelete }: Props) {
         }
       >
         <OptionsMenu onClose={() => setIsOptionsOpen(false)} onOpen={() => setIsOptionsOpen(true)}>
-          {comment.user_id === user?.user_id && (
+          {comment.user_id === user?.id && (
             <button className="button transparent sm flex flex-row items-center gap-1" onClick={handleDelete}>
               <MdDeleteOutline className="text-xl" /> Delete comment
             </button>

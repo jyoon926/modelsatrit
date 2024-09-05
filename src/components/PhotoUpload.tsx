@@ -5,11 +5,10 @@ import { Photo } from '../utils/Types';
 import { uploadPhoto } from '../utils/PhotoUtils';
 
 interface Props {
-  bucket: string;
   onUpload: (photos: Photo[]) => Promise<void>;
 }
 
-export default function PhotoUpload({ bucket, onUpload }: Props) {
+export default function PhotoUpload({ onUpload }: Props) {
   const { toastPromise } = useNotification();
   const [images, setImages] = useState<File[]>([]);
   const [dragging, setDragging] = useState<boolean>(false);

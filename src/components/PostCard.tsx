@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Comment as IComment, Like, Post, Tag } from '../utils/Types';
+import { Comment as IComment, Like, Post } from '../utils/Types';
 import { useAuth } from '../utils/AuthContext';
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
@@ -29,7 +29,7 @@ export default function PostCard({ post, onDelete }: Props) {
   const [likes, setLikes] = useState<Like[]>([]);
   const [liked, setLiked] = useState<boolean>(false);
   const [showComments, setShowComments] = useState<boolean>(false);
-  const [tags, setTags] = useState<Tag[]>([]);
+  // const [tags, setTags] = useState<Tag[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -57,8 +57,8 @@ export default function PostCard({ post, onDelete }: Props) {
   };
 
   const fetchTags = async () => {
-    const { data, error } = await supabase.from('tag').select('*, user:user(*)').eq('post_id', post.id);
-    if (!error) setTags(data);
+    // const { data, error } = await supabase.from('tag').select('*, user:user(*)').eq('post_id', post.id);
+    // if (!error) setTags(data);
   };
 
   useEffect(() => {
