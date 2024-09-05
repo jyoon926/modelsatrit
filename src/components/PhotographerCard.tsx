@@ -40,12 +40,12 @@ export default function PhotographerCard({ photographer }: Props) {
           View Profile
         </Link>
       </div>
-      {photographer.photo_urls.length > 0 ? (
-        <div className="w-full flex flex-row gap-3 overflow-x-auto slim-scrollbar">
-          {photographer.photo_urls.map((photo, index) => (
+      {photographer.photos.length > 0 ? (
+        <div className="w-full flex flex-row gap-3 overflow-x-auto scrollbar-slim">
+          {photographer.photos.map((photo, index) => (
             <img
-              className="h-80 bg-cover bg-no-repeat bg-center rounded cursor-pointer"
-              src={photo}
+              className="h-80 rounded cursor-pointer"
+              src={photo.medium}
               key={index}
               onClick={() => handlePhotoClick(index)}
             />
@@ -55,7 +55,7 @@ export default function PhotographerCard({ photographer }: Props) {
         <div className="opacity-60 skew-x-[-10deg]">No photos.</div>
       )}
       <Slideshow
-        photos={photographer.photo_urls}
+        photos={photographer.photos.map((photo) => photo.large)}
         selected={slideshowId}
         isOpen={isSlideshowOpen}
         onClose={() => setIsSlideshowOpen(false)}

@@ -25,10 +25,7 @@ export default function Comment({ comment, onDelete }: Props) {
   const [isHovered, setIsHovered] = useState(false);
 
   const fetchLikes = async () => {
-    const { data, error } = await supabase
-      .from('likes')
-      .select('*, user:users(*)')
-      .eq('comment_id', comment.comment_id);
+    const { data, error } = await supabase.from('like').select('*, user:user(*)').eq('comment_id', comment.comment_id);
     if (!error) {
       setLikes(data);
       setLiked(data.find((like) => like.user_id === user?.user_id));
@@ -43,7 +40,7 @@ export default function Comment({ comment, onDelete }: Props) {
     if (!user) return;
     if (liked) {
       const { error } = await supabase
-        .from('likes')
+        .from('like')
         .delete()
         .eq('user_id', user?.user_id)
         .eq('comment_id', comment.comment_id);
@@ -52,7 +49,7 @@ export default function Comment({ comment, onDelete }: Props) {
       }
     } else {
       const { error } = await supabase
-        .from('likes')
+        .from('like')
         .insert([{ comment_id: comment.comment_id, user_id: user?.user_id }]);
       if (!error) {
         fetchLikes();
@@ -61,7 +58,7 @@ export default function Comment({ comment, onDelete }: Props) {
   };
 
   const handleDelete = async () => {
-    const { error } = await supabase.from('comments').delete().eq('comment_id', comment.comment_id);
+    const { error } = await supabase.from('comment').delete().eq('comment_id', comment.comment_id);
     if (!error) {
       onDelete(comment.comment_id);
     }

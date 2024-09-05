@@ -25,7 +25,7 @@ export default function TagPanel({ tags, updateTags }: Props) {
   };
 
   const removeUserFromTags = (userToRemove: User) => {
-    updateTags(tags.filter((user) => user.user_id !== userToRemove.user_id));
+    updateTags(tags.filter((user) => user.id !== userToRemove.id));
   };
 
   useEffect(() => {
@@ -35,10 +35,10 @@ export default function TagPanel({ tags, updateTags }: Props) {
         return;
       }
       const { data, error } = await supabase
-        .from('users')
+        .from('user')
         .select('*')
         .ilike('name', `%${searchQuery}%`)
-        .not('user_id', 'in', `(${tags.map((tag) => tag.user_id).join(',')})`)
+        .not('id', 'in', `(${tags.map((tag) => tag.id).join(',')})`)
         .limit(5);
       if (!error) {
         setUsers(data || []);

@@ -10,14 +10,18 @@ export default function Models() {
   const [raceFilters, setRaceFilters] = useState<string[]>([]);
 
   const fetchData = async () => {
-    let query = supabase.from('models').select('*, user:users(*)');
+    let query = supabase.from('model').select('*, user:user(*), photos:model_photo(photo(*))');
     if (genderFilters.length > 0) query = query.in('gender', genderFilters);
     if (raceFilters.length > 0) {
       const orQuery = raceFilters.map((race) => `race.cs.{${race}}`).join(',');
       query = query.or(orQuery);
     }
     const { data, error } = await query;
-    if (!error) setModels(data);
+    console.log(data);
+    if (!error) {
+      const reshapedData = data.map((model) => ({ ...model, photos: model.photos.map((item: any) => item.photo) }));
+      setModels(reshapedData);
+    }
   };
 
   useEffect(() => {
@@ -38,11 +42,11 @@ export default function Models() {
           <div className="w-full grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
             {models.map(
               (model) =>
-                model.photo_urls.length > 0 && (
-                  <Link className="w-full" to={`/profile/${model.user.email}/model`} key={model.model_id}>
+                model.photos.length > 0 && (
+                  <Link className="w-full" to={`/profile/${model.user.email}/model`} key={model.id}>
                     <div
                       className="w-full bg-cover bg-no-repeat bg-center rounded"
-                      style={{ backgroundImage: `url(${model.photo_urls[0]})`, aspectRatio: '0.75' }}
+                      style={{ backgroundImage: `url(${model.photos[0].medium})`, aspectRatio: '0.75' }}
                     />
                     <p className="font-serif mt-3 text-2xl">{model.user.name}</p>
                   </Link>

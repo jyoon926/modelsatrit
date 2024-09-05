@@ -1,12 +1,12 @@
 import { MdOutlineImage, MdClose, MdChevronLeft, MdChevronRight, MdOutlineFileUpload } from 'react-icons/md';
 import { useState, useRef, useMemo } from 'react';
-import { supabase } from '../supabase';
-import Compressor from 'compressorjs';
 import { useNotification } from './Notification';
+import { Photo } from '../utils/Types';
+import { uploadPhoto } from '../utils/PhotoUtils';
 
 interface Props {
   bucket: string;
-  onUpload: (photos: { name: string; url: string }[]) => Promise<void>;
+  onUpload: (photos: Photo[]) => Promise<void>;
 }
 
 export default function PhotoUpload({ bucket, onUpload }: Props) {
@@ -18,11 +18,10 @@ export default function PhotoUpload({ bucket, onUpload }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Compress and upload images
     const upload = new Promise<void>(async (resolve, reject) => {
       try {
-        const uploadedImages = await Promise.all(images.map(compressAndUploadImage));
-        await onUpload(uploadedImages);
+        const photos = await Promise.all(images.map((file) => uploadPhoto(file)));
+        await onUpload(photos);
         setImages([]);
         resolve();
       } catch (e) {
@@ -33,28 +32,6 @@ export default function PhotoUpload({ bucket, onUpload }: Props) {
       pending: 'Uploading photos...',
       success: 'Photos were uploaded successfully!',
       error: 'Upload failed.',
-    });
-  };
-
-  const compressAndUploadImage = (file: File): Promise<{ name: string; url: string }> => {
-    return new Promise((resolve, reject) => {
-      new Compressor(file, {
-        quality: 0.75,
-        maxWidth: 1200,
-        async success(result) {
-          const fileName = `${Date.now()}_${file.name.replace("'", '')}`;
-          const { error } = await supabase.storage.from(bucket).upload(fileName, result);
-          if (error) {
-            reject(error);
-          } else {
-            const publicUrl = supabase.storage.from(bucket).getPublicUrl(fileName).data.publicUrl;
-            resolve({ name: fileName, url: publicUrl });
-          }
-        },
-        error(err) {
-          reject(err);
-        },
-      });
     });
   };
 

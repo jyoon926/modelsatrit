@@ -2,12 +2,12 @@ import { useMemo, useRef, useState } from 'react';
 import { useAuth } from '../utils/AuthContext';
 import { supabase } from '../supabase';
 import ProfilePhoto from './ProfilePhoto';
-import Compressor from 'compressorjs';
 import { MdChevronLeft, MdChevronRight, MdClose, MdOutlineImage } from 'react-icons/md';
 import { Post, User } from '../utils/Types';
 import AutoTextArea from './AutoTextArea';
 import TagPanel from './TagPanel';
 import { useNotification } from './Notification';
+import { uploadPhoto } from '../utils/PhotoUtils';
 
 interface Props {
   onCreate: (post: Post) => void;
@@ -29,31 +29,44 @@ export default function PostCreateCard({ onCreate }: Props) {
     if (!user) return;
 
     const promise = new Promise<void>(async (resolve, reject) => {
-      // Compress and upload images
-      const uploadedImages = await Promise.all(images.map(compressAndUploadImage));
-      const photos = uploadedImages.map((image) => image.name);
-      const photo_urls = uploadedImages.map((image) => image.url);
+      const uploadedPhotos = await Promise.all(images.map(uploadPhoto));
+      const photos = uploadedPhotos.map((photo) => photo.id);
 
-      const { data, error } = await supabase
-        .from('posts')
-        .insert([{ user_id: user.user_id, caption, photos, photo_urls }])
-        .select('*, user:users(*), likes:likes(*)')
+      const { data: post, error } = await supabase
+        .from('post')
+        .insert([{ user_id: user.id, caption, photos }])
+        .select('id')
         .single();
 
-      if (!error && data) {
-        tags.map((photo, index) =>
-          photo.map(
-            async (tag) =>
-              await supabase.from('tags').insert([{ post_id: data.post_id, user_id: tag.user_id, photo_index: index }])
-          )
+      if (!error && post) {
+        await supabase.from('post_photo').insert(
+          photos.map((photo) => {
+            return { post_id: post.id, photo_id: photo };
+          })
         );
+        if (tags.length > 0) {
+          await supabase.from('tag').insert(
+            tags.map((photo, index) =>
+              photo.map((tag) => {
+                return { post_id: post.id, user_id: tag.id, photo_index: index };
+              })
+            )
+          );
+        }
+        const { data, error } = await supabase
+          .from('post')
+          .select('*, user:user(*), likes:like(*), photos:post_photo(photo(*))')
+          .eq('id', post.id)
+          .single();
+        const reshapedData = { ...data, photos: data.photos.map((item: any) => item.photo) };
+        if (error) reject(error);
         setCaption('');
         setImages([]);
         setTags([]);
-        onCreate(data as Post);
+        onCreate(reshapedData as Post);
         resolve();
       } else {
-        reject();
+        reject(error);
       }
     });
 
@@ -61,28 +74,6 @@ export default function PostCreateCard({ onCreate }: Props) {
       pending: 'Creating post...',
       success: 'Post was created successfully!',
       error: 'Failed to create post.',
-    });
-  };
-
-  const compressAndUploadImage = (file: File): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      new Compressor(file, {
-        quality: 0.8,
-        maxWidth: 1200,
-        async success(result) {
-          const fileName = `${Date.now()}_${file.name.replace("'", '')}`;
-          const { error } = await supabase.storage.from('posts').upload(fileName, result);
-          if (error) {
-            reject(error);
-          } else {
-            const { data } = supabase.storage.from('posts').getPublicUrl(fileName);
-            resolve({ name: fileName, url: data.publicUrl });
-          }
-        },
-        error(err) {
-          reject(err);
-        },
-      });
     });
   };
 

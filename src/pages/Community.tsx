@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import { Post } from '../utils/Types';
 import PostCard from '../components/PostCard';
@@ -11,25 +11,35 @@ export default function Community() {
   const [loading, setLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchData = useCallback(async () => {
+  const fetchPosts = async () => {
     if (loading || !hasMore) return;
     setLoading(true);
     const { data, error } = await supabase
-      .from('posts')
-      .select('*, user:users(*)')
+      .from('post')
+      .select('*, user:user(*), photos:post_photo(photo(*))')
       .order('created_at', { ascending: false })
       .range(page * 10, (page + 1) * 10 - 1);
     if (!error && data) {
-      setPosts((prevPosts) => [...prevPosts, ...data]);
+      const reshapedData = data.map((post) => ({ ...post, photos: post.photos.map((item: any) => item.photo) }));
+      setPosts((prevPosts) => [...prevPosts, ...reshapedData]);
       setHasMore(data.length === 10);
     }
     setLoading(false);
-  }, [page, loading, hasMore]);
+  };
 
   useEffect(() => {
-    fetchData();
+    fetchPosts();
   }, [page]);
 
+  const onDeletePost = (post_id: number) => {
+    setPosts((prevPosts) => prevPosts!.filter((post) => post.id !== post_id));
+  };
+
+  const onCreatePost = (post: Post) => {
+    setPosts([post, ...posts]);
+  };
+
+  // Infinite scroll
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -44,23 +54,15 @@ export default function Community() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loading]);
 
-  const handleDeletePost = (post_id: number) => {
-    setPosts((prevPosts) => prevPosts!.filter((post) => post.post_id !== post_id));
-  };
-
-  const handleCreatePost = (post: Post) => {
-    setPosts([post, ...posts!]);
-  };
-
   return (
     <div className="fade-in flex flex-col items-center">
       <div className="w-full max-w-[800px] px-5 py-32 flex flex-col justify-start items-center gap-5">
         <h1 className="text-5xl sm:text-6xl font-serif w-full mb-5 border-b">Community Posts</h1>
-        <PostCreateCard onCreate={handleCreatePost}></PostCreateCard>
+        <PostCreateCard onCreate={onCreatePost}></PostCreateCard>
         {posts && (
           <div className="w-full flex flex-col gap-5">
             {posts.map((post) => (
-              <PostCard post={post} key={post.post_id} onDelete={handleDeletePost}></PostCard>
+              <PostCard post={post} key={post.id} onDelete={onDeletePost}></PostCard>
             ))}
           </div>
         )}

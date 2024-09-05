@@ -20,7 +20,7 @@ export default function Register() {
       setError(error.message);
     } else {
       const { error } = await supabase
-        .from('users')
+        .from('user')
         .insert([{ auth_id: data.user?.id, name, email }])
         .select('*');
       if (error) {

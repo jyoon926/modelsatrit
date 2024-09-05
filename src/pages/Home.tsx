@@ -8,9 +8,10 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase.from('models').select('*');
+      const { data, error } = await supabase.from('model').select('*, photos:model_photo(photo(*))');
       if (!error) {
-        setModels(data);
+        const reshapedData = data.map((model) => ({ ...model, photos: model.photos.map((item: any) => item.photo) }));
+        setModels(reshapedData);
       }
     };
 
@@ -88,12 +89,12 @@ export default function Home() {
           models.length > 0 &&
           models?.map(
             (model, index) =>
-              model.photo_urls &&
-              model.photo_urls.length > 0 && (
+              model.photos &&
+              model.photos.length > 0 && (
                 <div
                   className="absolute h-[25vh] sm:h-[35vh] bg-cover bg-no-repeat bg-center rounded-lg opacity-0 scale-0 translate-x-[-50%] translate-y-[-50%]"
                   style={{
-                    backgroundImage: `url(${model.photo_urls[0]})`,
+                    backgroundImage: `url(${model.photos[0].small})`,
                     aspectRatio: '0.75',
                     transition: 'transform 0.5s, opacity 0.5s',
                   }}

@@ -23,10 +23,10 @@ export default function PublicProfile() {
   const [posts, setPosts] = useState<Post[]>();
 
   // Misc
-  const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(true);
   const [currentTab, setCurrentTab] = useState(tab);
   const [tabs, setTabs] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   // Slideshow
   const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
@@ -34,30 +34,39 @@ export default function PublicProfile() {
   const [slideshowId, setSlideshowId] = useState(0);
 
   const getModel = async (user_id: number) => {
-    const { data, error } = await supabase.from('models').select('*').eq('user_id', user_id).single();
+    const { data, error } = await supabase
+      .from('model')
+      .select('*, photos:model_photo(photo(*))')
+      .eq('user_id', user_id)
+      .single();
     if (!error) {
-      setModel(data);
+      setModel({ ...data, photos: data.photos.map((item: any) => item.photo) });
       setTabs((prev) => [...prev, 'model']);
     }
   };
 
   const getPhotographer = async (user_id: number) => {
-    const { data, error } = await supabase.from('photographers').select('*').eq('user_id', user_id).single();
+    const { data, error } = await supabase
+      .from('photographer')
+      .select('*, photos:photographer_photo(photo(*))')
+      .eq('user_id', user_id)
+      .single();
     if (!error) {
-      setPhotographer(data);
+      setPhotographer({ ...data, photos: data.photos.map((item: any) => item.photo) });
       setTabs((prev) => [...prev, 'photographer']);
     }
   };
 
   const getPosts = async (user_id: number) => {
     const { data, error } = await supabase
-      .from('posts')
-      .select('*, user:users(*), likes:likes(*)')
+      .from('post')
+      .select('*, user:user(*), photos:post_photo(photo(*))')
       .eq('user_id', user_id)
       .order('created_at', { ascending: false });
     if (!error && data.length > 0) {
-      setPosts(data);
-      setTabs([...tabs, 'posts']);
+      const reshapedData = data.map((post) => ({ ...post, photos: post.photos.map((item: any) => item.photo) }));
+      setPosts(reshapedData);
+      setTabs((prev) => [...prev, 'posts']);
     }
   };
 
@@ -65,12 +74,12 @@ export default function PublicProfile() {
     if (email) {
       setTabs([]);
       setLoading(true);
-      const { data, error } = await supabase.from('users').select('*').eq('email', email).single();
+      const { data, error } = await supabase.from('user').select('*').eq('email', email).single();
       if (!error) {
         setUser(data);
-        await getModel(data.user_id);
-        await getPhotographer(data.user_id);
-        await getPosts(data.user_id);
+        await getModel(data.id);
+        await getPhotographer(data.id);
+        await getPosts(data.id);
       } else {
         return navigate('/404');
       }
@@ -124,7 +133,7 @@ export default function PublicProfile() {
   };
 
   const handleDeletePost = (post_id: number) => {
-    setPosts((prevPosts) => prevPosts!.filter((post) => post.post_id !== post_id));
+    setPosts((prevPosts) => prevPosts!.filter((post) => post.id !== post_id));
   };
 
   return user ? (
@@ -201,7 +210,7 @@ export default function PublicProfile() {
                     }
                     onClick={() => handleTabClick('model')}
                   >
-                    Model Profile
+                    Modeling
                   </button>
                 )}
                 {tabs.includes('photographer') && (
@@ -212,7 +221,7 @@ export default function PublicProfile() {
                     }
                     onClick={() => handleTabClick('photographer')}
                   >
-                    Photographer Profile
+                    Photography
                   </button>
                 )}
                 {tabs.includes('posts') && (
@@ -259,21 +268,27 @@ export default function PublicProfile() {
                         </div>
                       </>
                     )}
-                    {model.photo_urls.length > 0 && (
+                    {model.photos.length > 0 && (
                       <>
+                        <p className="font-bold">Portfolio</p>
                         <div className="w-full flex flex-row flex-wrap gap-3">
-                          {model.photo_urls.map((photo, index) => (
+                          {model.photos.map((photo, index) => (
                             <img
-                              className="h-60 rounded cursor-pointer"
-                              src={photo}
+                              className="h-72 rounded cursor-pointer"
+                              src={photo.small}
                               key={index}
-                              onClick={() => handlePhotoClick(index, model.photo_urls)}
+                              onClick={() =>
+                                handlePhotoClick(
+                                  index,
+                                  model.photos.map((photo) => photo.large)
+                                )
+                              }
                             />
                           ))}
                         </div>
                       </>
                     )}
-                    {!model.gender && !model.race && !model.height && !model.photo_urls && (
+                    {!model.gender && !model.race && !model.height && !model.photos && (
                       <p className="skew-x-[-10deg] opacity-60">No information.</p>
                     )}
                   </>
@@ -282,16 +297,21 @@ export default function PublicProfile() {
                 {/* Photographer page */}
                 {photographer &&
                   currentTab === 'photographer' &&
-                  (photographer.photo_urls.length > 0 ? (
+                  (photographer.photos.length > 0 ? (
                     <>
                       <p className="font-bold">Portfolio</p>
                       <div className="w-full flex flex-row flex-wrap gap-3">
-                        {photographer.photo_urls.map((photo, index) => (
+                        {photographer.photos.map((photo, index) => (
                           <img
-                            className="h-60 rounded cursor-pointer"
-                            src={photo}
+                            className="h-72 rounded cursor-pointer"
+                            src={photo.small}
                             key={index}
-                            onClick={() => handlePhotoClick(index, photographer.photo_urls)}
+                            onClick={() =>
+                              handlePhotoClick(
+                                index,
+                                photographer.photos.map((photo) => photo.large)
+                              )
+                            }
                           />
                         ))}
                       </div>

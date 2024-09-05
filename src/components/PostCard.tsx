@@ -15,6 +15,7 @@ import AutoTextArea from './AutoTextArea';
 import { Sizes } from '../utils/Enums';
 import Slideshow from './Slideshow';
 import { useNotification } from './Notification';
+import { deletePhoto } from '../utils/PhotoUtils';
 
 interface Props {
   post: Post;
@@ -38,9 +39,9 @@ export default function PostCard({ post, onDelete }: Props) {
 
   const fetchComments = async () => {
     const { data, error } = await supabase
-      .from('comments')
-      .select('*, user:users(*), likes:likes(*)')
-      .eq('post_id', post.post_id)
+      .from('comment')
+      .select('*, user:user(*), likes:like(*)')
+      .eq('post_id', post.id)
       .order('created_at', { ascending: false });
     if (!error) {
       setComments(data);
@@ -48,18 +49,16 @@ export default function PostCard({ post, onDelete }: Props) {
   };
 
   const fetchLikes = async () => {
-    const { data, error } = await supabase.from('likes').select('*, user:users(*)').eq('post_id', post.post_id);
+    const { data, error } = await supabase.from('like').select('*, user:user(*)').eq('post_id', post.id);
     if (!error) {
       setLikes(data);
-      setLiked(data.find((like) => like.user_id === user?.user_id));
+      setLiked(data.find((like) => like.user_id === user?.id));
     }
   };
 
   const fetchTags = async () => {
-    const { data, error } = await supabase.from('tags').select('*, user:users(*)').eq('post_id', post.post_id);
-    if (!error) {
-      setTags(data);
-    }
+    const { data, error } = await supabase.from('tag').select('*, user:user(*)').eq('post_id', post.id);
+    if (!error) setTags(data);
   };
 
   useEffect(() => {
@@ -71,9 +70,9 @@ export default function PostCard({ post, onDelete }: Props) {
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { data, error } = await supabase
-      .from('comments')
-      .insert([{ post_id: post.post_id, user_id: user?.user_id, content: commentText }])
-      .select('*, user:users(*), likes:likes(*)');
+      .from('comment')
+      .insert([{ post_id: post.id, user_id: user?.id, content: commentText }])
+      .select('*, user:user(*), likes:like(*)');
     if (!error && data) {
       setCommentText('');
       setShowComments(true);
@@ -84,16 +83,16 @@ export default function PostCard({ post, onDelete }: Props) {
   const handleLike = async () => {
     if (!user) return;
     if (liked) {
-      const { error } = await supabase.from('likes').delete().eq('user_id', user?.user_id).eq('post_id', post.post_id);
+      const { error } = await supabase.from('like').delete().eq('user_id', user?.id).eq('post_id', post.id);
       if (!error) {
-        setLikes(likes.filter((like) => like.user_id !== user.user_id));
+        setLikes(likes.filter((like) => like.user_id !== user.id));
         setLiked(false);
       }
     } else {
       const { data, error } = await supabase
-        .from('likes')
-        .insert([{ post_id: post.post_id, user_id: user?.user_id }])
-        .select('*, user:users(*)');
+        .from('like')
+        .insert([{ post_id: post.id, user_id: user?.id }])
+        .select('*, user:user(*)');
       if (!error && data) {
         setLikes([...likes, data[0]]);
         setLiked(true);
@@ -105,15 +104,13 @@ export default function PostCard({ post, onDelete }: Props) {
     const promise = new Promise<void>(async (resolve, reject) => {
       try {
         if (post.photos && post.photos.length > 0) {
-          const deletePromises = post.photos.map(async (photo) => {
-            const { error } = await supabase.storage.from('posts').remove([photo]);
-            if (error) throw error;
+          post.photos.map(async (photo) => {
+            await deletePhoto(photo);
           });
-          await Promise.all(deletePromises);
         }
-        const { error: deleteError } = await supabase.from('posts').delete().eq('post_id', post.post_id);
+        const { error: deleteError } = await supabase.from('post').delete().eq('id', post.id);
         if (deleteError) throw deleteError;
-        onDelete(post.post_id);
+        onDelete(post.id);
         resolve();
       } catch (error) {
         reject();
@@ -127,7 +124,7 @@ export default function PostCard({ post, onDelete }: Props) {
   };
 
   const onDeleteComment = (comment_id: number) => {
-    setComments((prevComments) => prevComments.filter((comment) => comment.comment_id !== comment_id));
+    setComments((prevComments) => prevComments.filter((comment) => comment.id !== comment_id));
   };
 
   const handlePhotoClick = (id: number) => {
@@ -138,7 +135,7 @@ export default function PostCard({ post, onDelete }: Props) {
   return (
     <div
       className="w-full flex flex-col justify-start items-start border rounded-lg p-3 sm:p-5 gap-3"
-      key={post.post_id}
+      key={post.id}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -154,7 +151,7 @@ export default function PostCard({ post, onDelete }: Props) {
         <div
           className={
             'duration-300 ' +
-            (user?.user_id === post?.user_id
+            (user?.id === post?.user_id
               ? isHovered || isOptionsOpen
                 ? 'sm:opacity-100 sm:pointer-events-auto'
                 : 'sm:opacity-0 sm:pointer-events-none'
@@ -166,7 +163,7 @@ export default function PostCard({ post, onDelete }: Props) {
             onOpen={() => setIsOptionsOpen(true)}
             justifyRight={true}
           >
-            {post.user_id === user?.user_id && (
+            {post.user_id === user?.id && (
               <button className="button transparent sm flex flex-row items-center gap-2" onClick={handleDeletePost}>
                 <MdDeleteOutline className="text-xl" /> Delete post
               </button>
@@ -177,70 +174,17 @@ export default function PostCard({ post, onDelete }: Props) {
 
       {/* Content */}
       <p className="w-full text-lg break-words whitespace-pre-line">{post.caption}</p>
-      {post.photo_urls.length > 0 && (
-        <div className="flex flex-row w-full h-[400px] rounded-lg overflow-hidden">
-          <div className="w-full flex flex-col">
-            <button
-              className="h-full bg-cover bg-no-repeat bg-center border border-background p-3 flex flex-row items-end gap-1"
-              style={{ backgroundImage: `url(${post.photo_urls[0]})` }}
-              onClick={() => handlePhotoClick(0)}
-            >
-              {tags
-                .filter((tag) => tag.photo_index === 0)
-                .map((tag, index) => (
-                  <div className="shadow-md rounded-full">
-                    <ProfilePhoto user={tag.user} size={Sizes.sm} key={index} />
-                  </div>
-                ))}
-            </button>
-            {post.photo_urls.length > 2 && (
-              <button
-                className="h-full bg-cover bg-no-repeat bg-center border border-background p-3 flex flex-row items-end gap-1"
-                style={{ backgroundImage: `url(${post.photo_urls[2]})` }}
-                onClick={() => handlePhotoClick(2)}
-              >
-                {tags
-                  .filter((tag) => tag.photo_index === 2)
-                  .map((tag, index) => (
-                    <div className="shadow-md rounded-full">
-                      <ProfilePhoto user={tag.user} size={Sizes.sm} key={index} />
-                    </div>
-                  ))}
-              </button>
-            )}
-          </div>
-          {post.photo_urls.length > 1 && (
-            <div className="w-full flex flex-col">
-              <button
-                className="h-full bg-cover bg-no-repeat bg-center border border-background p-3 flex flex-row items-end gap-1"
-                style={{ backgroundImage: `url(${post.photo_urls[1]})` }}
-                onClick={() => handlePhotoClick(1)}
-              >
-                {tags
-                  .filter((tag) => tag.photo_index === 1)
-                  .map((tag, index) => (
-                    <div className="shadow-md rounded-full">
-                      <ProfilePhoto user={tag.user} size={Sizes.sm} key={index} />
-                    </div>
-                  ))}
-              </button>
-              {post.photo_urls.length > 3 && (
-                <button
-                  className="h-full bg-cover bg-no-repeat bg-center border border-background p-3 flex flex-row items-end gap-1"
-                  style={{ backgroundImage: `url(${post.photo_urls[3]})` }}
-                  onClick={() => handlePhotoClick(3)}
-                >
-                  {tags
-                    .filter((tag) => tag.photo_index === 3)
-                    .map((tag, index) => (
-                      <div className="shadow-md rounded-full">
-                        <ProfilePhoto user={tag.user} size={Sizes.sm} key={index} />
-                      </div>
-                    ))}
-                </button>
-              )}
-            </div>
-          )}
+      {post.photos.length > 0 && (
+        <div className="w-full flex flex-row gap-2 overflow-x-auto scrollbar-slim self-center items-center justify-start">
+          {post.photos.map((photo, index) => (
+            <img
+              className="max-h-[400px] rounded-md border cursor-pointer"
+              src={photo.medium}
+              alt={photo.name}
+              onClick={() => handlePhotoClick(index)}
+              key={index}
+            />
+          ))}
         </div>
       )}
 
@@ -251,8 +195,8 @@ export default function PostCard({ post, onDelete }: Props) {
         </button>
         <button className="flex flex-row ml-[10px] gap-1.5" onClick={() => setIsModalOpen(true)}>
           {likes.slice(0, 10).map((like) => (
-            <div className="ml-[-10px]" key={like.like_id}>
-              <ProfilePhoto user={like.user} key={like.like_id} size={Sizes.sm} isLink={false} />
+            <div className="ml-[-10px]" key={like.id}>
+              <ProfilePhoto user={like.user} key={like.id} size={Sizes.sm} isLink={false} />
             </div>
           ))}
           <span className="opacity-60 text-sm">
@@ -289,9 +233,7 @@ export default function PostCard({ post, onDelete }: Props) {
             </button>
           )}
           {showComments &&
-            comments.map((comment) => (
-              <Comment comment={comment} key={comment.comment_id} onDelete={onDeleteComment} />
-            ))}
+            comments.map((comment) => <Comment comment={comment} key={comment.id} onDelete={onDeleteComment} />)}
         </div>
       )}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Likes">
@@ -299,7 +241,7 @@ export default function PostCard({ post, onDelete }: Props) {
       </Modal>
       <Slideshow
         selected={slideshowId}
-        photos={post.photo_urls}
+        photos={post.photos.map((photo) => photo.large)}
         isOpen={isSlideshowOpen}
         onClose={() => setIsSlideshowOpen(false)}
       />

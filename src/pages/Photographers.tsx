@@ -8,9 +8,15 @@ export default function Photographers() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase.from('photographers').select('*, user:users(*)');
+      const { data, error } = await supabase
+        .from('photographer')
+        .select('*, user:user(*), photos:photographer_photo(photo(*))');
       if (!error) {
-        setPhotographers(data);
+        const reshapedData = data.map((photographer) => ({
+          ...photographer,
+          photos: photographer.photos.map((item: any) => item.photo),
+        }));
+        setPhotographers(reshapedData);
       }
     };
 
