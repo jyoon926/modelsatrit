@@ -508,11 +508,11 @@ export default function Profile() {
 
             <div className="w-full sm:w-auto grow flex flex-col">
               {/* Tabs */}
-              <div className="flex flex-row font-serif text-xl mb-[-1px]">
+              <div className="flex flex-row font-serif text-xl mb-5 border-b-[1px]">
                 <button
                   className={
-                    'sm border border-b-0 rounded rounded-b-none px-3 sm:px-5 py-2.5 bg-background z-10 ' +
-                    (tab !== 0 && 'opacity-50 border-transparent bg-transparent')
+                    'sm px-4 sm:px-5 py-1.5 sm:py-2 z-10 mb-[-1px] border-b-[1px] border-foreground ' +
+                    (tab !== 0 && 'opacity-60 border-transparent')
                   }
                   onClick={() => setTab(0)}
                 >
@@ -520,8 +520,8 @@ export default function Profile() {
                 </button>
                 <button
                   className={
-                    'sm border border-b-0 rounded rounded-b-none px-3 py-3 bg-background z-10 ' +
-                    (tab !== 1 && 'opacity-50 border-transparent bg-transparent')
+                    'sm px-4 sm:px-5 py-1.5 sm:py-2 z-10 mb-[-1px] border-b-[1px] border-foreground ' +
+                    (tab !== 1 && 'opacity-60 border-transparent')
                   }
                   onClick={() => setTab(1)}
                 >
@@ -529,9 +529,7 @@ export default function Profile() {
                 </button>
               </div>
 
-              <div
-                className={`flex flex-col items-start justify-start gap-5 p-5 border rounded ${tab === 0 && 'rounded-tl-none'}`}
-              >
+              <div className={`flex flex-col items-start justify-start gap-5 ${tab === 0 && 'rounded-tl-none'}`}>
                 {/* Model page */}
                 {tab === 0 &&
                   (model ? (

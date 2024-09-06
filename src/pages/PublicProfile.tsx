@@ -201,12 +201,12 @@ export default function PublicProfile() {
           {!loading && tabs.length > 0 && (
             <div className="w-full sm:w-auto fade-in grow flex flex-col">
               {/* Tabs */}
-              <div className="flex flex-row font-serif text-xl mb-[-1px]">
+              <div className="flex flex-row font-serif text-xl mb-5 border-b-[1px]">
                 {tabs.includes('model') && (
                   <button
                     className={
-                      'sm border border-b-0 rounded-lg rounded-b-none px-3 sm:px-5 py-2.5 bg-background z-10 ' +
-                      (currentTab !== 'model' && 'opacity-60 border-transparent bg-transparent')
+                      'sm px-4 sm:px-5 py-1.5 sm:py-2 z-10 mb-[-1px] border-b-[1px] border-foreground ' +
+                      (currentTab !== 'model' && 'opacity-60 border-transparent')
                     }
                     onClick={() => handleTabClick('model')}
                   >
@@ -216,8 +216,8 @@ export default function PublicProfile() {
                 {tabs.includes('photographer') && (
                   <button
                     className={
-                      'sm border border-b-0 rounded-lg rounded-b-none px-3 py-3 bg-background z-10 ' +
-                      (currentTab !== 'photographer' && 'opacity-60 border-transparent bg-transparent')
+                      'sm px-4 sm:px-5 py-1.5 sm:py-2 z-10 mb-[-1px] border-b-[1px] border-foreground ' +
+                      (currentTab !== 'photographer' && 'opacity-60 border-transparent')
                     }
                     onClick={() => handleTabClick('photographer')}
                   >
@@ -227,8 +227,8 @@ export default function PublicProfile() {
                 {tabs.includes('posts') && (
                   <button
                     className={
-                      'sm border border-b-0 rounded-lg rounded-b-none px-3 py-3 bg-background z-10 ' +
-                      (currentTab !== 'posts' && 'opacity-60 border-transparent bg-transparent')
+                      'sm px-4 sm:px-5 py-1.5 sm:py-2 z-10 mb-[-1px] border-b-[1px] border-foreground ' +
+                      (currentTab !== 'posts' && 'opacity-60 border-transparent')
                     }
                     onClick={() => handleTabClick('posts')}
                   >
@@ -237,9 +237,7 @@ export default function PublicProfile() {
                 )}
               </div>
 
-              <div
-                className={`w-full flex flex-col items-start justify-start gap-5 p-5 border rounded-lg ${tabs.indexOf(currentTab!) === 0 && 'rounded-tl-none'}`}
-              >
+              <div className="w-full flex flex-col items-start justify-start gap-5">
                 {/* Model page */}
                 {model && currentTab === 'model' && (
                   <>
