@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Comment as IComment, Like, Post } from '../utils/Types';
+import { Comment as IComment, Like, Post, Tag } from '../utils/Types';
 import { useAuth } from '../utils/AuthContext';
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
@@ -29,7 +29,7 @@ export default function PostCard({ post, onDelete }: Props) {
   const [likes, setLikes] = useState<Like[]>([]);
   const [liked, setLiked] = useState<boolean>(false);
   const [showComments, setShowComments] = useState<boolean>(false);
-  // const [tags, setTags] = useState<Tag[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -40,7 +40,7 @@ export default function PostCard({ post, onDelete }: Props) {
   const fetchComments = async () => {
     const { data, error } = await supabase
       .from('comment')
-      .select('*, user:user(*), likes:like(*)')
+      .select('*, user:user(*, profile_photo:photo(*)), likes:like(*)')
       .eq('post_id', post.id)
       .order('created_at', { ascending: false });
     if (!error) {
@@ -49,7 +49,10 @@ export default function PostCard({ post, onDelete }: Props) {
   };
 
   const fetchLikes = async () => {
-    const { data, error } = await supabase.from('like').select('*, user:user(*)').eq('post_id', post.id);
+    const { data, error } = await supabase
+      .from('like')
+      .select('*, user:user(*, profile_photo:photo(*))')
+      .eq('post_id', post.id);
     if (!error) {
       setLikes(data);
       setLiked(data.find((like) => like.user_id === user?.id));
@@ -57,8 +60,11 @@ export default function PostCard({ post, onDelete }: Props) {
   };
 
   const fetchTags = async () => {
-    // const { data, error } = await supabase.from('tag').select('*, user:user(*)').eq('post_id', post.id);
-    // if (!error) setTags(data);
+    const { data, error } = await supabase
+      .from('tag')
+      .select('*, user:user(*, profile_photo:photo(*))')
+      .eq('post_id', post.id);
+    if (!error) setTags(data);
   };
 
   useEffect(() => {
@@ -72,7 +78,7 @@ export default function PostCard({ post, onDelete }: Props) {
     const { data, error } = await supabase
       .from('comment')
       .insert([{ post_id: post.id, user_id: user?.id, content: commentText }])
-      .select('*, user:user(*), likes:like(*)');
+      .select('*, user:user(*, profile_photo:photo(*)), likes:like(*)');
     if (!error && data) {
       setCommentText('');
       setShowComments(true);
@@ -92,7 +98,7 @@ export default function PostCard({ post, onDelete }: Props) {
       const { data, error } = await supabase
         .from('like')
         .insert([{ post_id: post.id, user_id: user?.id }])
-        .select('*, user:user(*)');
+        .select('*, user:user(*, profile_photo:photo(*))');
       if (!error && data) {
         setLikes([...likes, data[0]]);
         setLiked(true);
@@ -247,6 +253,7 @@ export default function PostCard({ post, onDelete }: Props) {
         photos={post.photos.map((photo) => photo.large)}
         isOpen={isSlideshowOpen}
         onClose={() => setIsSlideshowOpen(false)}
+        tags={tags}
       />
     </div>
   );

@@ -20,7 +20,6 @@ export const uploadPhoto = async (file: File): Promise<Photo> => {
         new Compressor(file, {
           quality: size.quality,
           maxWidth: size.maxSize,
-          maxHeight: size.maxSize,
           success(result) {
             resolve(result);
           },

@@ -10,12 +10,13 @@ export default function Photographers() {
     const fetchData = async () => {
       const { data, error } = await supabase
         .from('photographer')
-        .select('*, user:user(*), photos:photographer_photo(photo(*))');
+        .select('*, user:user(*, profile_photo:photo(*)), photos:photographer_photo(photo(*))');
       if (!error) {
         const reshapedData = data.map((photographer) => ({
           ...photographer,
           photos: photographer.photos.map((item: any) => item.photo),
         }));
+        console.log(reshapedData);
         setPhotographers(reshapedData);
       }
     };

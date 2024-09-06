@@ -45,12 +45,13 @@ export default function PostCreateCard({ onCreate }: Props) {
           })
         );
         if (tags.length > 0) {
-          await supabase.from('tag').insert(
-            tags.map((photo, index) =>
-              photo.map((tag) => {
-                return { post_id: post.id, user_id: tag.id, photo_index: index };
-              })
-            )
+          tags.map(
+            async (photo, index) =>
+              await supabase.from('tag').insert(
+                photo.map((tag) => {
+                  return { post_id: post.id, user_id: tag.id, photo_index: index };
+                })
+              )
           );
         }
         const { data, error } = await supabase

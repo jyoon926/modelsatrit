@@ -25,7 +25,10 @@ export default function Comment({ comment, onDelete }: Props) {
   const [isHovered, setIsHovered] = useState(false);
 
   const fetchLikes = async () => {
-    const { data, error } = await supabase.from('like').select('*, user:user(*)').eq('comment_id', comment.id);
+    const { data, error } = await supabase
+      .from('like')
+      .select('*, user:user(*, profile_photo:photo(*))')
+      .eq('comment_id', comment.id);
     if (!error) {
       setLikes(data);
       setLiked(data.find((like) => like.user_id === user?.id));

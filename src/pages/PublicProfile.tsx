@@ -60,7 +60,7 @@ export default function PublicProfile() {
   const getPosts = async (user_id: number) => {
     const { data, error } = await supabase
       .from('post')
-      .select('*, user:user(*), photos:post_photo(photo(*))')
+      .select('*, user:user(*, profile_photo:photo(*)), photos:post_photo(photo(*))')
       .eq('user_id', user_id)
       .order('created_at', { ascending: false });
     if (!error && data.length > 0) {
@@ -74,7 +74,11 @@ export default function PublicProfile() {
     if (email) {
       setTabs([]);
       setLoading(true);
-      const { data, error } = await supabase.from('user').select('*').eq('email', email).single();
+      const { data, error } = await supabase
+        .from('user')
+        .select('*, profile_photo:photo(*)')
+        .eq('email', email)
+        .single();
       if (!error) {
         setUser(data);
         await getModel(data.id);
@@ -269,11 +273,11 @@ export default function PublicProfile() {
                     {model.photos.length > 0 && (
                       <>
                         <p className="font-bold">Portfolio</p>
-                        <div className="w-full flex flex-row flex-wrap gap-3">
+                        <div className="w-full flex flex-row flex-wrap gap-5 sm:gap-3">
                           {model.photos.map((photo, index) => (
                             <img
-                              className="w-full sm:w-auto sm:h-72 rounded cursor-pointer"
-                              src={photo.small}
+                              className="w-full sm:w-auto sm:h-72 rounded-md cursor-pointer"
+                              src={photo.medium}
                               key={index}
                               onClick={() =>
                                 handlePhotoClick(
@@ -298,11 +302,11 @@ export default function PublicProfile() {
                   (photographer.photos.length > 0 ? (
                     <>
                       <p className="font-bold">Portfolio</p>
-                      <div className="w-full flex flex-row flex-wrap gap-3">
+                      <div className="w-full flex flex-row flex-wrap gap-5 sm:gap-3">
                         {photographer.photos.map((photo, index) => (
                           <img
-                            className="w-full sm:w-auto sm:h-72 rounded cursor-pointer"
-                            src={photo.small}
+                            className="w-full sm:w-auto sm:h-72 rounded-md cursor-pointer"
+                            src={photo.medium}
                             key={index}
                             onClick={() =>
                               handlePhotoClick(

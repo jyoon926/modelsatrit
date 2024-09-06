@@ -16,7 +16,7 @@ export default function Community() {
     setLoading(true);
     const { data, error } = await supabase
       .from('post')
-      .select('*, user:user(*), photos:post_photo(photo(*))')
+      .select('*, user:user(*, profile_photo:photo(*)), photos:post_photo(photo(*))')
       .order('created_at', { ascending: false })
       .range(page * 10, (page + 1) * 10 - 1);
     if (!error && data) {

@@ -29,7 +29,11 @@ export function AuthProvider({ children }: RoutesProps) {
 
   const fetchUser = async (_session: AuthSession) => {
     if (_session) {
-      const { data, error } = await supabase.from('user').select('*').eq('email', _session.user.email).single();
+      const { data, error } = await supabase
+        .from('user')
+        .select('*, profile_photo:photo(*)')
+        .eq('email', _session.user.email)
+        .single();
       if (!error) {
         setUser(data);
       }

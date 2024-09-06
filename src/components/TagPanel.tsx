@@ -22,12 +22,14 @@ export default function TagPanel({ tags, updateTags }: Props) {
 
   const addUserToTags = (user: User) => {
     updateTags([...tags, user]);
+    setUsers(users.filter((u) => u.id !== user.id));
   };
 
   const removeUserFromTags = (userToRemove: User) => {
     updateTags(tags.filter((user) => user.id !== userToRemove.id));
   };
 
+  // Search users
   useEffect(() => {
     const fetchUsers = async () => {
       if (searchQuery.trim() === '') {
@@ -36,7 +38,7 @@ export default function TagPanel({ tags, updateTags }: Props) {
       }
       const { data, error } = await supabase
         .from('user')
-        .select('*')
+        .select('*, profile_photo:photo(*)')
         .ilike('name', `%${searchQuery}%`)
         .not('id', 'in', `(${tags.map((tag) => tag.id).join(',')})`)
         .limit(5);
@@ -47,6 +49,7 @@ export default function TagPanel({ tags, updateTags }: Props) {
     fetchUsers();
   }, [searchQuery, tags]);
 
+  // Handle opening/closing
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
