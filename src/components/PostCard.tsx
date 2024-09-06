@@ -164,7 +164,10 @@ export default function PostCard({ post, onDelete }: Props) {
             justifyRight={true}
           >
             {post.user_id === user?.id && (
-              <button className="button transparent sm flex flex-row items-center gap-2" onClick={handleDeletePost}>
+              <button
+                className="button transparent sm flex flex-row items-center gap-2 text-nowrap"
+                onClick={handleDeletePost}
+              >
                 <MdDeleteOutline className="text-xl" /> Delete post
               </button>
             )}
@@ -178,7 +181,7 @@ export default function PostCard({ post, onDelete }: Props) {
         <div className="w-full flex flex-row gap-2 overflow-x-auto scrollbar-slim self-center items-center justify-start">
           {post.photos.map((photo, index) => (
             <img
-              className="max-h-[400px] rounded-md border cursor-pointer"
+              className="max-h-[300px] sm:max-h-[400px] rounded-md border cursor-pointer"
               src={photo.medium}
               alt={photo.name}
               onClick={() => handlePhotoClick(index)}

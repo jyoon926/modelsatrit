@@ -272,7 +272,7 @@ export default function PublicProfile() {
                         <div className="w-full flex flex-row flex-wrap gap-3">
                           {model.photos.map((photo, index) => (
                             <img
-                              className="h-72 rounded cursor-pointer"
+                              className="w-full sm:w-auto sm:h-72 rounded cursor-pointer"
                               src={photo.small}
                               key={index}
                               onClick={() =>
@@ -301,7 +301,7 @@ export default function PublicProfile() {
                       <div className="w-full flex flex-row flex-wrap gap-3">
                         {photographer.photos.map((photo, index) => (
                           <img
-                            className="h-72 rounded cursor-pointer"
+                            className="w-full sm:w-auto sm:h-72 rounded cursor-pointer"
                             src={photo.small}
                             key={index}
                             onClick={() =>

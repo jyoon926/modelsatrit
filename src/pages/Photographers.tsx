@@ -26,7 +26,7 @@ export default function Photographers() {
   return (
     <div className="fade-in">
       <div className="w-full px-5 py-32 flex flex-col justify-start items-start">
-        <h1 className="text-5xl sm:text-[8vw] font-serif border-b w-full mb-10">Photographers</h1>
+        <h1 className="text-6xl sm:text-[8vw] font-serif border-b w-full mb-10">Photographers</h1>
         {photographers && (
           <div className="w-full flex flex-col gap-5">
             {photographers.map((photographer, index) => (

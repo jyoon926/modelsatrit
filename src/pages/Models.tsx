@@ -36,7 +36,7 @@ export default function Models() {
   return (
     <div className="fade-in">
       <div className="w-full px-5 py-32 flex flex-col justify-start items-start gap-5">
-        <h1 className="text-5xl sm:text-[8vw] font-serif border-b w-full">Models</h1>
+        <h1 className="text-6xl sm:text-[8vw] font-serif border-b w-full">Models</h1>
         <Filters onFiltersUpdate={onFiltersUpdate} />
         {models && (
           <div className="w-full grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>

@@ -57,7 +57,7 @@ export default function Community() {
   return (
     <div className="fade-in flex flex-col items-center">
       <div className="w-full max-w-[800px] px-5 py-32 flex flex-col justify-start items-center gap-5">
-        <h1 className="text-5xl sm:text-6xl font-serif w-full mb-5 border-b">Community Posts</h1>
+        <h1 className="text-6xl font-serif w-full mb-5 border-b">Community</h1>
         <PostCreateCard onCreate={onCreatePost}></PostCreateCard>
         {posts && (
           <div className="w-full flex flex-col gap-5">
