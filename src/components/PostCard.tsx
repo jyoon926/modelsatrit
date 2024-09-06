@@ -16,6 +16,7 @@ import { Sizes } from '../utils/Enums';
 import Slideshow from './Slideshow';
 import { useNotification } from './Notification';
 import { deletePhoto } from '../utils/PhotoUtils';
+import Tags from './Tags';
 
 interface Props {
   post: Post;
@@ -186,13 +187,18 @@ export default function PostCard({ post, onDelete }: Props) {
       {post.photos.length > 0 && (
         <div className="w-full flex flex-row gap-2 overflow-x-auto scrollbar-slim self-center items-center justify-start">
           {post.photos.map((photo, index) => (
-            <img
-              className="max-h-[300px] sm:max-h-[400px] rounded-md border cursor-pointer"
-              src={photo.medium}
-              alt={photo.name}
-              onClick={() => handlePhotoClick(index)}
-              key={index}
-            />
+            <div key={index} className="relative flex-shrink-0">
+              <img
+                className="max-h-[300px] sm:max-h-[400px] rounded-md border cursor-pointer"
+                src={photo.medium}
+                alt={photo.name}
+                onClick={() => handlePhotoClick(index)}
+                key={index}
+              />
+              <span className="absolute bottom-0 left-0">
+                <Tags tags={tags.filter((tag) => tag.photo_index === index)} />
+              </span>
+            </div>
           ))}
         </div>
       )}

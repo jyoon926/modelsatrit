@@ -1,8 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
-import { MdChevronLeft, MdChevronRight, MdClose, MdPerson } from 'react-icons/md';
+import { MdChevronLeft, MdChevronRight, MdClose } from 'react-icons/md';
 import { Tag } from '../utils/Types';
-import ProfilePhoto from './ProfilePhoto';
-import { Sizes } from '../utils/Enums';
+import Tags from './Tags';
 
 interface Props {
   photos: string[];
@@ -18,7 +17,6 @@ export default function Slideshow({ photos, selected, isOpen, onClose, tags }: P
   const containerRef = useRef<HTMLDivElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
-  const [viewTags, setViewTags] = useState(false);
 
   // Main slideshow functionality
   useEffect(() => {
@@ -129,25 +127,10 @@ export default function Slideshow({ photos, selected, isOpen, onClose, tags }: P
         </button>
       </div>
 
-      {tags && tags.length > 0 && (
-        <div className="absolute flex flex-row items-center gap-1 p-2" ref={tagsRef}>
-          <div
-            className={`p-1 rounded-full shadow text-background duration-300 bg-foreground/80 hover:bg-foreground hover:opacity-100 cursor-pointer ${viewTags ? 'opacity-100' : 'opacity-60'}`}
-            onClick={() => setViewTags((prev) => !prev)}
-          >
-            <MdPerson />
-          </div>
-          {tags
-            .filter((tag) => tag.photo_index === id)
-            .map((tag, index) => (
-              <div
-                className={`shadow-md rounded-full duration-300 ${!viewTags && 'opacity-0 pointer-events-none'}`}
-                key={index}
-              >
-                <ProfilePhoto user={tag.user} size={Sizes.sm} />
-              </div>
-            ))}
-        </div>
+      {tags && (
+        <span className="absolute" ref={tagsRef}>
+          <Tags tags={tags.filter((tag) => tag.photo_index === id)} />
+        </span>
       )}
     </div>
   );

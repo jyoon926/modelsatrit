@@ -56,7 +56,7 @@ export default function PostCreateCard({ onCreate }: Props) {
         }
         const { data, error } = await supabase
           .from('post')
-          .select('*, user:user(*), likes:like(*), photos:post_photo(photo(*))')
+          .select('*, user:user(*, profile_photo:photo(*)), likes:like(*), photos:post_photo(photo(*))')
           .eq('id', post.id)
           .single();
         const reshapedData = { ...data, photos: data.photos.map((item: any) => item.photo) };
