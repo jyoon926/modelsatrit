@@ -500,6 +500,7 @@ export default function Profile() {
                     id="instagram"
                     type="text"
                     value={instagram}
+                    placeholder="@"
                     onChange={(e) => setInstagram(e.target.value)}
                   />
                 </div>
