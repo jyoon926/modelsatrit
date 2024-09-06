@@ -24,7 +24,12 @@ export default function PhotographerCard({ photographer }: Props) {
         <div className="flex flex-row gap-3 items-center">
           <ProfilePhoto user={photographer.user} size={Sizes.lg} />
           <div>
-            <div className="font-serif text-2xl leading-none">{photographer.user.name}</div>
+            <Link
+              className="link font-serif text-2xl leading-none"
+              to={`/profile/${photographer.user.email}/photographer`}
+            >
+              {photographer.user.name}
+            </Link>
             {photographer.user.major && (
               <div className="font-sans text-sm opacity-60 leading-none">
                 {photographer.user.major}
