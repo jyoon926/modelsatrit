@@ -249,14 +249,14 @@ export default function PublicProfile() {
           {tabs.length > 0 && (
             <div className="w-full sm:w-auto fade-in grow flex flex-col">
               {/* Tabs */}
-              <div className="w-full flex flex-row font-serif text-xl mb-5 border-b-[1px] overflow-x-auto overflow-y-hidden">
+              <div className="w-full flex flex-row font-serif text-xl mb-5 overflow-x-auto">
                 {tabData.map(
                   (tab, index) =>
                     tabs.includes(tab.name) && (
                       <button
                         className={
-                          'sm px-4 sm:px-5 py-1.5 sm:py-2 z-10 mb-[-1px] border-b-[1px] border-foreground ' +
-                          (currentTab !== tab.name && 'opacity-60 border-transparent')
+                          'sm px-4 sm:px-5 py-1.5 sm:py-2 border-b-[1px] ' +
+                          (currentTab === tab.name ? 'text-foreground border-foreground' : 'text-foreground/60')
                         }
                         onClick={() => handleTabClick(tab.name)}
                         key={index}
@@ -265,6 +265,7 @@ export default function PublicProfile() {
                       </button>
                     )
                 )}
+                <div className="grow border-b" />
               </div>
 
               <div className="w-full flex flex-col items-start justify-start gap-5">
