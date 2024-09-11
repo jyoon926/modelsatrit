@@ -8,6 +8,25 @@ import { Sizes } from '../utils/Enums';
 import Slideshow from '../components/Slideshow';
 import PostCard from '../components/PostCard';
 
+const tabData = [
+  {
+    name: 'model',
+    title: 'Modeling',
+  },
+  {
+    name: 'photographer',
+    title: 'Photography',
+  },
+  {
+    name: 'posts',
+    title: 'Posts',
+  },
+  {
+    name: 'tagged',
+    title: 'Tagged',
+  },
+];
+
 export default function PublicProfile() {
   // Auth
   const { user: authUser, logout } = useAuth();
@@ -21,6 +40,7 @@ export default function PublicProfile() {
   const [model, setModel] = useState<Model>();
   const [photographer, setPhotographer] = useState<Photographer>();
   const [posts, setPosts] = useState<Post[]>();
+  const [tagged, setTagged] = useState<Post[]>();
 
   // Misc
   const [loading, setLoading] = useState<boolean>(true);
@@ -70,6 +90,24 @@ export default function PublicProfile() {
     }
   };
 
+  const getTaggedPosts = async (user_id: number) => {
+    const { data, error } = await supabase
+      .from('tag')
+      .select('post_id, post:post(*, user:user(*, profile_photo:photo(*)), photos:post_photo(photo(*)))')
+      .eq('user_id', user_id);
+    if (!error && data) {
+      let taggedPosts = data.map((tag: any) => tag.post) ?? null;
+      const uniquePostsMap = new Map();
+      taggedPosts.forEach((post) => uniquePostsMap.set(post.id, post));
+      const uniqueTaggedPosts = Array.from(uniquePostsMap.values()).map((post) => ({
+        ...post,
+        photos: post.photos.map((item: any) => item.photo),
+      }));
+      setTagged(uniqueTaggedPosts);
+      setTabs((prev) => [...prev, 'tagged']);
+    }
+  };
+
   const fetchUser = async () => {
     if (email) {
       setTabs([]);
@@ -84,6 +122,7 @@ export default function PublicProfile() {
         await getModel(data.id);
         await getPhotographer(data.id);
         await getPosts(data.id);
+        await getTaggedPosts(data.id);
       } else {
         return navigate('/404');
       }
@@ -100,13 +139,18 @@ export default function PublicProfile() {
       return navigate(`/profile/${email}/${tabs[0]}`);
     }
 
-    if (!['model', 'photographer', 'posts'].includes(tab)) {
+    if (!tabData.map((el) => el.name).includes(tab)) {
       if (model) return navigate(`/profile/${email}/model`);
       if (photographer) return navigate(`/profile/${email}/photographer`);
       return navigate(`/profile/${email}`);
     }
 
-    if ((tab === 'model' && !model) || (tab === 'photographer' && !photographer) || (tab === 'posts' && !posts)) {
+    if (
+      (tab === 'model' && !model) ||
+      (tab === 'photographer' && !photographer) ||
+      (tab === 'posts' && !posts) ||
+      (tab === 'tagged' && !tagged)
+    ) {
       return navigate(`/profile/${email}/${tabs[0]}`);
     }
   };
@@ -202,42 +246,24 @@ export default function PublicProfile() {
             </div>
           </div>
 
-          {!loading && tabs.length > 0 && (
+          {tabs.length > 0 && (
             <div className="w-full sm:w-auto fade-in grow flex flex-col">
               {/* Tabs */}
-              <div className="flex flex-row font-serif text-xl mb-5 border-b-[1px]">
-                {tabs.includes('model') && (
-                  <button
-                    className={
-                      'sm px-4 sm:px-5 py-1.5 sm:py-2 z-10 mb-[-1px] border-b-[1px] border-foreground ' +
-                      (currentTab !== 'model' && 'opacity-60 border-transparent')
-                    }
-                    onClick={() => handleTabClick('model')}
-                  >
-                    Modeling
-                  </button>
-                )}
-                {tabs.includes('photographer') && (
-                  <button
-                    className={
-                      'sm px-4 sm:px-5 py-1.5 sm:py-2 z-10 mb-[-1px] border-b-[1px] border-foreground ' +
-                      (currentTab !== 'photographer' && 'opacity-60 border-transparent')
-                    }
-                    onClick={() => handleTabClick('photographer')}
-                  >
-                    Photography
-                  </button>
-                )}
-                {tabs.includes('posts') && (
-                  <button
-                    className={
-                      'sm px-4 sm:px-5 py-1.5 sm:py-2 z-10 mb-[-1px] border-b-[1px] border-foreground ' +
-                      (currentTab !== 'posts' && 'opacity-60 border-transparent')
-                    }
-                    onClick={() => handleTabClick('posts')}
-                  >
-                    Posts
-                  </button>
+              <div className="w-full flex flex-row font-serif text-xl mb-5 border-b-[1px] overflow-x-auto overflow-y-hidden">
+                {tabData.map(
+                  (tab, index) =>
+                    tabs.includes(tab.name) && (
+                      <button
+                        className={
+                          'sm px-4 sm:px-5 py-1.5 sm:py-2 z-10 mb-[-1px] border-b-[1px] border-foreground ' +
+                          (currentTab !== tab.name && 'opacity-60 border-transparent')
+                        }
+                        onClick={() => handleTabClick(tab.name)}
+                        key={index}
+                      >
+                        {tab.title}
+                      </button>
+                    )
                 )}
               </div>
 
@@ -325,14 +351,29 @@ export default function PublicProfile() {
                 {/* Posts page */}
                 {posts && currentTab === 'posts' && (
                   <>
-                    {posts && posts.length > 0 ? (
-                      posts?.map((post, index) => (
+                    {posts.length > 0 ? (
+                      posts.map((post, index) => (
                         <div className="w-full max-w-[800px] flex flex-col gap-5" key={index}>
                           <PostCard post={post} onDelete={handleDeletePost}></PostCard>
                         </div>
                       ))
                     ) : (
                       <p className="skew-x-[-10deg] opacity-60">This user has no posts.</p>
+                    )}
+                  </>
+                )}
+
+                {/* Tagged page */}
+                {tagged && currentTab === 'tagged' && (
+                  <>
+                    {tagged.length > 0 ? (
+                      tagged.map((post, index) => (
+                        <div className="w-full max-w-[800px] flex flex-col gap-5" key={index}>
+                          <PostCard post={post} onDelete={handleDeletePost}></PostCard>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="skew-x-[-10deg] opacity-60">This user has no tagged posts.</p>
                     )}
                   </>
                 )}
