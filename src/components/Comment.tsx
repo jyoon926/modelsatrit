@@ -55,7 +55,7 @@ export default function Comment({ comment, onDelete }: Props) {
   };
 
   const handleDelete = async () => {
-    const { error } = await supabase.from('comment').delete().eq('comment_id', comment.id);
+    const { error } = await supabase.from('comment').delete().eq('id', comment.id);
     if (!error) {
       onDelete(comment.id);
     }
