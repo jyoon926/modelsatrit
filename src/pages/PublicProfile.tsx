@@ -188,7 +188,7 @@ export default function PublicProfile() {
     <div className="fade-in">
       <div className="w-full px-5 py-32 flex flex-col justify-start items-start">
         {/* Name */}
-        <div className="flex flex-col sm:flex-row sm:items-end border-b w-full mb-10 gap-5">
+        <div className="flex flex-col sm:flex-row sm:items-end border-b w-full mb-10 gap-2 sm:gap-5">
           <div className="mb-2">
             <ProfilePhoto user={user} size={Sizes.xl} />
           </div>
