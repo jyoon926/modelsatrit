@@ -33,6 +33,7 @@ export default function Photographers() {
             {photographers.map((photographer, index) => (
               <PhotographerCard photographer={photographer} key={index} />
             ))}
+            <div className="py-4 opacity-60">You've reached the end!</div>
           </div>
         )}
       </div>

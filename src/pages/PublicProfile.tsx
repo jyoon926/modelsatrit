@@ -95,7 +95,7 @@ export default function PublicProfile() {
       .from('tag')
       .select('post_id, post:post(*, user:user(*, profile_photo:photo(*)), photos:post_photo(photo(*)))')
       .eq('user_id', user_id);
-    if (!error && data) {
+    if (!error && data && data.length > 0) {
       let taggedPosts = data.map((tag: any) => tag.post) ?? null;
       const uniquePostsMap = new Map();
       taggedPosts.forEach((post) => uniquePostsMap.set(post.id, post));

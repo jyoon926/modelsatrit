@@ -67,7 +67,7 @@ export default function Community() {
           </div>
         )}
         {loading && <Spinner />}
-        {!hasMore && <div className="m-4 opacity-60">You've reached the end!</div>}
+        {!hasMore && <div className="py-4 opacity-60">You've reached the end!</div>}
       </div>
     </div>
   );

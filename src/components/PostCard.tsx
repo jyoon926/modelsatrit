@@ -3,7 +3,7 @@ import { Comment as IComment, Like, Post, Tag } from '../utils/Types';
 import { useAuth } from '../utils/AuthContext';
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
-import { MdKeyboardArrowUp, MdKeyboardArrowDown, MdDeleteOutline } from 'react-icons/md';
+import { MdKeyboardArrowUp, MdKeyboardArrowDown, MdDeleteOutline, MdOutlineEdit } from 'react-icons/md';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import ProfilePhoto from './ProfilePhoto';
 import Comment from './Comment';
@@ -23,14 +23,17 @@ interface Props {
   onDelete: (comment_id: number) => void;
 }
 
-export default function PostCard({ post, onDelete }: Props) {
+export default function PostCard({ post: initialPost, onDelete }: Props) {
   const { user } = useAuth();
+  const [post, setPost] = useState<Post>(initialPost);
   const [commentText, setCommentText] = useState<string>('');
   const [comments, setComments] = useState<IComment[]>([]);
   const [likes, setLikes] = useState<Like[]>([]);
   const [liked, setLiked] = useState<boolean>(false);
   const [showComments, setShowComments] = useState<boolean>(false);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [editCaption, setEditCaption] = useState<string>(post.caption);
+  const [inEditMode, setInEditMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -139,6 +142,17 @@ export default function PostCard({ post, onDelete }: Props) {
     setSlideshowId(id);
   };
 
+  const handleSaveCaption = async () => {
+    const { error } = await supabase
+      .from('post')
+      .update([{ caption: editCaption, edited: true }])
+      .eq('id', post.id);
+    if (!error) {
+      setPost({ ...post, caption: editCaption, edited: true });
+      setInEditMode(false);
+    }
+  };
+
   return (
     <div
       className="w-full flex flex-col justify-start items-start border rounded-lg p-3 sm:p-5 gap-3"
@@ -153,7 +167,10 @@ export default function PostCard({ post, onDelete }: Props) {
           <Link className="font-bold" to={'/profile/' + post.user.email}>
             {post.user.name}
           </Link>
-          <p className="text-sm opacity-60">{getRelativeTime(post.created_at)}</p>
+          <p className="text-sm opacity-60">
+            {getRelativeTime(post.created_at)}
+            {post.edited && <span> • Edited</span>}
+          </p>
         </div>
         <div
           className={
@@ -171,19 +188,38 @@ export default function PostCard({ post, onDelete }: Props) {
             justifyRight={true}
           >
             {post.user_id === user?.id && (
-              <button
-                className="button transparent sm flex flex-row items-center gap-2 text-nowrap"
-                onClick={handleDeletePost}
-              >
-                <MdDeleteOutline className="text-xl" /> Delete post
-              </button>
+              <>
+                <button
+                  className="button transparent sm flex flex-row items-center gap-2 text-nowrap"
+                  onClick={() => setInEditMode(true)}
+                >
+                  <MdOutlineEdit className="text-xl" /> Edit post
+                </button>
+                <button
+                  className="button transparent sm flex flex-row items-center gap-2 text-nowrap"
+                  onClick={handleDeletePost}
+                >
+                  <MdDeleteOutline className="text-xl" /> Delete post
+                </button>
+              </>
             )}
           </OptionsMenu>
         </div>
       </div>
 
       {/* Content */}
-      <p className="w-full text-lg break-words whitespace-pre-line">{post.caption}</p>
+      {inEditMode ? (
+        <>
+          <span className="border w-full rounded">
+            <AutoTextArea value={editCaption} onChange={(e) => setEditCaption(e.target.value)} maxRows={15} />
+          </span>
+          <button className="button sm light" onClick={() => handleSaveCaption()}>
+            Save changes
+          </button>
+        </>
+      ) : (
+        <p className="w-full leading-snug break-words whitespace-pre-line">{post.caption}</p>
+      )}
       {post.photos.length > 0 && (
         <div className="w-full flex flex-row gap-2 overflow-x-auto scrollbar-slim self-center items-center justify-start">
           {post.photos.map((photo, index) => (
