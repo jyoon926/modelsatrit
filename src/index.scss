@@ -275,3 +275,24 @@ textarea {
   max-height: calc(100% - 105px);
   max-width: calc(100% - 2.5rem);
 }
+
+.height-input {
+  background-color: rgb(var(--background));
+  border-radius: 0.25rem;
+  border: 1px solid rgba(var(--foreground), 0.2);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
+  input {
+    all: unset;
+    padding: 0.5rem 0.7rem;
+  }
+
+  .unit {
+    padding: 0.65rem 0.5rem;
+    border-left: 1px solid rgba(var(--foreground), 0.2);
+    background-color: rgba(var(--foreground), 0.05);
+  }
+}

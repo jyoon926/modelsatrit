@@ -291,7 +291,9 @@ export default function PublicProfile() {
                           {model.height && (
                             <div className="flex flex-row gap-5">
                               <p className="w-32 opacity-60">Height</p>
-                              <p className="w-40">{model.height}"</p>
+                              <p className="w-40">
+                                {Math.floor(model.height / 12)}' {model.height % 12}"
+                              </p>
                             </div>
                           )}
                         </div>

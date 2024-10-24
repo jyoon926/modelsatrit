@@ -44,7 +44,7 @@ export default function Home() {
 
   useEffect(() => {
     const handleCursorMove = (clientX: number, clientY: number) => {
-      if (distanceFromLast(clientX, clientY) > Math.max(window.innerWidth / 50, 20)) {
+      if (distanceFromLast(clientX, clientY) > Math.max(window.innerWidth / 30, 20)) {
         const lead = imagesRef.current[imageIndex % imagesRef.current.length];
         const tail =
           imagesRef.current[(imageIndex - Math.min(15, imagesRef.current.length - 1)) % imagesRef.current.length];

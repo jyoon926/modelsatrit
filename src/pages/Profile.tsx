@@ -10,6 +10,8 @@ import {
   MdAddCircleOutline,
   MdOutlineDelete,
   MdOutlineFileUpload,
+  MdKeyboardArrowUp,
+  MdKeyboardArrowDown,
 } from 'react-icons/md';
 import { Genders, Races, Sizes } from '../utils/Enums';
 import { Model, Photo, Photographer } from '../utils/Types';
@@ -541,12 +543,6 @@ export default function Profile() {
                           <label htmlFor="gender" className="w-20 opacity-60">
                             Gender
                           </label>
-                          {/* <input
-                            id="gender"
-                            type="text"
-                            onChange={(e) => setGender(e.target.value)}
-                            value={gender || ''}
-                          /> */}
                           <select
                             name="gender"
                             id="gender"
@@ -565,7 +561,6 @@ export default function Profile() {
                           <label htmlFor="race" className="w-20 opacity-60">
                             Race
                           </label>
-                          {/* <input id="race" type="text" onChange={(e) => setRace(e.target.value)} value={race || ''} /> */}
                           <select name="race" id="race" multiple value={race} onChange={(e) => handleSetRace(e.target)}>
                             <option value="" />
                             {Object.values(Races).map((race, index) => (
@@ -579,12 +574,53 @@ export default function Profile() {
                           <label htmlFor="height" className="w-20 opacity-60">
                             Height
                           </label>
-                          <input
-                            id="height"
-                            type="number"
-                            onChange={(e) => setHeight(e.target.value)}
-                            value={height || ''}
-                          />
+                          <div className="height-input">
+                            <input
+                              type="number"
+                              id="height"
+                              min={0}
+                              max={8}
+                              step={1}
+                              maxLength={1}
+                              value={Math.floor(parseInt(height) / 12)}
+                              onChange={(e) => {
+                                if (e.target.value) {
+                                  let n = parseInt(e.target.value);
+                                  if (n >= 0 && n < 9) {
+                                    let inches = parseInt(height) % 12;
+                                    setHeight((n * 12 + inches).toString());
+                                  }
+                                } else {
+                                  let inches = parseInt(height) % 12;
+                                  setHeight(inches.toString());
+                                }
+                              }}
+                            />
+                            <div className="unit">ft</div>
+                          </div>
+                          <div className="height-input ml-[-0.75rem]">
+                            <input
+                              type="number"
+                              min={0}
+                              max={11}
+                              step={1}
+                              maxLength={2}
+                              value={parseInt(height) % 12}
+                              onChange={(e) => {
+                                if (e.target.value) {
+                                  let n = parseInt(e.target.value);
+                                  if (n >= 0 && n < 12) {
+                                    let feet = Math.floor(parseInt(height) / 12);
+                                    setHeight((feet * 12 + n).toString());
+                                  }
+                                } else {
+                                  let feet = Math.floor(parseInt(height) / 12);
+                                  setHeight((feet * 12).toString());
+                                }
+                              }}
+                            />
+                            <div className="unit">in</div>
+                          </div>
                         </div>
                       </div>
                       <p className="font-bold">Digitals</p>
