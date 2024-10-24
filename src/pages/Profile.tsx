@@ -10,8 +10,6 @@ import {
   MdAddCircleOutline,
   MdOutlineDelete,
   MdOutlineFileUpload,
-  MdKeyboardArrowUp,
-  MdKeyboardArrowDown,
 } from 'react-icons/md';
 import { Genders, Races, Sizes } from '../utils/Enums';
 import { Model, Photo, Photographer } from '../utils/Types';
