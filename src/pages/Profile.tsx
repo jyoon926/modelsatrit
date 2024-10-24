@@ -572,52 +572,54 @@ export default function Profile() {
                           <label htmlFor="height" className="w-20 opacity-60">
                             Height
                           </label>
-                          <div className="height-input">
-                            <input
-                              type="number"
-                              id="height"
-                              min={0}
-                              max={8}
-                              step={1}
-                              maxLength={1}
-                              value={Math.floor(parseInt(height) / 12)}
-                              onChange={(e) => {
-                                if (e.target.value) {
-                                  let n = parseInt(e.target.value);
-                                  if (n >= 0 && n < 9) {
+                          <div className="flex flex-row gap-2">
+                            <div className="height-input">
+                              <input
+                                type="number"
+                                id="height"
+                                min={0}
+                                max={8}
+                                step={1}
+                                maxLength={1}
+                                value={Math.floor(parseInt(height) / 12)}
+                                onChange={(e) => {
+                                  if (e.target.value) {
+                                    let n = parseInt(e.target.value);
+                                    if (n >= 0 && n < 9) {
+                                      let inches = parseInt(height) % 12;
+                                      setHeight((n * 12 + inches).toString());
+                                    }
+                                  } else {
                                     let inches = parseInt(height) % 12;
-                                    setHeight((n * 12 + inches).toString());
+                                    setHeight(inches.toString());
                                   }
-                                } else {
-                                  let inches = parseInt(height) % 12;
-                                  setHeight(inches.toString());
-                                }
-                              }}
-                            />
-                            <div className="unit">ft</div>
-                          </div>
-                          <div className="height-input ml-[-0.75rem]">
-                            <input
-                              type="number"
-                              min={0}
-                              max={11}
-                              step={1}
-                              maxLength={2}
-                              value={parseInt(height) % 12}
-                              onChange={(e) => {
-                                if (e.target.value) {
-                                  let n = parseInt(e.target.value);
-                                  if (n >= 0 && n < 12) {
+                                }}
+                              />
+                              <div className="unit">ft</div>
+                            </div>
+                            <div className="height-input">
+                              <input
+                                type="number"
+                                min={0}
+                                max={11}
+                                step={1}
+                                maxLength={2}
+                                value={parseInt(height) % 12}
+                                onChange={(e) => {
+                                  if (e.target.value) {
+                                    let n = parseInt(e.target.value);
+                                    if (n >= 0 && n < 12) {
+                                      let feet = Math.floor(parseInt(height) / 12);
+                                      setHeight((feet * 12 + n).toString());
+                                    }
+                                  } else {
                                     let feet = Math.floor(parseInt(height) / 12);
-                                    setHeight((feet * 12 + n).toString());
+                                    setHeight((feet * 12).toString());
                                   }
-                                } else {
-                                  let feet = Math.floor(parseInt(height) / 12);
-                                  setHeight((feet * 12).toString());
-                                }
-                              }}
-                            />
-                            <div className="unit">in</div>
+                                }}
+                              />
+                              <div className="unit">in</div>
+                            </div>
                           </div>
                         </div>
                       </div>
