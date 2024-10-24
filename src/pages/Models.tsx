@@ -17,7 +17,6 @@ export default function Models() {
       query = query.or(orQuery);
     }
     const { data, error } = await query;
-    console.log(data);
     if (!error) {
       const reshapedData = data.map((model) => ({ ...model, photos: model.photos.map((item: any) => item.photo) }));
       setModels(reshapedData);

@@ -16,7 +16,6 @@ export default function Photographers() {
           ...photographer,
           photos: photographer.photos.map((item: any) => item.photo),
         }));
-        console.log(reshapedData);
         setPhotographers(reshapedData);
       }
     };
