@@ -580,8 +580,7 @@ export default function Profile() {
                                 min={0}
                                 max={8}
                                 step={1}
-                                maxLength={1}
-                                value={Math.floor(parseInt(height) / 12)}
+                                value={Math.floor(parseInt(height, 10) / 12)}
                                 onChange={(e) => {
                                   if (e.target.value) {
                                     let n = parseInt(e.target.value);
@@ -603,8 +602,7 @@ export default function Profile() {
                                 min={0}
                                 max={11}
                                 step={1}
-                                maxLength={2}
-                                value={parseInt(height) % 12}
+                                value={parseInt(height, 10) % 12}
                                 onChange={(e) => {
                                   if (e.target.value) {
                                     let n = parseInt(e.target.value);
