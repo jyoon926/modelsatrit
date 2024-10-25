@@ -49,7 +49,8 @@ export default function PhotographerCard({ photographer }: Props) {
         <div className="w-full flex flex-row gap-3 overflow-x-auto scrollbar-slim">
           {photographer.photos.map((photo, index) => (
             <img
-              className="h-80 rounded cursor-pointer"
+              className="h-80 rounded cursor-pointer bg-foreground/5"
+              style={{ aspectRatio: photo.aspect_ratio }}
               src={photo.medium}
               key={index}
               onClick={() => handlePhotoClick(index)}
@@ -60,7 +61,7 @@ export default function PhotographerCard({ photographer }: Props) {
         <div className="opacity-60 skew-x-[-10deg]">No photos.</div>
       )}
       <Slideshow
-        photos={photographer.photos.map((photo) => photo.large)}
+        photos={photographer.photos}
         selected={slideshowId}
         isOpen={isSlideshowOpen}
         onClose={() => setIsSlideshowOpen(false)}

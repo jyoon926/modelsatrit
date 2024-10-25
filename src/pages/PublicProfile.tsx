@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Model, Photographer, Post, User } from '../utils/Types';
+import { Model, Photo, Photographer, Post, User } from '../utils/Types';
 import { supabase } from '../supabase';
 import { useAuth } from '../utils/AuthContext';
 import ProfilePhoto from '../components/ProfilePhoto';
@@ -50,7 +51,7 @@ export default function PublicProfile() {
 
   // Slideshow
   const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
-  const [slideshowPhotos, setSlideshowPhotos] = useState(['']);
+  const [slideshowPhotos, setSlideshowPhotos] = useState<Photo[]>([]);
   const [slideshowId, setSlideshowId] = useState(0);
 
   const getModel = async (user_id: number) => {
@@ -96,7 +97,7 @@ export default function PublicProfile() {
       .select('post_id, post:post(*, user:user(*, profile_photo:photo(*)), photos:post_photo(photo(*)))')
       .eq('user_id', user_id);
     if (!error && data && data.length > 0) {
-      let taggedPosts = data.map((tag: any) => tag.post) ?? null;
+      const taggedPosts = data.map((tag: any) => tag.post) ?? null;
       const uniquePostsMap = new Map();
       taggedPosts.forEach((post) => uniquePostsMap.set(post.id, post));
       const uniqueTaggedPosts = Array.from(uniquePostsMap.values()).map((post) => ({
@@ -108,55 +109,8 @@ export default function PublicProfile() {
     }
   };
 
-  const fetchUser = async () => {
-    if (email) {
-      setTabs([]);
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('user')
-        .select('*, profile_photo:photo(*)')
-        .eq('email', email)
-        .single();
-      if (!error) {
-        setUser(data);
-        await getModel(data.id);
-        await getPhotographer(data.id);
-        await getPosts(data.id);
-        await getTaggedPosts(data.id);
-      } else {
-        return navigate('/404');
-      }
-      setLoading(false);
-    }
-  };
-
-  const checkTab = () => {
-    if (tabs.length === 0) {
-      return navigate(`/profile/${email}`);
-    }
-
-    if (!tab) {
-      return navigate(`/profile/${email}/${tabs[0]}`);
-    }
-
-    if (!tabData.map((el) => el.name).includes(tab)) {
-      if (model) return navigate(`/profile/${email}/model`);
-      if (photographer) return navigate(`/profile/${email}/photographer`);
-      return navigate(`/profile/${email}`);
-    }
-
-    if (
-      (tab === 'model' && !model) ||
-      (tab === 'photographer' && !photographer) ||
-      (tab === 'posts' && !posts) ||
-      (tab === 'tagged' && !tagged)
-    ) {
-      return navigate(`/profile/${email}/${tabs[0]}`);
-    }
-  };
-
   const handleTabClick = (selectedTab: string) => {
-    var newurl = window.location.protocol + '//' + window.location.host + `/profile/${email}/${selectedTab}`;
+    const newurl = window.location.protocol + '//' + window.location.host + `/profile/${email}/${selectedTab}`;
     window.history.pushState({ path: newurl }, '', newurl);
     setCurrentTab(selectedTab);
   };
@@ -166,15 +120,63 @@ export default function PublicProfile() {
   }, [tab]);
 
   useEffect(() => {
+    const fetchUser = async () => {
+      if (email) {
+        setTabs([]);
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('user')
+          .select('*, profile_photo:photo(*)')
+          .eq('email', email)
+          .single();
+        if (!error) {
+          setUser(data);
+          await getModel(data.id);
+          await getPhotographer(data.id);
+          await getPosts(data.id);
+          await getTaggedPosts(data.id);
+        } else {
+          return navigate('/404');
+        }
+        setLoading(false);
+      }
+    };
+
     fetchUser();
-  }, [email]);
+  }, [email, navigate]);
 
   useEffect(() => {
     if (loading) return;
-    checkTab();
-  }, [loading]);
 
-  const handlePhotoClick = (id: number, photos: string[]) => {
+    const checkTab = () => {
+      if (tabs.length === 0) {
+        return navigate(`/profile/${email}`);
+      }
+  
+      if (!tab) {
+        return navigate(`/profile/${email}/${tabs[0]}`);
+      }
+  
+      if (!tabData.map((el) => el.name).includes(tab)) {
+        if (model) return navigate(`/profile/${email}/model`);
+        if (photographer) return navigate(`/profile/${email}/photographer`);
+        return navigate(`/profile/${email}`);
+      }
+  
+      if (
+        (tab === 'model' && !model) ||
+        (tab === 'photographer' && !photographer) ||
+        (tab === 'posts' && !posts) ||
+        (tab === 'tagged' && !tagged)
+      ) {
+        return navigate(`/profile/${email}/${tabs[0]}`);
+      }
+    };
+
+    checkTab();
+  }, [email, loading, model, navigate, photographer, posts, tab, tabs, tagged]);
+
+  const handlePhotoClick = (id: number, photos: Photo[]) => {
     setSlideshowPhotos(photos);
     setIsSlideshowOpen(true);
     setSlideshowId(id);
@@ -196,7 +198,7 @@ export default function PublicProfile() {
         </div>
         <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-5">
           {/* Basic info panel */}
-          <div className="w-full max-w-[300px] flex flex-col gap-5">
+          <div className="w-full sm:max-w-[300px] flex flex-col gap-5">
             {authUser?.email === email && (
               <div className="flex flex-row gap-3">
                 <Link className="button light sm" to={'/profile'}>
@@ -305,13 +307,14 @@ export default function PublicProfile() {
                         <div className="w-full flex flex-row flex-wrap gap-5 sm:gap-3">
                           {model.photos.map((photo, index) => (
                             <img
-                              className="w-full sm:w-auto sm:h-72 rounded-md cursor-pointer"
+                              className="w-full sm:w-auto sm:h-72 rounded-md cursor-pointer bg-foreground/5"
+                              style={{ aspectRatio: photo.aspect_ratio }}
                               src={photo.medium}
                               key={index}
                               onClick={() =>
                                 handlePhotoClick(
                                   index,
-                                  model.photos.map((photo) => photo.large)
+                                  model.photos
                                 )
                               }
                             />
@@ -334,13 +337,14 @@ export default function PublicProfile() {
                       <div className="w-full flex flex-row flex-wrap gap-5 sm:gap-3">
                         {photographer.photos.map((photo, index) => (
                           <img
-                            className="w-full sm:w-auto sm:h-72 rounded-md cursor-pointer"
+                            className="w-full sm:w-auto sm:h-72 rounded-md bg-foreground/5"
+                            style={{ aspectRatio: photo.aspect_ratio }}
                             src={photo.medium}
                             key={index}
                             onClick={() =>
                               handlePhotoClick(
                                 index,
-                                photographer.photos.map((photo) => photo.large)
+                                photographer.photos
                               )
                             }
                           />

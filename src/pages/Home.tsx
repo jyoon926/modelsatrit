@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from 'react-router-dom';
 import { Model } from '../utils/Types';
 import { useState, useEffect, useRef } from 'react';
@@ -22,27 +23,27 @@ export default function Home() {
   const [imageIndex, setImageIndex] = useState(0);
   const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
 
-  const activate = (image: HTMLDivElement, x: number, y: number) => {
-    if (image) {
-      image.style.left = `${x}px`;
-      image.style.top = `${y}px`;
-      image.style.zIndex = '' + imageIndex;
-      image.classList.remove('opacity-0');
-      image.classList.remove('scale-0');
-      setLastPosition({ x, y });
-    }
-  };
-
-  const deactivate = (image: HTMLDivElement) => {
-    if (image) image.classList.add('opacity-0');
-    if (image) image.classList.add('scale-0');
-  };
-
-  const distanceFromLast = (x: number, y: number) => {
-    return Math.hypot(x - lastPosition.x, y - lastPosition.y);
-  };
-
   useEffect(() => {
+    const activate = (image: HTMLDivElement, x: number, y: number) => {
+      if (image) {
+        image.style.left = `${x}px`;
+        image.style.top = `${y}px`;
+        image.style.zIndex = '' + imageIndex;
+        image.classList.remove('opacity-0');
+        image.classList.remove('scale-0');
+        setLastPosition({ x, y });
+      }
+    };
+
+    const deactivate = (image: HTMLDivElement) => {
+      if (image) image.classList.add('opacity-0');
+      if (image) image.classList.add('scale-0');
+    };
+
+    const distanceFromLast = (x: number, y: number) => {
+      return Math.hypot(x - lastPosition.x, y - lastPosition.y);
+    };
+
     const handleCursorMove = (clientX: number, clientY: number) => {
       if (distanceFromLast(clientX, clientY) > Math.max(window.innerWidth / 30, 20)) {
         const lead = imagesRef.current[imageIndex % imagesRef.current.length];
@@ -53,13 +54,16 @@ export default function Home() {
         setImageIndex((prevIndex) => prevIndex + 1);
       }
     };
+
     const handleMouseMove = (e: MouseEvent) => {
       handleCursorMove(e.clientX, e.clientY);
     };
+
     const handleTouchMove = (e: TouchEvent) => {
       const touch = e.touches[0];
       if (touch) handleCursorMove(touch.clientX, touch.clientY);
     };
+
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('touchmove', handleTouchMove);
     return () => {
@@ -92,7 +96,7 @@ export default function Home() {
               model.photos &&
               model.photos.length > 0 && (
                 <div
-                  className="absolute h-[25vh] sm:h-[35vh] bg-cover bg-no-repeat bg-center rounded-lg opacity-0 scale-0 translate-x-[-50%] translate-y-[-50%]"
+                  className="absolute h-[25vh] sm:h-[35vh] bg-cover bg-no-repeat bg-center rounded-lg opacity-0 scale-0 translate-x-[-50%] translate-y-[-50%] bg-foreground/5"
                   style={{
                     backgroundImage: `url(${model.photos[0].small})`,
                     aspectRatio: '0.75',

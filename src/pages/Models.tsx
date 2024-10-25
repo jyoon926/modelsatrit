@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import { Link } from 'react-router-dom';
@@ -9,21 +10,21 @@ export default function Models() {
   const [genderFilters, setGenderFilters] = useState<string[]>([]);
   const [raceFilters, setRaceFilters] = useState<string[]>([]);
 
-  const fetchData = async () => {
-    let query = supabase.from('model').select('*, user:user(*), photos:model_photo(photo(*))');
-    if (genderFilters.length > 0) query = query.in('gender', genderFilters);
-    if (raceFilters.length > 0) {
-      const orQuery = raceFilters.map((race) => `race.cs.{${race}}`).join(',');
-      query = query.or(orQuery);
-    }
-    const { data, error } = await query;
-    if (!error) {
-      const reshapedData = data.map((model) => ({ ...model, photos: model.photos.map((item: any) => item.photo) }));
-      setModels(reshapedData);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      let query = supabase.from('model').select('*, user:user(*), photos:model_photo(photo(*))');
+      if (genderFilters.length > 0) query = query.in('gender', genderFilters);
+      if (raceFilters.length > 0) {
+        const orQuery = raceFilters.map((race) => `race.cs.{${race}}`).join(',');
+        query = query.or(orQuery);
+      }
+      const { data, error } = await query;
+      if (!error) {
+        const reshapedData = data.map((model) => ({ ...model, photos: model.photos.map((item: any) => item.photo) }));
+        setModels(reshapedData);
+      }
+    };
+
     fetchData();
   }, [genderFilters, raceFilters]);
 
@@ -44,7 +45,7 @@ export default function Models() {
                 model.photos.length > 0 && (
                   <Link className="w-full" to={`/profile/${model.user.email}/model`} key={model.id}>
                     <div
-                      className="w-full bg-cover bg-no-repeat bg-center rounded"
+                      className="w-full bg-cover bg-no-repeat bg-center rounded bg-foreground/5"
                       style={{ backgroundImage: `url(${model.photos[0].medium})`, aspectRatio: '0.75' }}
                     />
                     <p className="font-serif mt-3 text-2xl">{model.user.name}</p>

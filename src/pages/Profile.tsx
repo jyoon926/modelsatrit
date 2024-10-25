@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-async-promise-executor */
 import { useEffect, useState } from 'react';
 import { useAuth } from '../utils/AuthContext';
 import { Link } from 'react-router-dom';
@@ -151,7 +153,7 @@ export default function Profile() {
   const saveChanges = async () => {
     if (!user) return;
     const promise = new Promise<void>(async (resolve, reject) => {
-      let userUpdate: any = {};
+      const userUpdate: any = {};
       if (name) userUpdate.name = name;
       if (bio) userUpdate.bio = bio;
       if (major) userUpdate.major = major;
@@ -159,7 +161,7 @@ export default function Profile() {
       if (instagram) userUpdate.instagram = instagram;
       const { error: userError } = await supabase.from('user').update(userUpdate).eq('id', user.id);
       let modelError = null;
-      let modelUpdate: any = {};
+      const modelUpdate: any = {};
       if (gender) modelUpdate.gender = gender;
       if (race) modelUpdate.race = race;
       if (height) modelUpdate.height = height;
@@ -282,14 +284,14 @@ export default function Profile() {
   };
 
   const handleSetRace = (e: HTMLSelectElement) => {
-    let values = Array.from(e.selectedOptions, (option) => option.value);
+    const values = Array.from(e.selectedOptions, (option) => option.value);
     setRace(values);
   };
 
   const moveModelPhotoLeft = async (index: number) => {
     if (!user || !model) return;
     const promise = new Promise<void>(async (resolve, reject) => {
-      let updatedPhotos = [...model.photos];
+      const updatedPhotos = [...model.photos];
       [updatedPhotos[index - 1], updatedPhotos[index]] = [updatedPhotos[index], updatedPhotos[index - 1]];
       const { error } = await supabase
         .from('model')
@@ -312,7 +314,7 @@ export default function Profile() {
   const moveModelPhotoRight = async (index: number) => {
     if (!user || !model) return;
     const promise = new Promise<void>(async (resolve, reject) => {
-      let updatedPhotos = [...model.photos];
+      const updatedPhotos = [...model.photos];
       [updatedPhotos[index + 1], updatedPhotos[index]] = [updatedPhotos[index], updatedPhotos[index + 1]];
       const { error } = await supabase
         .from('model')
@@ -335,7 +337,7 @@ export default function Profile() {
   const movePhotographerPhotoLeft = async (index: number) => {
     if (!user || !photographer) return;
     const promise = new Promise<void>(async (resolve, reject) => {
-      let updatedPhotos = [...photographer.photos];
+      const updatedPhotos = [...photographer.photos];
       [updatedPhotos[index - 1], updatedPhotos[index]] = [updatedPhotos[index], updatedPhotos[index - 1]];
       const { error } = await supabase
         .from('photographer')
@@ -358,7 +360,7 @@ export default function Profile() {
   const movePhotographerPhotoRight = async (index: number) => {
     if (!user || !photographer) return;
     const promise = new Promise<void>(async (resolve, reject) => {
-      let updatedPhotos = [...photographer.photos];
+      const updatedPhotos = [...photographer.photos];
       [updatedPhotos[index + 1], updatedPhotos[index]] = [updatedPhotos[index], updatedPhotos[index + 1]];
       const { error } = await supabase
         .from('photographer')
@@ -392,7 +394,7 @@ export default function Profile() {
           {/* Row */}
           <div className="w-full flex flex-col sm:flex-row justify-start items-start gap-5">
             {/* Basic Information */}
-            <div className="w-[300px] flex flex-col gap-5 items-start">
+            <div className="w-full sm:max-w-[300px] flex flex-col gap-5 items-start">
               {/* Buttons */}
               <div className="flex flex-row gap-3">
                 <Link className="button light" to={'/profile/' + user.email}>
@@ -583,13 +585,13 @@ export default function Profile() {
                                 value={Math.floor(parseInt(height, 10) / 12)}
                                 onChange={(e) => {
                                   if (e.target.value) {
-                                    let n = parseInt(e.target.value);
+                                    const n = parseInt(e.target.value);
                                     if (n >= 0 && n < 9) {
-                                      let inches = parseInt(height) % 12;
+                                      const inches = parseInt(height) % 12;
                                       setHeight((n * 12 + inches).toString());
                                     }
                                   } else {
-                                    let inches = parseInt(height) % 12;
+                                    const inches = parseInt(height) % 12;
                                     setHeight(inches.toString());
                                   }
                                 }}
@@ -605,13 +607,13 @@ export default function Profile() {
                                 value={parseInt(height, 10) % 12}
                                 onChange={(e) => {
                                   if (e.target.value) {
-                                    let n = parseInt(e.target.value);
+                                    const n = parseInt(e.target.value);
                                     if (n >= 0 && n < 12) {
-                                      let feet = Math.floor(parseInt(height) / 12);
+                                      const feet = Math.floor(parseInt(height) / 12);
                                       setHeight((feet * 12 + n).toString());
                                     }
                                   } else {
-                                    let feet = Math.floor(parseInt(height) / 12);
+                                    const feet = Math.floor(parseInt(height) / 12);
                                     setHeight((feet * 12).toString());
                                   }
                                 }}
@@ -626,7 +628,11 @@ export default function Profile() {
                         <div className="w-full flex flex-row flex-wrap gap-3">
                           {model.photos.map((photo, index) => (
                             <div className="relative" key={index}>
-                              <img className="h-48 rounded" src={photo.small} />
+                              <img
+                                className="h-48 rounded bg-foreground/5"
+                                style={{ aspectRatio: photo.aspect_ratio }}
+                                src={photo.small}
+                              />
                               <button
                                 className="absolute top-0 right-0 m-2 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
                                 onClick={() => deleteModelPhoto(index)}
@@ -674,7 +680,11 @@ export default function Profile() {
                         <div className="w-full flex flex-row flex-wrap gap-3">
                           {photographer.photos.map((photo, index) => (
                             <div className="relative" key={index}>
-                              <img className="h-48 rounded" src={photo.small} />
+                              <img
+                                className="h-48 rounded bg-foreground/5"
+                                style={{ aspectRatio: photo.aspect_ratio }}
+                                src={photo.small}
+                              />
                               <button
                                 className="absolute top-0 right-0 m-2 p-1 bg-foreground/80 duration-300 text-background rounded-full hover:bg-foreground"
                                 onClick={() => deletePhotographerPhoto(index)}

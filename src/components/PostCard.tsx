@@ -1,3 +1,4 @@
+/* eslint-disable no-async-promise-executor */
 import { Link } from 'react-router-dom';
 import { Comment as IComment, Like, Post, Tag } from '../utils/Types';
 import { useAuth } from '../utils/AuthContext';
@@ -41,41 +42,41 @@ export default function PostCard({ post: initialPost, onDelete }: Props) {
   const [slideshowId, setSlideshowId] = useState(0);
   const { toastPromise } = useNotification();
 
-  const fetchComments = async () => {
-    const { data, error } = await supabase
-      .from('comment')
-      .select('*, user:user(*, profile_photo:photo(*)), likes:like(*)')
-      .eq('post_id', post.id)
-      .order('created_at', { ascending: false });
-    if (!error) {
-      setComments(data);
-    }
-  };
-
-  const fetchLikes = async () => {
-    const { data, error } = await supabase
-      .from('like')
-      .select('*, user:user(*, profile_photo:photo(*))')
-      .eq('post_id', post.id);
-    if (!error) {
-      setLikes(data);
-      setLiked(data.find((like) => like.user_id === user?.id));
-    }
-  };
-
-  const fetchTags = async () => {
-    const { data, error } = await supabase
-      .from('tag')
-      .select('*, user:user(*, profile_photo:photo(*))')
-      .eq('post_id', post.id);
-    if (!error) setTags(data);
-  };
-
   useEffect(() => {
+    const fetchComments = async () => {
+      const { data, error } = await supabase
+        .from('comment')
+        .select('*, user:user(*, profile_photo:photo(*)), likes:like(*)')
+        .eq('post_id', post.id)
+        .order('created_at', { ascending: false });
+      if (!error) {
+        setComments(data);
+      }
+    };
+  
+    const fetchLikes = async () => {
+      const { data, error } = await supabase
+        .from('like')
+        .select('*, user:user(*, profile_photo:photo(*))')
+        .eq('post_id', post.id);
+      if (!error) {
+        setLikes(data);
+        setLiked(data.find((like) => like.user_id === user?.id));
+      }
+    };
+  
+    const fetchTags = async () => {
+      const { data, error } = await supabase
+        .from('tag')
+        .select('*, user:user(*, profile_photo:photo(*))')
+        .eq('post_id', post.id);
+      if (!error) setTags(data);
+    };
+
     fetchComments();
     fetchLikes();
     fetchTags();
-  }, [post]);
+  }, [post, user?.id]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -225,7 +226,8 @@ export default function PostCard({ post: initialPost, onDelete }: Props) {
           {post.photos.map((photo, index) => (
             <div key={index} className="relative flex-shrink-0">
               <img
-                className="max-h-[300px] sm:max-h-[400px] rounded-md border cursor-pointer"
+                className="max-h-[300px] sm:max-h-[400px] rounded-md border cursor-pointer bg-foreground/5"
+                style={{ aspectRatio: photo.aspect_ratio }}
                 src={photo.medium}
                 alt={photo.name}
                 onClick={() => handlePhotoClick(index)}
@@ -292,7 +294,7 @@ export default function PostCard({ post: initialPost, onDelete }: Props) {
       </Modal>
       <Slideshow
         selected={slideshowId}
-        photos={post.photos.map((photo) => photo.large)}
+        photos={post.photos}
         isOpen={isSlideshowOpen}
         onClose={() => setIsSlideshowOpen(false)}
         tags={tags}

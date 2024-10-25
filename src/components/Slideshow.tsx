@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { MdChevronLeft, MdChevronRight, MdClose } from 'react-icons/md';
-import { Tag } from '../utils/Types';
+import { Photo, Tag } from '../utils/Types';
 import Tags from './Tags';
 
 interface Props {
-  photos: string[];
+  photos: Photo[];
   selected: number;
   isOpen: boolean;
   onClose: () => void;
@@ -92,8 +92,9 @@ export default function Slideshow({ photos, selected, isOpen, onClose, tags }: P
       {/* Photos */}
       {photos.map((photo, index) => (
         <img
-          className={`slideshow-image absolute rounded-md ${id !== index && 'opacity-0 pointer-events-none'}`}
-          src={photo}
+          className={`slideshow-image absolute rounded-md bg-foreground/25 ${id !== index && 'opacity-0 pointer-events-none'}`}
+          style={{ aspectRatio: photo.aspect_ratio }}
+          src={photo.large}
           ref={id === index ? imageRef : null}
           alt={`Slide ${index + 1}`}
           key={index}
