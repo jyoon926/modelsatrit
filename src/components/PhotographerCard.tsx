@@ -51,7 +51,7 @@ export default function PhotographerCard({ photographer }: Props) {
             <img
               className="h-80 rounded cursor-pointer bg-foreground/5"
               style={{ aspectRatio: photo.aspect_ratio }}
-              src={photo.medium}
+              src={photo.small}
               key={index}
               onClick={() => handlePhotoClick(index)}
             />

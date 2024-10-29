@@ -8,6 +8,14 @@ export default function Home() {
   const [models, setModels] = useState<Model[]>();
 
   useEffect(() => {
+    document.body.style.overflowY = 'hidden';
+
+    return () => {
+      document.body.style.overflowY = '';
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase.from('model').select('*, photos:model_photo(photo(*))');
       if (!error) {
@@ -75,7 +83,7 @@ export default function Home() {
   return (
     <div className="fade-in">
       <div className="fixed inset-0 px-5 py-5 pt-16 flex flex-col justify-end items-start gap-10 overscroll-none">
-        <h1 className="text-6xl sm:text-[10vw] font-serif">Models @ RIT</h1>
+        <h1 className="text-[20vw] sm:text-[10vw] font-serif">Models @ RIT</h1>
         <p className="max-w-[600px] text-2xl leading-tight mb-5">
           A platform for connecting photography students and aspiring models within the RIT community.
         </p>

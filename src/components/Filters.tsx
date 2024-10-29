@@ -19,7 +19,7 @@ export default function Filters({ onFiltersUpdate }: Props) {
 
   useEffect(() => {
     onFiltersUpdate(genderFilters, raceFilters);
-  }, [genderFilters, raceFilters]);
+  }, [genderFilters, onFiltersUpdate, raceFilters]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -27,9 +27,19 @@ export default function Filters({ onFiltersUpdate }: Props) {
         setIsOpen(false);
       }
     }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    }
+
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
     };
   }, []);
 
