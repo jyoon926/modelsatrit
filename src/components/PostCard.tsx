@@ -18,6 +18,7 @@ import Slideshow from './Slideshow';
 import { useNotification } from './Notification';
 import { deletePhoto } from '../utils/PhotoUtils';
 import Tags from './Tags';
+import LoginModal from './LoginModal';
 
 interface Props {
   post: Post;
@@ -36,6 +37,7 @@ export default function PostCard({ post: initialPost, onDelete }: Props) {
   const [editCaption, setEditCaption] = useState<string>(post.caption);
   const [inEditMode, setInEditMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
@@ -92,7 +94,10 @@ export default function PostCard({ post: initialPost, onDelete }: Props) {
   };
 
   const handleLike = async () => {
-    if (!user) return;
+    if (!user) {
+      setIsLoginModalOpen(true);
+      return;
+    }
     if (liked) {
       const { error } = await supabase.from('like').delete().eq('user_id', user?.id).eq('post_id', post.id);
       if (!error) {
@@ -246,7 +251,7 @@ export default function PostCard({ post: initialPost, onDelete }: Props) {
         <button className="text-red-500" onClick={() => handleLike()}>
           {liked ? <IoMdHeart className="text-2xl" /> : <IoMdHeartEmpty className="text-2xl" />}
         </button>
-        <button className="flex flex-row ml-[10px] gap-1.5" onClick={() => setIsModalOpen(true)}>
+        <button className="flex flex-row items-center ml-[10px] gap-1.5" onClick={() => setIsModalOpen(true)}>
           {likes.slice(0, 10).map((like) => (
             <div className="ml-[-10px]" key={like.id}>
               <ProfilePhoto user={like.user} key={like.id} size={Sizes.sm} isLink={false} />
@@ -292,6 +297,7 @@ export default function PostCard({ post: initialPost, onDelete }: Props) {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Likes">
         <Likes likes={likes} />
       </Modal>
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
       <Slideshow
         selected={slideshowId}
         photos={post.photos}

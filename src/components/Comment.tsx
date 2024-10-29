@@ -10,6 +10,7 @@ import Modal from './Modal';
 import Likes from './Likes';
 import OptionsMenu from './OptionsMenu';
 import { MdDeleteOutline } from 'react-icons/md';
+import LoginModal from './LoginModal';
 
 interface Props {
   comment: IComment;
@@ -21,6 +22,7 @@ export default function Comment({ comment, onDelete }: Props) {
   const [likes, setLikes] = useState<Like[]>([]);
   const [liked, setLiked] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -40,7 +42,10 @@ export default function Comment({ comment, onDelete }: Props) {
   }, []);
 
   const handleLike = async () => {
-    if (!user) return;
+    if (!user) {
+      setIsLoginModalOpen(true);
+      return;
+    }
     if (liked) {
       const { error } = await supabase.from('like').delete().eq('user_id', user?.id).eq('comment_id', comment.id);
       if (!error) {
@@ -104,6 +109,7 @@ export default function Comment({ comment, onDelete }: Props) {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Likes">
         <Likes likes={likes} />
       </Modal>
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </div>
   );
 }
