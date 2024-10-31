@@ -241,7 +241,7 @@ export default function PublicProfile() {
                 <div>
                   <p className="opacity-60 pb-1">Instagram</p>
                   <Link to={'https://www.instagram.com/' + user.instagram.replace('@', '')} target="_blank">
-                    {user.instagram}
+                    @{user.instagram.replace('@', '')}
                   </Link>
                 </div>
               )}
