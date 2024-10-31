@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import { Link } from 'react-router-dom';
 import Filters from '../components/Filters';
-import { Photo } from '../utils/Types';
 
 interface Model {
-  photos: Photo[];
+  photos: any[];
   user: any;
 }
 
@@ -27,11 +26,11 @@ export default function Models() {
         query = query.or(orQuery);
       }
       const { data, error } = await query;
-      if (!error) {
-        const reshapedData = data.map((model) => ({
-          user: model.user,
-          photos: model.photos.map((item: any) => item.photo),
-        }));
+      if (!error && data) {
+        const reshapedData = data.map(({ user, photos }) => ({
+          user,
+          photos: photos.map(({photo}) => photo),
+        })).sort((a, b) => (a.user as any).name.localeCompare((b.user as any).name));
         setModels(reshapedData);
       }
     };

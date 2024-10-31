@@ -16,7 +16,7 @@ export default function Photographers() {
         const reshapedData = data.map((photographer) => ({
           ...photographer,
           photos: photographer.photos.map((item: any) => item.photo),
-        }));
+        })).sort((a, b) => (a.user as any).name.localeCompare((b.user as any).name));
         setPhotographers(reshapedData);
       }
     };
@@ -33,7 +33,6 @@ export default function Photographers() {
             {photographers.map((photographer, index) => (
               <PhotographerCard photographer={photographer} key={index} />
             ))}
-            <div className="py-4 opacity-60">You've reached the end!</div>
           </div>
         )}
       </div>
