@@ -9,7 +9,7 @@ interface Props {
   isLink?: boolean;
 }
 
-export default function ({ user, size = Sizes.md, isLink = true }: Props) {
+export default function ProfilePhoto({ user, size = Sizes.md, isLink = true }: Props) {
   const ProfileElement = user.profile_photo ? (
     <div className={'profile-picture ' + size} style={{ backgroundImage: `url('${user.profile_photo.small}')` }} />
   ) : (

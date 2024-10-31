@@ -2,8 +2,13 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import { Link } from 'react-router-dom';
-import { Model } from '../utils/Types';
 import Filters from '../components/Filters';
+import { Photo } from '../utils/Types';
+
+interface Model {
+  photos: Photo[];
+  user: any;
+}
 
 export default function Models() {
   const [models, setModels] = useState<Model[]>();
@@ -12,7 +17,10 @@ export default function Models() {
 
   useEffect(() => {
     const fetchData = async () => {
-      let query = supabase.from('model').select('*, user:user(*), photos:model_photo(photo(*))');
+      let query = supabase
+        .from('model')
+        .select('user:user(name, email), photos:model_photo(photo(medium))')
+        .limit(1, { foreignTable: 'model_photo' });
       if (genderFilters.length > 0) query = query.in('gender', genderFilters);
       if (raceFilters.length > 0) {
         const orQuery = raceFilters.map((race) => `race.cs.{${race}}`).join(',');
@@ -20,7 +28,10 @@ export default function Models() {
       }
       const { data, error } = await query;
       if (!error) {
-        const reshapedData = data.map((model) => ({ ...model, photos: model.photos.map((item: any) => item.photo) }));
+        const reshapedData = data.map((model) => ({
+          user: model.user,
+          photos: model.photos.map((item: any) => item.photo),
+        }));
         setModels(reshapedData);
       }
     };
@@ -41,9 +52,9 @@ export default function Models() {
         {models && (
           <div className="w-full grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
             {models.map(
-              (model) =>
+              (model, index) =>
                 model.photos.length > 0 && (
-                  <Link className="w-full" to={`/profile/${model.user.email}/model`} key={model.id}>
+                  <Link className="w-full" to={`/profile/${model.user.email}/model`} key={index}>
                     <div
                       className="w-full bg-cover bg-no-repeat bg-center rounded bg-foreground/5"
                       style={{ backgroundImage: `url(${model.photos[0].medium})`, aspectRatio: '0.75' }}

@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from 'react-router-dom';
-import { Model } from '../utils/Types';
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabase';
 
 export default function Home() {
-  const [models, setModels] = useState<Model[]>();
+  const [modelPhotos, setModelPhotos] = useState<string[]>();
 
   useEffect(() => {
     document.body.style.overflowY = 'hidden';
@@ -17,10 +16,13 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase.from('model').select('*, photos:model_photo(photo(*))');
+      const { data, error } = await supabase
+        .from('model')
+        .select('photos:model_photo(photo(small))')
+        .limit(1, { foreignTable: 'model_photo' });
       if (!error) {
-        const reshapedData = data.map((model) => ({ ...model, photos: model.photos.map((item: any) => item.photo) }));
-        setModels(reshapedData);
+        const photos = data.filter((model) => model.photos.length).map((model) => (model.photos[0].photo as any).small);
+        setModelPhotos(photos);
       }
     };
 
@@ -97,26 +99,22 @@ export default function Home() {
         </div>
       </div>
       <div className="fixed top-0 left-0 w-full h-full z-[-1] opacity-70 sepia-[0.1] brightness-[0.9] mix-blend-multiply overflow-hidden">
-        {models &&
-          models.length > 0 &&
-          models?.map(
-            (model, index) =>
-              model.photos &&
-              model.photos.length > 0 && (
-                <div
-                  className="absolute h-[25vh] sm:h-[35vh] bg-cover bg-no-repeat bg-center rounded-lg opacity-0 scale-0 translate-x-[-50%] translate-y-[-50%] bg-foreground/5"
-                  style={{
-                    backgroundImage: `url(${model.photos[0].small})`,
-                    aspectRatio: '0.75',
-                    transition: 'transform 0.5s, opacity 0.5s',
-                  }}
-                  ref={(el) => {
-                    if (el) imagesRef.current[index] = el;
-                  }}
-                  key={index}
-                />
-              )
-          )}
+        {modelPhotos &&
+          modelPhotos.length > 0 &&
+          modelPhotos?.map((photo, index) => (
+            <div
+              className="absolute h-[25vh] sm:h-[35vh] bg-cover bg-no-repeat bg-center rounded-lg opacity-0 scale-0 translate-x-[-50%] translate-y-[-50%] bg-foreground/5"
+              style={{
+                backgroundImage: `url(${photo})`,
+                aspectRatio: '0.75',
+                transition: 'transform 0.5s, opacity 0.5s',
+              }}
+              ref={(el) => {
+                if (el) imagesRef.current[index] = el;
+              }}
+              key={index}
+            />
+          ))}
       </div>
     </div>
   );
