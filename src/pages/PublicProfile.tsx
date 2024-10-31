@@ -309,7 +309,7 @@ export default function PublicProfile() {
                             <img
                               className="w-full sm:w-auto sm:h-72 rounded-md cursor-pointer bg-foreground/5"
                               style={{ aspectRatio: photo.aspect_ratio }}
-                              src={photo.medium}
+                              src={photo.small}
                               key={index}
                               onClick={() =>
                                 handlePhotoClick(
@@ -337,9 +337,9 @@ export default function PublicProfile() {
                       <div className="w-full flex flex-row flex-wrap gap-5 sm:gap-3">
                         {photographer.photos.map((photo, index) => (
                           <img
-                            className="w-full sm:w-auto sm:h-72 rounded-md bg-foreground/5"
+                            className="w-full sm:w-auto sm:h-72 rounded-md cursor-pointer bg-foreground/5"
                             style={{ aspectRatio: photo.aspect_ratio }}
-                            src={photo.medium}
+                            src={photo.small}
                             key={index}
                             onClick={() =>
                               handlePhotoClick(

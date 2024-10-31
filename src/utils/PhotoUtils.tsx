@@ -5,8 +5,8 @@ import { Photo } from './Types';
 
 export const uploadPhoto = async (file: File): Promise<Photo> => {
   const sizes = [
-    { label: 'small', quality: 0.8, maxSize: 500 },
-    { label: 'medium', quality: 0.8, maxSize: 1000 },
+    { label: 'small', quality: 0.6, maxSize: 500 },
+    { label: 'medium', quality: 0.7, maxSize: 1000 },
     { label: 'large', quality: 0.8, maxSize: 2000 },
   ];
 
@@ -19,7 +19,7 @@ export const uploadPhoto = async (file: File): Promise<Photo> => {
     const compressedFile = await new Promise<File | Blob>((resolve, reject) => {
       new Compressor(file, {
         quality: size.quality,
-        maxWidth: size.maxSize,
+        maxHeight: size.maxSize,
         success(result) {
           resolve(result);
         },
