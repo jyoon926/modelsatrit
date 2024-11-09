@@ -19,7 +19,7 @@ export default function About() {
           a resource for discovering new faces.
         </p>
         <div className="py-10 w-full flex flex-col md:flex-row md:items-end justify-center w-full max-w-3/4 gap-10">
-          <img className="w-80 rounded-xl grayscale mix-blend-multiply border" src="images/headshot.jpg" alt="" />
+          <img className="w-72 rounded-xl grayscale mix-blend-multiply border" src="images/headshot.jpg" alt="" />
           <div className="w-full max-w-[600px] flex flex-col gap-7">
             <p className="text-3xl sm:text-4xl font-serif">Jacob Yoon, BS/MS Computer Science '25</p>
             <p className="text-md sm:text-lg leading-snug">
