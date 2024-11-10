@@ -39,10 +39,7 @@ export default function Slideshow({ photos, selected, isOpen, onClose, tags }: P
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
       document.addEventListener('click', handleClickOutside);
-      document.body.style.overflowY = 'hidden';
       setTimeout(() => setIsVisible(true), 50); // Delay to ensure transition works
-    } else {
-      document.body.style.overflowY = 'scroll';
     }
 
     return () => {
