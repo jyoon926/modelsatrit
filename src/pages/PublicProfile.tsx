@@ -309,7 +309,7 @@ export default function PublicProfile() {
                             <img
                               className="w-full sm:w-auto sm:h-72 rounded-md cursor-pointer bg-foreground/5"
                               style={{ aspectRatio: photo.aspect_ratio }}
-                              src={photo.small}
+                              src={photo.medium}
                               key={index}
                               onClick={() =>
                                 handlePhotoClick(
@@ -339,7 +339,7 @@ export default function PublicProfile() {
                           <img
                             className="w-full sm:w-auto sm:h-72 rounded-md cursor-pointer bg-foreground/5"
                             style={{ aspectRatio: photo.aspect_ratio }}
-                            src={photo.small}
+                            src={photo.medium}
                             key={index}
                             onClick={() =>
                               handlePhotoClick(
