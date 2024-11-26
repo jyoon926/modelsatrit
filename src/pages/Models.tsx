@@ -27,10 +27,12 @@ export default function Models() {
       }
       const { data, error } = await query;
       if (!error && data) {
-        const reshapedData = data.map(({ user, photos }) => ({
-          user,
-          photos: photos.map(({photo}) => photo),
-        })).sort((a, b) => (a.user as any).name.localeCompare((b.user as any).name));
+        const reshapedData = data
+          .map(({ user, photos }) => ({
+            user,
+            photos: photos.map(({ photo }) => photo),
+          }))
+          .sort((a, b) => (a.user as any).name.localeCompare((b.user as any).name));
         setModels(reshapedData);
       }
     };
@@ -56,7 +58,7 @@ export default function Models() {
                   <Link className="w-full" to={`/profile/${model.user.email}/model`} key={index}>
                     <div
                       className="w-full bg-cover bg-no-repeat bg-center rounded bg-foreground/5"
-                      style={{ backgroundImage: `url(${model.photos[0].medium})`, aspectRatio: '0.75' }}
+                      style={{ backgroundImage: `url("${model.photos[0].medium}")`, aspectRatio: '0.75' }}
                     />
                     <p className="font-serif mt-3 text-2xl">{model.user.name}</p>
                   </Link>
