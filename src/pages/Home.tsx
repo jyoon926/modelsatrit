@@ -98,7 +98,7 @@ export default function Home() {
           </Link>
         </div>
       </div>
-      <div className="fixed top-0 left-0 w-full h-full z-[-1] opacity-70 sepia-[0.1] brightness-[0.9] mix-blend-multiply overflow-hidden">
+      <div className="fixed top-0 left-0 w-full h-full z-[-1] opacity-80 brightness-[0.9] mix-blend-multiply overflow-hidden">
         {modelPhotos &&
           modelPhotos.length > 0 &&
           modelPhotos?.map((photo, index) => (
