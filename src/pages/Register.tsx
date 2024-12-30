@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import { useAuth } from '../utils/AuthContext';
+import useDocumentTitle from '../utils/useDocumentTitle';
 
 export default function Register() {
   const { update } = useAuth();
@@ -12,6 +13,8 @@ export default function Register() {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
+
+  useDocumentTitle('Register — Models @ RIT');
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { User } from '../utils/Types';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import ProfilePhoto from './ProfilePhoto';
 import { Sizes } from '../utils/Enums';
 import { MdAddCircleOutline, MdPerson, MdRemoveCircleOutline } from 'react-icons/md';

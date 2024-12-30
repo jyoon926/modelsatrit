@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import { Post } from '../utils/Types';
 import PostCard from '../components/PostCard';
 import PostCreateCard from '../components/PostCreateCard';
 import Spinner from '../components/Spinner';
+import useDocumentTitle from '../utils/useDocumentTitle';
 
 export default function Community() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState(true);
+
+  useDocumentTitle('Community — Models @ RIT');
 
   const fetchPosts = async () => {
     if (loading || !hasMore) return;

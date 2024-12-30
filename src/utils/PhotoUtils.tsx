@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Compressor from 'compressorjs';
-import { supabase } from '../supabase';
+import { supabase } from './Supabase';
 import { Photo } from './Types';
 
 export const uploadPhoto = async (file: File): Promise<Photo> => {
@@ -67,26 +67,26 @@ export const getImageAspectRatio = (file: File): Promise<number> => {
   return new Promise((resolve, reject) => {
     // Create a URL for the file
     const url = URL.createObjectURL(file);
-    
+
     // Create an image element
     const img = new Image();
-    
+
     img.onload = () => {
       // Calculate aspect ratio
       const aspectRatio = img.width / img.height;
-      
+
       // Clean up by revoking the URL
       URL.revokeObjectURL(url);
-      
+
       resolve(aspectRatio);
     };
-    
+
     img.onerror = () => {
       // Clean up on error
       URL.revokeObjectURL(url);
       reject(new Error('Failed to load image'));
     };
-    
+
     // Set the source to start loading
     img.src = url;
   });
@@ -95,12 +95,12 @@ export const getImageAspectRatio = (file: File): Promise<number> => {
 export const getImageAspectRatioFromUrl = (url: string): Promise<number> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    
+
     img.onload = () => {
       const aspectRatio = img.width / img.height;
       resolve(aspectRatio);
     };
-    
+
     img.onerror = () => {
       reject(new Error(`Failed to load image from URL: ${url}`));
     };

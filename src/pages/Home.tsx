@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 
 export default function Home() {
   const [modelPhotos, setModelPhotos] = useState<string[]>();

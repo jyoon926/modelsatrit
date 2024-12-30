@@ -3,7 +3,7 @@ import { Comment as IComment, Like } from '../utils/Types';
 import { getRelativeTime } from '../utils/RenderUtils';
 import ProfilePhoto from './ProfilePhoto';
 import { useEffect, useState } from 'react';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import { useAuth } from '../utils/AuthContext';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import Modal from './Modal';

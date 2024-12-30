@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import { Photographer } from '../utils/Types';
 import PhotographerCard from '../components/PhotographerCard';
+import useDocumentTitle from '../utils/useDocumentTitle';
 
 export default function Photographers() {
   const [photographers, setPhotographers] = useState<Photographer[]>();
+
+  useDocumentTitle('Photographers — Models @ RIT');
 
   useEffect(() => {
     const fetchData = async () => {

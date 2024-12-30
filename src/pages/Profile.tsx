@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../utils/AuthContext';
 import { Link } from 'react-router-dom';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import ProfilePhoto from '../components/ProfilePhoto';
 import {
   MdChevronLeft,
@@ -18,6 +18,7 @@ import { Model, Photo, Photographer } from '../utils/Types';
 import PhotoUpload from '../components/PhotoUpload';
 import { useNotification } from '../components/Notification';
 import { deletePhoto, uploadPhoto } from '../utils/PhotoUtils';
+import useDocumentTitle from '../utils/useDocumentTitle';
 
 export default function Profile() {
   const { user, logout, update } = useAuth();
@@ -34,6 +35,8 @@ export default function Profile() {
   const [race, setRace] = useState(['']);
   const [height, setHeight] = useState('');
   const [tab, setTab] = useState<number>(0);
+
+  useDocumentTitle('Profile — Models @ RIT');
 
   useEffect(() => {
     if (user) {

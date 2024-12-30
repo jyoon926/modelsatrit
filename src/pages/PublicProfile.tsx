@@ -2,12 +2,13 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Model, Photo, Photographer, Post, User } from '../utils/Types';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import { useAuth } from '../utils/AuthContext';
 import ProfilePhoto from '../components/ProfilePhoto';
 import { Sizes } from '../utils/Enums';
 import Slideshow from '../components/Slideshow';
 import PostCard from '../components/PostCard';
+import useDocumentTitle from '../utils/useDocumentTitle';
 
 const tabData = [
   {
@@ -53,6 +54,8 @@ export default function PublicProfile() {
   const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
   const [slideshowPhotos, setSlideshowPhotos] = useState<Photo[]>([]);
   const [slideshowId, setSlideshowId] = useState(0);
+
+  useDocumentTitle(user?.name ? user.name + ' — Models @ RIT' : 'Models @ RIT');
 
   const getModel = async (user_id: number) => {
     const { data, error } = await supabase
@@ -152,17 +155,17 @@ export default function PublicProfile() {
       if (tabs.length === 0) {
         return navigate(`/profile/${email}`);
       }
-  
+
       if (!tab) {
         return navigate(`/profile/${email}/${tabs[0]}`);
       }
-  
+
       if (!tabData.map((el) => el.name).includes(tab)) {
         if (model) return navigate(`/profile/${email}/model`);
         if (photographer) return navigate(`/profile/${email}/photographer`);
         return navigate(`/profile/${email}`);
       }
-  
+
       if (
         (tab === 'model' && !model) ||
         (tab === 'photographer' && !photographer) ||

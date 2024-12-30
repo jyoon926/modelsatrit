@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import Modal from './Modal';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../utils/AuthContext';
@@ -48,7 +48,7 @@ export default function LoginModal({ isOpen, onClose }: Props) {
           placeholder='Email'
           required
         />
-        
+
         <input
           className="w-full mb-5"
           type="password"

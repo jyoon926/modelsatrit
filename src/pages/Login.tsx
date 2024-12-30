@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import { useAuth } from '../utils/AuthContext';
+import useDocumentTitle from '../utils/useDocumentTitle';
 
 export default function Login() {
   const { update } = useAuth();
@@ -9,6 +10,8 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useDocumentTitle('Log in — Models @ RIT');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

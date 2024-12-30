@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import { Link } from 'react-router-dom';
 import Filters from '../components/Filters';
+import useDocumentTitle from '../utils/useDocumentTitle';
 
 interface Model {
   photos: any[];
@@ -13,6 +14,8 @@ export default function Models() {
   const [models, setModels] = useState<Model[]>();
   const [genderFilters, setGenderFilters] = useState<string[]>([]);
   const [raceFilters, setRaceFilters] = useState<string[]>([]);
+
+  useDocumentTitle('Models — Models @ RIT');
 
   useEffect(() => {
     const fetchData = async () => {

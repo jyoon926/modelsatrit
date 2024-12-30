@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { useAuth } from '../utils/AuthContext';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import ProfilePhoto from './ProfilePhoto';
 import { MdChevronLeft, MdChevronRight, MdClose, MdOutlineImage } from 'react-icons/md';
 import { Post, User } from '../utils/Types';

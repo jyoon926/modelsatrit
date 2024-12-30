@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Comment as IComment, Like, Post, Tag } from '../utils/Types';
 import { useAuth } from '../utils/AuthContext';
 import { useEffect, useState } from 'react';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/Supabase';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown, MdDeleteOutline, MdOutlineEdit } from 'react-icons/md';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import ProfilePhoto from './ProfilePhoto';
@@ -55,7 +55,7 @@ export default function PostCard({ post: initialPost, onDelete }: Props) {
         setComments(data);
       }
     };
-  
+
     const fetchLikes = async () => {
       const { data, error } = await supabase
         .from('like')
@@ -66,7 +66,7 @@ export default function PostCard({ post: initialPost, onDelete }: Props) {
         setLiked(data.find((like) => like.user_id === user?.id));
       }
     };
-  
+
     const fetchTags = async () => {
       const { data, error } = await supabase
         .from('tag')
