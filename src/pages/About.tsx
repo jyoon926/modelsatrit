@@ -22,10 +22,10 @@ export default function About() {
           a resource for discovering new faces.
         </p>
         <div className="py-10 w-full flex flex-col md:flex-row md:items-end justify-center w-full max-w-3/4 gap-10">
-          <img className="w-72 rounded-xl grayscale mix-blend-multiply border" src="images/headshot.jpg" alt="" />
+          <img className="w-64 rounded-xl grayscale mix-blend-multiply border" src="images/headshot.jpg" alt="" />
           <div className="w-full max-w-[600px] flex flex-col gap-7">
             <p className="text-3xl sm:text-4xl font-serif">Jacob Yoon, BS/MS Computer Science '25</p>
-            <p className="text-md sm:text-lg leading-snug">
+            <p className="text-md leading-snug">
               Jacob is a computer science student passionate about fashion, photography, and design. In 2021, he helped
               create <i>RIT Fabrick</i>, a fashion club that brings together students from different majors and
               backgrounds to share their love for fashion. Through his experiences leading the club, he saw a need for a
